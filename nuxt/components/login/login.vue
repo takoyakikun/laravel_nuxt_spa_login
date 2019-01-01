@@ -7,13 +7,18 @@
 
       <v-card-text>
         <LoginForm v-model="loginForm" @submit="submit" />
-        <nuxt-link to="passwordReset">
+        <nuxt-link
+          data-test="passwordResetLink"
+          to="passwordReset"
+          @click.native="$router.push('passwordReset')"
+        >
           パスワードを忘れた方はこちら
         </nuxt-link>
       </v-card-text>
 
       <v-card-actions>
         <v-btn
+          data-test="loginButton"
           :disabled="invalid"
           :loading="loading"
           color="primary"
@@ -25,7 +30,7 @@
           Login
         </v-btn>
         <v-spacer />
-        <v-btn to="/">
+        <v-btn data-test="topButtonLink" to="/">
           <v-icon left>
             mdi-home
           </v-icon>

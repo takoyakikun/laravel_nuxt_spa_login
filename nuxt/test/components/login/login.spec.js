@@ -157,4 +157,58 @@ describe("components/login/login", () => {
       })
     })
   })
+
+  describe("ボタン動作テスト", () => {
+    let wrapper
+    let submit
+    beforeEach(() => {
+      submit = jest.spyOn(Login.methods, "submit").mockReturnValue(true)
+      wrapper = mount(Login, {
+        localVue,
+        store,
+        router,
+        vuetify,
+        sync: false,
+        stubs: {
+          NuxtLink: RouterLinkStub
+        }
+      })
+    })
+
+    test("ログインボタン", () => {
+      // ボタンをクリック
+      wrapper.find("[data-test='loginButton']").trigger("click")
+
+      // メソッドが実行されたか
+      expect(submit).toHaveBeenCalled()
+    })
+  })
+
+  describe("リンク動作テスト", () => {
+    let wrapper
+    beforeEach(() => {
+      wrapper = mount(Login, {
+        localVue,
+        store,
+        router,
+        vuetify,
+        sync: false,
+        stubs: {
+          NuxtLink: RouterLinkStub
+        }
+      })
+    })
+
+    test("トップボタンリンク", () => {
+      // 正しいリンク先が設定されているか
+      expect(wrapper.find("[data-test='topButtonLink']").props().to).toBe("/")
+    })
+
+    test("パスワードリセットリンク", () => {
+      // 正しいリンク先が設定されているか
+      expect(wrapper.find("[data-test='passwordResetLink']").props().to).toBe(
+        "passwordReset"
+      )
+    })
+  })
 })
