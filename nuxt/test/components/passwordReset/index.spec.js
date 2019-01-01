@@ -149,4 +149,29 @@ describe("components/passwordReset/index", () => {
       })
     })
   })
+
+  describe("ボタン動作テスト", () => {
+    let wrapper
+    let sendMail
+    beforeEach(() => {
+      sendMail = jest
+        .spyOn(PasswordReset.methods, "sendMail")
+        .mockReturnValue(true)
+      wrapper = mount(PasswordReset, {
+        localVue,
+        store,
+        router,
+        vuetify,
+        sync: false
+      })
+    })
+
+    test("パスワードリセットメール送信ボタン", () => {
+      // ボタンをクリック
+      wrapper.find("[data-test='sendMailButton']").trigger("click")
+
+      // メソッドが実行されたか
+      expect(sendMail).toHaveBeenCalled()
+    })
+  })
 })

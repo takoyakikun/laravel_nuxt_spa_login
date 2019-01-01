@@ -186,4 +186,29 @@ describe("components/passwordReset/_token", () => {
       })
     })
   })
+
+  describe("ボタン動作テスト", () => {
+    let wrapper
+    let passwordReset
+    beforeEach(() => {
+      passwordReset = jest
+        .spyOn(Token.methods, "passwordReset")
+        .mockReturnValue(true)
+      wrapper = mount(Token, {
+        localVue,
+        store,
+        router,
+        vuetify,
+        sync: false
+      })
+    })
+
+    test("パスワードリセットボタン", () => {
+      // ボタンをクリック
+      wrapper.find("[data-test='passwordResetButton']").trigger("click")
+
+      // メソッドが実行されたか
+      expect(passwordReset).toHaveBeenCalled()
+    })
+  })
 })

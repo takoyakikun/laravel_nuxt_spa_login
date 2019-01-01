@@ -14,6 +14,7 @@
 
       <v-card-actions>
         <v-btn
+          data-test="sendMailButton"
           :disabled="invalid"
           :loading="loading"
           color="primary"

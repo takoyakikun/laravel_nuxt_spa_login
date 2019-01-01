@@ -11,6 +11,7 @@
 
       <v-card-actions>
         <v-btn
+          data-test="passwordResetButton"
           :disabled="invalid"
           :loading="loading"
           color="primary"
