@@ -37,4 +37,26 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    /**
+     * ログイン成功
+     * 
+     * @param string $user
+     * @return string
+     */
+    protected function authenticated($user)
+    {
+        return $user;
+    }
+
+    /**
+     * ログアウト成功
+     * 
+     * @return Response
+     */
+    protected function loggedOut()
+    {
+        return response()->json();
+    }
+
 }
