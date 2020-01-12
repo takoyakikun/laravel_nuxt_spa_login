@@ -82,5 +82,10 @@ export default {
   },
   generate: {
     dir: "../public/dist"
+  },
+  vue: {
+    config: {
+      devtools: process.env.NODE_ENV !== "production"
+    }
   }
 }
