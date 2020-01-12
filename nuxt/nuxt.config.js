@@ -1,4 +1,5 @@
 import colors from "vuetify/es5/util/colors"
+require("dotenv").config()
 
 export default {
   mode: "spa",
@@ -30,7 +31,8 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ["~/plugins/axios"],
+
   /*
    ** Nuxt.js dev-modules
    */
@@ -48,7 +50,10 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    baseURL: process.env.API_URL,
+    credentials: true
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
