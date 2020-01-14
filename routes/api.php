@@ -17,4 +17,4 @@ Route::get('/user', function () {
     return Auth::user();
 });
 
-Auth::routes();
+Auth::routes(['register' => false, 'reset' => false, 'confirm' => false, 'verify' => false]);

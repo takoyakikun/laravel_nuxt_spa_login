@@ -8,24 +8,34 @@
         <v-card-text>
           <v-form>
             <v-text-field
+              v-model="email"
               label="Login"
               name="login"
               prepend-icon="mdi-account"
               type="text"
+              @keydown.enter="submit"
             />
 
             <v-text-field
               id="password"
+              v-model="password"
               label="Password"
               name="password"
               prepend-icon="mdi-lock"
               type="password"
+              @keydown.enter="submit"
             />
           </v-form>
         </v-card-text>
         <v-card-actions>
+          <v-btn to="/">
+            <v-icon left>
+              mdi-home
+            </v-icon>
+            Top
+          </v-btn>
           <v-spacer />
-          <v-btn color="primary">
+          <v-btn color="primary" @click="submit">
             <v-icon left>
               mdi-login-variant
             </v-icon>
@@ -39,6 +49,27 @@
 
 <script>
 export default {
-  layout: "login"
+  middleware: "guest",
+  layout: "login",
+  data() {
+    return {
+      email: "",
+      password: ""
+    }
+  },
+  methods: {
+    async submit(event) {
+      // 日本語入力時のEnterキーの反応を防ぐ
+      if (event.keyCode && event.keyCode !== 13) return
+
+      // ログイン処理
+      await this.$store.dispatch("auth/login", {
+        email: this.email,
+        password: this.password
+      })
+
+      this.$router.push("/")
+    }
+  }
 }
 </script>
