@@ -25,6 +25,8 @@
               type="password"
               @keydown.enter="submit"
             />
+
+            <v-checkbox color="primary" label="Remember me" />
           </v-form>
         </v-card-text>
         <v-card-actions>
