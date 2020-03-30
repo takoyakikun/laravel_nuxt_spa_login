@@ -30,13 +30,13 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer />
-      <v-btn v-if="$store.state.auth.user" color="primary" @click="logout">
+      <v-btn v-if="$store.state.auth.user" outlined @click="logout">
         <v-icon left>
           mdi-logout-variant
         </v-icon>
         Logout
       </v-btn>
-      <v-btn v-if="!$store.state.auth.user" color="primary" to="login">
+      <v-btn v-if="!$store.state.auth.user" outlined to="login">
         <v-icon left>
           mdi-login-variant
         </v-icon>
