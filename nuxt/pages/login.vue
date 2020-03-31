@@ -26,7 +26,11 @@
               @keydown.enter="submit"
             />
 
-            <v-checkbox color="primary" label="Remember me" />
+            <v-checkbox
+              v-model="remember"
+              color="primary"
+              label="Remember me"
+            />
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -56,7 +60,8 @@ export default {
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+      remember: false
     }
   },
   methods: {
@@ -67,7 +72,8 @@ export default {
       // ログイン処理
       await this.$store.dispatch("auth/login", {
         email: this.email,
-        password: this.password
+        password: this.password,
+        remember: this.remember
       })
 
       this.$router.push("/")
