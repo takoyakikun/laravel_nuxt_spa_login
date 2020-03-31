@@ -31,7 +31,11 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["~/plugins/axios", "~/plugins/nuxt-client-init.js"],
+  plugins: [
+    "~/plugins/axios",
+    "~/plugins/nuxt-client-init.js",
+    "@/plugins/vee-validate"
+  ],
 
   /*
    ** Nuxt.js dev-modules
@@ -83,7 +87,8 @@ export default {
      ** You can extend webpack config here
      */
     extend(config, ctx) {},
-    hardSource: true
+    hardSource: true,
+    transpile: ["vee-validate/dist/rules"]
   },
   generate: {
     dir: "../public/dist"
