@@ -23,6 +23,7 @@ module.exports = {
     "semi": [2, "never"],
     "no-console": "off",
     'no-unused-vars': 'off',
+    "no-irregular-whitespace": "off",
     "vue/max-attributes-per-line": "off",
     "prettier/prettier": ["error", { "semi": false }],
   }
