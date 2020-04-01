@@ -6,32 +6,7 @@
           <v-toolbar-title>Login form</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <v-form>
-            <v-text-field
-              v-model="email"
-              label="Login"
-              name="login"
-              prepend-icon="mdi-account"
-              type="text"
-              @keydown.enter="submit"
-            />
-
-            <v-text-field
-              id="password"
-              v-model="password"
-              label="Password"
-              name="password"
-              prepend-icon="mdi-lock"
-              type="password"
-              @keydown.enter="submit"
-            />
-
-            <v-checkbox
-              v-model="remember"
-              color="primary"
-              label="Remember me"
-            />
-          </v-form>
+          <c-login-form :form-value.sync="loginForm" @submit="submit($event)" />
         </v-card-text>
         <v-card-actions>
           <v-btn to="/">
@@ -54,14 +29,21 @@
 </template>
 
 <script>
+import CLoginForm from "~/components/login/loginForm"
+
 export default {
   middleware: "guest",
   layout: "login",
+  components: {
+    CLoginForm
+  },
   data() {
     return {
-      email: "",
-      password: "",
-      remember: false
+      loginForm: {
+        email: "",
+        password: "",
+        remember: false
+      }
     }
   },
   methods: {
@@ -71,9 +53,9 @@ export default {
 
       // ログイン処理
       await this.$store.dispatch("auth/login", {
-        email: this.email,
-        password: this.password,
-        remember: this.remember
+        email: this.loginForm.email,
+        password: this.loginForm.password,
+        remember: this.loginForm.remember
       })
 
       this.$router.push("/")
