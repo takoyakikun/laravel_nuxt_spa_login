@@ -10,27 +10,36 @@ export const mutations = {
 
 export const actions = {
   async login({ commit }, { email, password, remember }) {
-    await this.$axios
+    return await this.$axios
       .post("/api/login", { email, password, remember })
-      .then(response => {
-        commit("setUser", response.data)
+      .then(res => {
+        commit("setUser", res.data)
+        return res
       })
-      .catch(err => err.response)
+      .catch(err => {
+        return err.response
+      })
   },
   async logout({ commit }) {
-    await this.$axios
+    return await this.$axios
       .post("/api/logout")
-      .then(response => {
+      .then(res => {
         commit("setUser", null)
+        return res
       })
-      .catch(err => err.response)
+      .catch(err => {
+        return err.response
+      })
   },
   async nuxtClientInit({ commit }) {
-    await this.$axios
+    return await this.$axios
       .get("/api/user")
-      .then(response => {
-        commit("setUser", response.data)
+      .then(res => {
+        commit("setUser", res.data)
+        return res
       })
-      .catch(err => err.response)
+      .catch(err => {
+        return err.response
+      })
   }
 }
