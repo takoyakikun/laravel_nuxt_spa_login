@@ -12,6 +12,8 @@ class UserTestTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(User::class)->states('test')->create();
+        factory(User::class)->states('test_system')->create(); // 開発者
+        factory(User::class)->states('test_admin')->create(); // 管理者
+        factory(User::class)->states('test_user')->create(); // 一般
     }
 }

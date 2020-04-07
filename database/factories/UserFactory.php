@@ -27,10 +27,26 @@ $factory->define(User::class, function (Faker $faker) {
     ];
 });
 
-$factory->state(User::class, 'test', function (Faker $faker) {
+$factory->state(User::class, 'test_system', function (Faker $faker) {
     return [
-        'name' => 'テスト',
+        'name' => 'テスト開発者',
         'email' => 'test@test.com',
         'role' => 1, // 開発者
+    ];
+});
+
+$factory->state(User::class, 'test_admin', function (Faker $faker) {
+    return [
+        'name' => 'テスト管理者',
+        'email' => 'test_admin@test.com',
+        'role' => 5, // 管理者
+    ];
+});
+
+$factory->state(User::class, 'test_user', function (Faker $faker) {
+    return [
+        'name' => 'テスト一般',
+        'email' => 'test_user@test.com',
+        'role' => 10, // 一般
     ];
 });
