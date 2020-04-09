@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class LoginController extends Controller
 {
@@ -48,6 +49,9 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
+        // role値が0以外を許可
+        Gate::authorize('user-higher');
+
         return $user;
     }
 

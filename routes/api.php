@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,8 +14,32 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/user', function () {
-    return Auth::user();
+// ログイン・ログアウト
+Auth::routes(['register' => false, 'reset' => false, 'confirm' => false, 'verify' => false]);
+
+// 全ユーザ
+Route::group(['middleware' => ['auth', 'can:user-higher']], function () {
+
+    // アクセス権限のチェック
+    Route::get('permission/{category}', function ($category) {
+        return response([Gate::allows($category)]);
+    });
+
+    // ユーザーを取得
+    Route::get('/user', function () {
+        return Auth::user();
+    });    
+
 });
 
-Auth::routes(['register' => false, 'reset' => false, 'confirm' => false, 'verify' => false]);
+// 管理者以上
+Route::group(['middleware' => ['auth', 'can:admin-higher']], function () {
+    // ログインユーザー
+    Route::resource('users', 'UsersController', ['only' => ['index', 'store', 'update', 'destroy']]);
+
+});
+
+// システム管理者のみ
+Route::group(['middleware' => ['auth', 'can:system-only']], function () {
+
+});

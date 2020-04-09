@@ -22,6 +22,16 @@
             <v-list-item-title>Auth</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <!-- ユーザー管理 -->
+        <v-list-item v-if="getPermission('admin-higher')" link to="users">
+          <v-list-item-action>
+            <v-icon>mdi-account-group</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Users</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -59,10 +69,20 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex"
+
 export default {
   data: () => ({
     drawer: false
   }),
+  computed: {
+    ...mapGetters({
+      getPermission: "auth/getPermission"
+    })
+  },
+  mounted() {
+    this.$store.dispatch("auth/checkAuth", "admin-higher")
+  },
   methods: {
     async logout() {
       await this.$store.dispatch("auth/logout")
