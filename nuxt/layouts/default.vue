@@ -65,6 +65,11 @@
     <v-footer color="indigo" app>
       <span class="white--text">&copy; 2019</span>
     </v-footer>
+
+    <!-- snackbar -->
+    <v-snackbar v-model="snackbar.snackbar" :color="snackbar.color">
+      {{ snackbar.text }}
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -78,12 +83,24 @@ export default {
   computed: {
     ...mapGetters({
       getPermission: "auth/getPermission"
-    })
+    }),
+
+    // snackbarの状態をstoreと同期させる
+    snackbar: {
+      get() {
+        return this.$store.state.snackbar
+      },
+      set(val) {
+        this.$store.commit("snackbar/setSnackbar", val)
+      }
+    }
   },
   mounted() {
     this.$store.dispatch("auth/checkAuth", "admin-higher")
   },
   methods: {
+    ...mapActions("snackbar", ["openSnackbar"]),
+
     async logout() {
       await this.$store.dispatch("auth/logout")
 

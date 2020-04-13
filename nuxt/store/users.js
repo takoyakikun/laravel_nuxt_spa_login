@@ -16,8 +16,9 @@ export const actions = {
   async getList({ commit }) {
     return await this.$axios
       .get("/api/users")
-      .then(response => {
-        commit("setList", response.data)
+      .then(res => {
+        commit("setList", res.data)
+        return res
       })
       .catch(err => err.response)
   },

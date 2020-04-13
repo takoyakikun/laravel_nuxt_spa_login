@@ -77,8 +77,8 @@ export const actions = {
   },
 
   // アクセス権限をチェック
-  async checkAuth({ commit, getters }, category) {
-    if (!getters.getPermissionExistence(category)) {
+  async checkAuth({ commit, state, getters }, category) {
+    if (state.user && !getters.getPermissionExistence(category)) {
       await this.$axios
         .get("/api/permission/" + category)
         .then(res => {
