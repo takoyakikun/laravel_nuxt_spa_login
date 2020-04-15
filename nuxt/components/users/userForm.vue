@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row dense>
-      <v-col cols="6">
+      <v-col>
         <validation-provider
           v-slot="{ errors }"
           :rules="{ required, max: 255 }"
@@ -20,7 +20,7 @@
     </v-row>
 
     <v-row dense>
-      <v-col cols="6">
+      <v-col>
         <validation-provider
           v-slot="{ errors }"
           :rules="{ required, email, max: 255 }"
@@ -38,7 +38,7 @@
       </v-col>
     </v-row>
 
-    <v-row dense>
+    <v-row v-if="!myuser" dense>
       <v-col>
         <header>アクセス権限</header>
         <validation-provider
@@ -61,7 +61,7 @@
     </v-row>
 
     <v-row v-if="formType === 'create'" dense>
-      <v-col cols="6">
+      <v-col>
         <validation-provider
           v-slot="{ errors }"
           :rules="{ required, min: 8 }"
@@ -82,7 +82,7 @@
     </v-row>
 
     <v-row v-if="formType === 'create'" dense>
-      <v-col cols="6">
+      <v-col>
         <validation-provider
           v-slot="{ errors }"
           :rules="{ required, min: 8, confirmed: 'password' }"
@@ -114,6 +114,10 @@ export default {
     formType: {
       type: String,
       default: "create"
+    },
+    myuser: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

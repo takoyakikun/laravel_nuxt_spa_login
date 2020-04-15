@@ -22,7 +22,13 @@ export const actions = {
       })
       .catch(err => err.response)
   },
-  // データ追加
+  // 新規作成ページから新規ユーザー作成
+  async registerData({ dispatch }, formValue) {
+    return await this.$axios.post("/api/register", formValue).then(res => {
+      return res
+    })
+  },
+  // ユーザー管理から新規ユーザー作成
   async createData({ dispatch }, formValue) {
     return await this.$axios.post("/api/users", formValue).then(res => {
       dispatch("getList")
