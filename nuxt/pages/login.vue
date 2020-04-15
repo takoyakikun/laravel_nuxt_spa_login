@@ -13,18 +13,18 @@
             />
           </v-card-text>
           <v-card-actions>
-            <v-btn to="/">
-              <v-icon left>
-                mdi-home
-              </v-icon>
-              Top
-            </v-btn>
-            <v-spacer />
             <v-btn :disabled="invalid" color="primary" @click="submit">
               <v-icon left>
                 mdi-login-variant
               </v-icon>
               Login
+            </v-btn>
+            <v-spacer />
+            <v-btn to="/">
+              <v-icon left>
+                mdi-home
+              </v-icon>
+              Top
             </v-btn>
           </v-card-actions>
         </v-card>
