@@ -49,7 +49,7 @@ class MyuserController extends Controller
             'email' => $request->input('email'),
         ];
 
-        $user = User::find(Auth::user()->id);
+        $user = User::find(\Auth::user()->id);
         $user->fill($updateData)->save();
         return response($user);
     }

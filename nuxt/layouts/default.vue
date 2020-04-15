@@ -37,27 +37,55 @@
 
     <!-- ヘッダー -->
     <v-app-bar app color="indigo" dark>
+      <!-- サイドバー開閉 -->
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+
       <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer />
-      <v-btn v-if="!$store.state.auth.user" class="mx-1" outlined to="register">
+
+      <!-- マイユーザー管理 -->
+      <v-menu v-if="user" offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn class="mx-1" outlined rounded v-on="on">
+            <v-icon left>
+              mdi-account-circle
+            </v-icon>
+            {{ user.name }}
+            <v-icon right>
+              mdi-menu-down
+            </v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item @click="openEditDialog">
+            <v-list-item-title>
+              <v-icon left>
+                mdi-account-edit
+              </v-icon>
+              編集
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <!-- 新規ユーザー作成 -->
+      <v-btn v-if="!user" class="mx-1" outlined to="register">
         <v-icon left>
           mdi-account-plus
         </v-icon>
         新規作成
       </v-btn>
-      <v-btn
-        v-if="$store.state.auth.user"
-        class="mx-1"
-        outlined
-        @click="logout"
-      >
+
+      <!-- ログアウト -->
+      <v-btn v-if="user" class="mx-1" outlined @click="logout">
         <v-icon left>
           mdi-logout-variant
         </v-icon>
         Logout
       </v-btn>
-      <v-btn v-if="!$store.state.auth.user" class="mx-1" outlined to="login">
+
+      <!-- ログイン -->
+      <v-btn v-if="!user" class="mx-1" outlined to="login">
         <v-icon left>
           mdi-login-variant
         </v-icon>
@@ -77,6 +105,35 @@
       <span class="white--text">&copy; 2019</span>
     </v-footer>
 
+    <!-- 編集ダイアログ -->
+    <validation-observer ref="editForm" v-slot="{ invalid }">
+      <c-my-dialog
+        ref="editDialog"
+        :open.sync="editDialog"
+        title="ユーザー編集"
+        color="success"
+        persistent
+      >
+        <template v-slot:content>
+          <c-user-form
+            :form-value.sync="editFormValue"
+            form-type="edit"
+            myuser
+          />
+        </template>
+
+        <template v-slot:actions>
+          <v-btn :disabled="invalid" color="success" @click="editSubmit">
+            <v-icon left>
+              mdi-account-edit
+            </v-icon>
+            更新
+          </v-btn>
+          <v-spacer />
+        </template>
+      </c-my-dialog>
+    </validation-observer>
+
     <!-- snackbar -->
     <v-snackbar v-model="snackbar.snackbar" :color="snackbar.color">
       {{ snackbar.text }}
@@ -85,13 +142,24 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex"
+import { mapState, mapGetters, mapActions } from "vuex"
+import CMyDialog from "~/components/dialog/myDialog"
+import CUserForm from "~/components/users/userForm"
 
 export default {
+  components: {
+    CMyDialog,
+    CUserForm
+  },
   data: () => ({
-    drawer: false
+    drawer: false,
+    editDialog: false,
+    editFormValue: {}
   }),
   computed: {
+    ...mapState("auth", {
+      user: "user"
+    }),
     ...mapGetters({
       getPermission: "auth/getPermission"
     }),
@@ -111,11 +179,44 @@ export default {
   },
   methods: {
     ...mapActions("snackbar", ["openSnackbar"]),
+    ...mapActions("users", ["editData"]),
 
+    // ログアウト
     async logout() {
       await this.$store.dispatch("auth/logout")
 
       this.$router.push("/")
+    },
+
+    // 編集ダイアログを開く
+    openEditDialog() {
+      this.editDialog = true
+      this.editFormValue = JSON.parse(JSON.stringify(this.user)) // ディープコピー
+    },
+    // データを更新
+    async editSubmit() {
+      await this.$refs.editForm.validate().then(result => {
+        if (result) {
+          this.editData({
+            formValue: this.editFormValue
+          })
+            .then(res => {
+              this.openSnackbar({
+                text: "ユーザーデータを更新しました。",
+                color: "success"
+              })
+              this.$refs.editDialog.close()
+              this.$refs.editForm.reset()
+              this.$store.dispatch("auth/nuxtClientInit")
+            })
+            .catch(e => {
+              this.openSnackbar({
+                text: "ユーザーデータの更新に失敗しました。",
+                color: "error"
+              })
+            })
+        }
+      })
     }
   }
 }

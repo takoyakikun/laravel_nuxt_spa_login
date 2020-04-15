@@ -35,12 +35,23 @@ export const actions = {
       return res
     })
   },
-  // データ修正
+  // データ更新
   async editData({ dispatch }, { formValue, id }) {
-    return await this.$axios.patch("/api/users/" + id, formValue).then(res => {
-      dispatch("getList")
-      return res
-    })
+    // id がある場合は指定したユーザーを変更、ない場合は自分のユーザーを変更
+    if (id) {
+      return await this.$axios
+        .patch("/api/users/" + id, formValue)
+        .then(res => {
+          dispatch("getList")
+          return res
+        })
+    } else {
+      return await this.$axios
+        .patch("/api/myuser/update", formValue)
+        .then(res => {
+          return res
+        })
+    }
   },
   // データ削除
   async deleteData({ dispatch }, id) {
