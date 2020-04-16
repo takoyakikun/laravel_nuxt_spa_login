@@ -36,6 +36,9 @@ Route::group(['middleware' => ['auth', 'can:user-higher']], function () {
     // ユーザー編集
     Route::patch('myuser/update', 'MyuserController@update');
 
+    // パスワード変更
+    Route::patch('myuser/passwordChange', 'MyuserController@passwordChange');
+
 });
 
 // 管理者以上

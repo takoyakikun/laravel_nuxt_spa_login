@@ -57,12 +57,23 @@
           </v-btn>
         </template>
         <v-list>
+          <!-- マイユーザー編集 -->
           <v-list-item @click="openEditDialog">
             <v-list-item-title>
               <v-icon left>
                 mdi-account-edit
               </v-icon>
               編集
+            </v-list-item-title>
+          </v-list-item>
+
+          <!-- パスワード変更 -->
+          <v-list-item @click="openPasswordChangeDialog">
+            <v-list-item-title>
+              <v-icon left>
+                mdi-lock
+              </v-icon>
+              パスワード変更
             </v-list-item-title>
           </v-list-item>
         </v-list>
@@ -134,6 +145,35 @@
       </c-my-dialog>
     </validation-observer>
 
+    <!-- パスワード変更ダイアログ -->
+    <validation-observer ref="passwordChangeForm" v-slot="{ invalid }">
+      <c-my-dialog
+        ref="passwordChangeDialog"
+        :open.sync="passwordChangeDialog"
+        title="パスワード変更"
+        color="success"
+        persistent
+      >
+        <template v-slot:content>
+          <c-password-change-form :form-value.sync="passwordChangeFormValue" />
+        </template>
+
+        <template v-slot:actions>
+          <v-btn
+            :disabled="invalid"
+            color="success"
+            @click="passwordChangeSubmit"
+          >
+            <v-icon left>
+              mdi-lock
+            </v-icon>
+            変更
+          </v-btn>
+          <v-spacer />
+        </template>
+      </c-my-dialog>
+    </validation-observer>
+
     <!-- snackbar -->
     <v-snackbar v-model="snackbar.snackbar" :color="snackbar.color">
       {{ snackbar.text }}
@@ -145,16 +185,20 @@
 import { mapState, mapGetters, mapActions } from "vuex"
 import CMyDialog from "~/components/dialog/myDialog"
 import CUserForm from "~/components/users/userForm"
+import CPasswordChangeForm from "~/components/users/passwordChangeForm"
 
 export default {
   components: {
     CMyDialog,
-    CUserForm
+    CUserForm,
+    CPasswordChangeForm
   },
   data: () => ({
     drawer: false,
     editDialog: false,
-    editFormValue: {}
+    editFormValue: {},
+    passwordChangeDialog: false,
+    passwordChangeFormValue: {}
   }),
   computed: {
     ...mapState("auth", {
@@ -179,7 +223,7 @@ export default {
   },
   methods: {
     ...mapActions("snackbar", ["openSnackbar"]),
-    ...mapActions("users", ["editData"]),
+    ...mapActions("users", ["editData", "passwordChange"]),
 
     // ログアウト
     async logout() {
@@ -212,6 +256,38 @@ export default {
             .catch(e => {
               this.openSnackbar({
                 text: "ユーザーデータの更新に失敗しました。",
+                color: "error"
+              })
+            })
+        }
+      })
+    },
+
+    // パスワード変更ダイアログを開く
+    openPasswordChangeDialog() {
+      this.passwordChangeDialog = true
+      this.passwordChangeFormValue = {}
+    },
+    // パスワードを変更
+    async passwordChangeSubmit() {
+      await this.$refs.passwordChangeForm.validate().then(result => {
+        if (result) {
+          this.passwordChange(this.passwordChangeFormValue)
+            .then(res => {
+              this.openSnackbar({
+                text: "パスワードを変更しました。",
+                color: "success"
+              })
+              this.$refs.passwordChangeDialog.close()
+              this.$refs.passwordChangeForm.reset()
+            })
+            .catch(e => {
+              let text = "パスワードの変更に失敗しました。"
+              if (e.response.data.error_message) {
+                text = e.response.data.error_message
+              }
+              this.openSnackbar({
+                text: text,
                 color: "error"
               })
             })

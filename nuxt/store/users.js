@@ -61,21 +61,12 @@ export const actions = {
     })
   },
   // パスワード変更
-  async passwordChange({ dispatch }, { formValue, id }) {
-    if (id) {
-      return await this.$axios
-        .patch("/api/users/passwordChange/" + id, formValue)
-        .then(res => {
-          dispatch("getList")
-          return res
-        })
-    } else {
-      return await this.$axios
-        .patch("/api/users/passwordChange", formValue)
-        .then(res => {
-          dispatch("getList")
-          return res
-        })
-    }
+  async passwordChange({ dispatch }, formValue) {
+    return await this.$axios
+      .patch("/api/myuser/passwordChange", formValue)
+      .then(res => {
+        dispatch("getList")
+        return res
+      })
   }
 }

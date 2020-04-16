@@ -11,6 +11,9 @@ use App\Http\Requests\MyuserStoreRequest;
 // 更新フォームバリデーション
 use App\Http\Requests\MyuserUpdateRequest;
 
+// パスワード変更フォームバリデーション
+use App\Http\Requests\MyuserPasswordChangeRequest;
+
 // ユーザーモデル
 use App\Models\User;
 
@@ -47,6 +50,28 @@ class MyuserController extends Controller
         $updateData = [
             'name' => $request->input('name'),
             'email' => $request->input('email'),
+        ];
+
+        $user = User::find(\Auth::user()->id);
+        $user->fill($updateData)->save();
+        return response($user);
+    }
+
+    /**
+     * パスワード変更
+     *
+     * @param \App\Http\Requests\MyuserPasswordChangeRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function passwordChange (MyuserPasswordChangeRequest $request)
+    {
+        // 現在のパスワードが正しいかチェック
+        if (!(Hash::check($request->get('current_password'), \Auth::user()->password))) {
+            return response(['error_message' => '現在のパスワードが間違っています。'], 422);
+        }
+
+        $updateData = [
+            'password' => Hash::make($request->input('password')),
         ];
 
         $user = User::find(\Auth::user()->id);
