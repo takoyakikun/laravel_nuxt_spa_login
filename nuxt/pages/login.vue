@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex"
 import CLoginForm from "~/components/login/loginForm"
 
 export default {
@@ -52,6 +53,8 @@ export default {
     }
   },
   methods: {
+    ...mapActions("snackbar", ["openSnackbar"]),
+
     async submit(event) {
       // 日本語入力時のEnterキーの反応を防ぐ
       if (event.keyCode && event.keyCode !== 13) return
@@ -70,6 +73,11 @@ export default {
                 this.$router.push("/")
               } else {
                 this.loginForm.password = ""
+                this.$refs.loginForm.reset()
+                this.openSnackbar({
+                  text: "認証に失敗しました。",
+                  color: "error"
+                })
               }
             })
         }
