@@ -20,6 +20,13 @@ Auth::routes(['register' => false, 'reset' => false, 'confirm' => false, 'verify
 // ユーザー追加
 Route::post('register', 'MyuserController@store');
 
+// ユーザーを取得
+Route::get('/user', function () {
+    if (Gate::allows('user-higher')) {
+        return Auth::user();
+    }
+});
+
 // 全ユーザ
 Route::group(['middleware' => ['auth', 'can:user-higher']], function () {
 
@@ -27,11 +34,6 @@ Route::group(['middleware' => ['auth', 'can:user-higher']], function () {
     Route::get('permission/{category}', function ($category) {
         return response([Gate::allows($category)]);
     });
-
-    // ユーザーを取得
-    Route::get('/user', function () {
-        return Auth::user();
-    });    
 
     // ユーザー編集
     Route::patch('myuser/update', 'MyuserController@update');
