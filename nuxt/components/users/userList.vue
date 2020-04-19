@@ -94,7 +94,11 @@
         persistent
       >
         <template v-slot:content>
-          <c-user-form :form-value.sync="editFormValue" form-type="edit" />
+          <c-user-form
+            :form-value.sync="editFormValue"
+            form-type="edit"
+            :myuser.sync="myuser"
+          />
         </template>
 
         <template v-slot:actions>
@@ -218,6 +222,11 @@ export default {
         }
         return result
       }
+    },
+
+    // 自ユーザーかどうか
+    myuser() {
+      return this.user.id === this.editId
     }
   },
   mounted() {
@@ -267,9 +276,14 @@ export default {
     async editSubmit() {
       await this.$refs.editForm.validate().then(result => {
         if (result) {
+          let id = null
+          // 自ユーザー以外はidを設定
+          if (!this.myuser) {
+            id = this.editId
+          }
           this.editData({
             formValue: this.editFormValue,
-            id: this.editId
+            id: id
           })
             .then(res => {
               this.openSnackbar({

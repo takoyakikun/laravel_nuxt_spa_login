@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class UserStoreRequest extends FormRequest
 {
@@ -13,7 +14,11 @@ class UserStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        // 管理者以上を許可
+        if (Gate::allows('admin-higher')) {
+            return true;
+        }
+        return false;
     }
 
     /**

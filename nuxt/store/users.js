@@ -36,7 +36,7 @@ export const actions = {
     })
   },
   // データ更新
-  async editData({ dispatch }, { formValue, id }) {
+  async editData({ dispatch, rootGetters }, { formValue, id }) {
     // id がある場合は指定したユーザーを変更、ない場合は自分のユーザーを変更
     if (id) {
       return await this.$axios
@@ -49,6 +49,10 @@ export const actions = {
       return await this.$axios
         .patch("/api/myuser/update", formValue)
         .then(res => {
+          // 管理者権限以上は全ユーザーデータを再取得
+          if (rootGetters["auth/getPermission"]("admin-higher")) {
+            dispatch("getList")
+          }
           return res
         })
     }

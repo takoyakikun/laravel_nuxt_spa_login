@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Gate;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -14,7 +15,14 @@ class UserUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        // 管理者以上を許可
+        if (Gate::allows('admin-higher')) {
+            // 自ユーザー以外を許可
+            if ($this->user !== \Auth::user()->id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
