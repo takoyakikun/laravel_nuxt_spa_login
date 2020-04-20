@@ -14,6 +14,7 @@
             max="255"
             required
             :error-messages="errors"
+            @keydown.enter="submit"
           />
         </validation-provider>
       </v-col>
@@ -33,6 +34,7 @@
             max="255"
             required
             :error-messages="errors"
+            @keydown.enter="submit"
           />
         </validation-provider>
       </v-col>
@@ -46,14 +48,14 @@
           :rules="{ required }"
           name="アクセス権限"
         >
-          <v-radio-group v-model="formValue.role" row>
+          <v-radio-group v-model="formValue.role" row :error-messages="errors">
             <v-radio
-              v-for="(item, index) in role"
-              :key="index"
+              v-for="item in role"
+              :key="item.value"
               :label="item.text"
               :value="item.value"
               color="primary"
-              :error-messages="errors"
+              @keydown.enter="submit"
             />
           </v-radio-group>
         </validation-provider>
@@ -76,6 +78,7 @@
             min="8"
             required
             :error-messages="errors"
+            @keydown.enter="submit"
           />
         </validation-provider>
       </v-col>
@@ -96,6 +99,7 @@
             min="8"
             required
             :error-messages="errors"
+            @keydown.enter="submit"
           />
         </validation-provider>
       </v-col>
@@ -135,6 +139,14 @@ export default {
       } else {
         return this.config.role.filter(item => item.value > 1)
       }
+    }
+  },
+  methods: {
+    submit(event) {
+      // 日本語入力時のEnterキーの反応を防ぐ
+      if (event.keyCode && event.keyCode !== 13) return
+
+      this.$emit("submit")
     }
   }
 }

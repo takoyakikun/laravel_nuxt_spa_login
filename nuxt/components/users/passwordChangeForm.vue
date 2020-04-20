@@ -15,6 +15,7 @@
             min="8"
             required
             :error-messages="errors"
+            @keydown.enter="submit"
           />
         </validation-provider>
       </v-col>
@@ -36,6 +37,7 @@
             min="8"
             required
             :error-messages="errors"
+            @keydown.enter="submit"
           />
         </validation-provider>
       </v-col>
@@ -56,6 +58,7 @@
             min="8"
             required
             :error-messages="errors"
+            @keydown.enter="submit"
           />
         </validation-provider>
       </v-col>
@@ -69,6 +72,14 @@ export default {
     formValue: {
       type: Object,
       default: () => ({})
+    }
+  },
+  methods: {
+    submit(event) {
+      // 日本語入力時のEnterキーの反応を防ぐ
+      if (event.keyCode && event.keyCode !== 13) return
+
+      this.$emit("submit")
     }
   }
 }

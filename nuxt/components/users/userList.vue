@@ -69,7 +69,11 @@
         persistent
       >
         <template v-slot:content>
-          <c-user-form :form-value.sync="createFormValue" form-type="create" />
+          <c-user-form
+            :form-value.sync="createFormValue"
+            form-type="create"
+            @submit="createSubmit"
+          />
         </template>
 
         <template v-slot:actions>
@@ -98,6 +102,7 @@
             :form-value.sync="editFormValue"
             form-type="edit"
             :myuser.sync="myuser"
+            @submit="editSubmit"
           />
         </template>
 

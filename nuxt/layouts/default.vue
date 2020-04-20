@@ -130,6 +130,7 @@
             :form-value.sync="editFormValue"
             form-type="edit"
             myuser
+            @submit="editSubmit"
           />
         </template>
 
@@ -155,7 +156,10 @@
         persistent
       >
         <template v-slot:content>
-          <c-password-change-form :form-value.sync="passwordChangeFormValue" />
+          <c-password-change-form
+            :form-value.sync="passwordChangeFormValue"
+            @submit="passwordChangeSubmit"
+          />
         </template>
 
         <template v-slot:actions>

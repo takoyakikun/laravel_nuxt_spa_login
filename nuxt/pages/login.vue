@@ -7,10 +7,7 @@
             <v-toolbar-title>Login form</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <c-login-form
-              :form-value.sync="loginForm"
-              @submit="submit($event)"
-            />
+            <c-login-form :form-value.sync="loginForm" @submit="submit" />
           </v-card-text>
           <v-card-actions>
             <v-btn :disabled="invalid" color="primary" @click="submit">
@@ -55,10 +52,7 @@ export default {
   methods: {
     ...mapActions("snackbar", ["openSnackbar"]),
 
-    async submit(event) {
-      // 日本語入力時のEnterキーの反応を防ぐ
-      if (event.keyCode && event.keyCode !== 13) return
-
+    async submit() {
       // ログイン処理
       await this.$refs.loginForm.validate().then(result => {
         if (result) {

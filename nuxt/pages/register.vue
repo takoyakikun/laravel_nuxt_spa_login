@@ -11,6 +11,7 @@
               :form-value.sync="registerFormValue"
               form-type="create"
               myuser
+              @submit="submit"
             />
           </v-card-text>
           <v-card-actions>

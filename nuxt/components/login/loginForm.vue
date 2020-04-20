@@ -39,6 +39,7 @@
       v-model="formValue.remember"
       color="primary"
       label="Remember me"
+      @keydown.enter="submit"
     />
   </v-form>
 </template>
@@ -53,7 +54,10 @@ export default {
   },
   methods: {
     submit(event) {
-      this.$emit("submit", event)
+      // 日本語入力時のEnterキーの反応を防ぐ
+      if (event.keyCode && event.keyCode !== 13) return
+
+      this.$emit("submit")
     }
   }
 }
