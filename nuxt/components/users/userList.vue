@@ -234,9 +234,6 @@ export default {
       return this.user.id === this.editId
     }
   },
-  mounted() {
-    this.$store.dispatch("auth/checkAuth", "system-only")
-  },
   methods: {
     ...mapActions("users", ["createData", "editData", "deleteData"]),
     ...mapActions("snackbar", ["openSnackbar"]),

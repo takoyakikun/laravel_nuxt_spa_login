@@ -222,8 +222,8 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$store.dispatch("auth/checkAuth", "admin-higher")
+  async created() {
+    await this.$store.dispatch("auth/checkAuth", "admin-higher")
   },
   methods: {
     ...mapActions("snackbar", ["openSnackbar"]),
