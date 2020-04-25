@@ -78,18 +78,29 @@ export const actions = {
 
   // アクセス権限をチェック
   async checkAuth({ commit, state, getters }, category) {
-    if (state.user && !getters.getPermissionExistence(category)) {
-      await this.$axios
-        .get("/api/permission/" + category)
-        .then(res => {
-          return res.data[0]
-        })
-        .catch(err => {
-          return false
-        })
-        .then(result => {
-          commit("setPermission", { category: category, permission: result })
-        })
+    let categories = []
+    if (Array.isArray(category)) {
+      categories = category
+    } else {
+      categories = [category]
+    }
+    for (let value of categories) {
+      if (state.user && !getters.getPermissionExistence(value)) {
+        await this.$axios
+          .get("/api/permission/" + value)
+          .then(res => {
+            return res.data[0]
+          })
+          .catch(err => {
+            return false
+          })
+          .then(result => {
+            commit("setPermission", {
+              category: value,
+              permission: result
+            })
+          })
+      }
     }
   }
 }

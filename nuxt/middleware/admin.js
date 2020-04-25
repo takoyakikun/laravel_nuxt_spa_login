@@ -1,8 +1,8 @@
-export default function({ store, redirect }) {
+export default async function({ store, redirect }) {
   if (!store.state.auth.user) {
     redirect("/login")
   }
-  store
+  await store
     .dispatch("auth/checkAuth", "admin-higher")
     .then(result => {
       if (!store.getters["auth/getPermission"]("admin-higher")) {
