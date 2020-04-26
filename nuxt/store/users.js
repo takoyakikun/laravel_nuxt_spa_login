@@ -50,7 +50,7 @@ export const actions = {
         .patch("/api/myuser/update", formValue)
         .then(res => {
           // 管理者権限以上は全ユーザーデータを再取得
-          if (rootGetters["auth/getPermission"]("admin-higher")) {
+          if (rootGetters["auth/permission"]("admin-higher")) {
             dispatch("getList")
           }
           return res

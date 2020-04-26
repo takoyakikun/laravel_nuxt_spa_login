@@ -129,12 +129,12 @@ export default {
       config: "data"
     }),
     ...mapGetters({
-      getPermission: "auth/getPermission"
+      permission: "auth/permission"
     }),
 
     // 権限ごとに選択できる権限を変える
     role() {
-      if (this.getPermission("system-only")) {
+      if (this.permission("system-only")) {
         return this.config.role
       } else {
         return this.config.role.filter(item => item.value > 1)

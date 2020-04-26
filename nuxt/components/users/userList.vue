@@ -182,24 +182,25 @@ export default {
     }
   },
   computed: {
-    ...mapState("auth", ["user"]),
     ...mapState("config", { config: "data" }),
     ...mapState("users", {
       userList: "list"
     }),
     ...mapGetters({
       getConfigText: "config/getConfigText",
-      getPermission: "auth/getPermission"
+      user: "auth/user",
+      userExists: "auth/userExists",
+      permission: "auth/permission"
     }),
 
     // 編集不可のユーザー
     editDisabled() {
       return item => {
         let result = true
-        if (this.getPermission("system-only")) {
+        if (this.permission("system-only")) {
           // 開発者権限はすべて編集可能
           result = false
-        } else if (this.getPermission("admin-higher")) {
+        } else if (this.permission("admin-higher")) {
           // 管理者権限は開発者権限以外編集可能
           if (item.role > 1) {
             result = false
@@ -216,10 +217,10 @@ export default {
         if (this.user && this.user.id === item.id) {
           // 自ユーザーは削除不可
           result = true
-        } else if (this.getPermission("system-only")) {
+        } else if (this.permission("system-only")) {
           // 開発者権限はすべて編集可能
           result = false
-        } else if (this.getPermission("admin-higher")) {
+        } else if (this.permission("admin-higher")) {
           if (item.role > 1) {
             // 管理者権限は開発者権限以外編集可能
             result = false
@@ -244,26 +245,23 @@ export default {
     },
     // データを追加
     async createSubmit() {
-      await this.$refs.createForm.validate().then(result => {
+      await this.$refs.createForm.validate().then(async result => {
         if (result) {
-          this.createData(this.createFormValue)
-            .then(res => {
+          await this.createData(this.createFormValue)
+            .then(() => {
               this.openSnackbar({
                 text: "ユーザーデータを追加しました。",
                 color: "success"
               })
-              return res
+              this.$refs.createDialog.close()
+              this.createFormValue = {}
+              this.$refs.createForm.reset()
             })
-            .catch(e => {
+            .catch(() => {
               this.openSnackbar({
                 text: "ユーザーデータの追加に失敗しました。",
                 color: "error"
               })
-            })
-            .then(res => {
-              this.$refs.createDialog.close()
-              this.createFormValue = {}
-              this.$refs.createForm.reset()
             })
         }
       })
@@ -276,34 +274,31 @@ export default {
     },
     // データを更新
     async editSubmit() {
-      await this.$refs.editForm.validate().then(result => {
+      await this.$refs.editForm.validate().then(async result => {
         if (result) {
-          let id = null
+          const option = {
+            formValue: this.editFormValue
+          }
           // 自ユーザー以外はidを設定
           if (!this.myuser) {
-            id = this.editId
+            option.id = this.editId
           }
-          this.editData({
-            formValue: this.editFormValue,
-            id: id
-          })
-            .then(res => {
+
+          await this.editData(option)
+            .then(() => {
               this.openSnackbar({
                 text: "ユーザーデータを更新しました。",
                 color: "success"
               })
-              return res
+              this.$refs.editDialog.close()
+              this.$refs.editForm.reset()
+              this.$store.dispatch("auth/setUser")
             })
-            .catch(e => {
+            .catch(() => {
               this.openSnackbar({
                 text: "ユーザーデータの更新に失敗しました。",
                 color: "error"
               })
-            })
-            .then(res => {
-              this.$refs.editDialog.close()
-              this.$refs.editForm.reset()
-              this.$store.dispatch("auth/nuxtClientInit")
             })
         }
       })
@@ -315,22 +310,19 @@ export default {
     },
     // データを削除
     async deleteSubmit() {
-      this.deleteData(this.deleteId)
-        .then(res => {
+      await this.deleteData(this.deleteId)
+        .then(() => {
           this.openSnackbar({
             text: "ユーザーデータを削除しました。",
             color: "success"
           })
-          return res
+          this.$refs.deleteDialog.close()
         })
-        .catch(e => {
+        .catch(() => {
           this.openSnackbar({
             text: "ユーザーデータの削除に失敗しました。",
             color: "error"
           })
-        })
-        .then(res => {
-          this.$refs.deleteDialog.close()
         })
     }
   }

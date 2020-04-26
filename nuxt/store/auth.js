@@ -4,18 +4,27 @@ export const state = () => ({
 })
 
 export const getters = {
+  // ユーザーデータを取得
+  user: (state, getters) => {
+    if (getters.userExists) {
+      return state.user
+    } else {
+      return false
+    }
+  },
+  // ユーザーデータが存在しているか
+  userExists: state => state.user,
+
   // アクセス許可を返す
-  getPermission: (state, getters) => category => {
-    if (getters.getPermissionExistence(category)) {
+  permission: (state, getters) => category => {
+    if (getters.permissionExists(category)) {
       return state.permission[category]
     } else {
       return false
     }
   },
   // アクセスデータが存在しているか
-  getPermissionExistence: state => category => {
-    return category in state.permission
-  }
+  permissionExists: state => category => category in state.permission
 }
 
 export const mutations = {
@@ -44,8 +53,8 @@ export const actions = {
         commit("setUser", res.data)
         return res
       })
-      .catch(err => {
-        return err.response
+      .catch(e => {
+        return e.response
       })
   },
 
@@ -58,21 +67,21 @@ export const actions = {
         commit("resetPermission")
         return res
       })
-      .catch(err => {
-        return err.response
+      .catch(e => {
+        return e.response
       })
   },
 
-  // リロード時にユーザーデータを取得
-  async nuxtClientInit({ commit }) {
+  // ユーザーデータを取得してセット
+  async setUser({ commit }) {
     return await this.$axios
       .get("/api/user")
       .then(res => {
         commit("setUser", res.data)
         return res
       })
-      .catch(err => {
-        return err.response
+      .catch(e => {
+        return e.response
       })
   },
 
@@ -85,13 +94,14 @@ export const actions = {
       categories = [category]
     }
     for (let value of categories) {
-      if (state.user && !getters.getPermissionExistence(value)) {
+      if (state.user && !getters.permissionExists(value)) {
         await this.$axios
           .get("/api/permission/" + value)
           .then(res => {
+            // 権限がある場合は true ない場合は false
             return res.data[0]
           })
-          .catch(err => {
+          .catch(() => {
             return false
           })
           .then(result => {

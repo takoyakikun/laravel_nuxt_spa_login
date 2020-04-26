@@ -14,7 +14,7 @@
         </v-list-item>
 
         <!-- 認証済ページ -->
-        <v-list-item v-if="$store.state.auth.user" link to="auth">
+        <v-list-item v-if="userExists" link to="auth">
           <v-list-item-action>
             <v-icon>mdi-lock</v-icon>
           </v-list-item-action>
@@ -24,7 +24,7 @@
         </v-list-item>
 
         <!-- ユーザー管理 -->
-        <v-list-item v-if="getPermission('admin-higher')" link to="users">
+        <v-list-item v-if="permission('admin-higher')" link to="users">
           <v-list-item-action>
             <v-icon>mdi-account-group</v-icon>
           </v-list-item-action>
@@ -43,65 +43,71 @@
       <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer />
 
-      <!-- マイユーザー管理 -->
-      <v-menu v-if="user" offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn class="mx-1" outlined rounded v-on="on">
-            <v-icon left>
-              mdi-account-circle
-            </v-icon>
-            {{ user.name }}
-            <v-icon right>
-              mdi-menu-down
-            </v-icon>
-          </v-btn>
-        </template>
-        <v-list>
-          <!-- マイユーザー編集 -->
-          <v-list-item @click="openEditDialog">
-            <v-list-item-title>
+      <!-- ログイン済ユーザーメニュー -->
+      <template v-if="userExists">
+        <!-- マイユーザー管理 -->
+        <v-menu v-if="userExists" offset-y>
+          <template v-slot:activator="{ on }">
+            <v-btn class="mx-1" outlined rounded v-on="on">
               <v-icon left>
-                mdi-account-edit
+                mdi-account-circle
               </v-icon>
-              編集
-            </v-list-item-title>
-          </v-list-item>
-
-          <!-- パスワード変更 -->
-          <v-list-item @click="openPasswordChangeDialog">
-            <v-list-item-title>
-              <v-icon left>
-                mdi-lock
+              {{ user.name }}
+              <v-icon right>
+                mdi-menu-down
               </v-icon>
-              パスワード変更
-            </v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+            </v-btn>
+          </template>
+          <v-list>
+            <!-- マイユーザー編集 -->
+            <v-list-item @click="openEditDialog">
+              <v-list-item-title>
+                <v-icon left>
+                  mdi-account-edit
+                </v-icon>
+                編集
+              </v-list-item-title>
+            </v-list-item>
 
-      <!-- 新規ユーザー作成 -->
-      <v-btn v-if="!user" class="mx-1" outlined to="register">
-        <v-icon left>
-          mdi-account-plus
-        </v-icon>
-        新規作成
-      </v-btn>
+            <!-- パスワード変更 -->
+            <v-list-item @click="openPasswordChangeDialog">
+              <v-list-item-title>
+                <v-icon left>
+                  mdi-lock
+                </v-icon>
+                パスワード変更
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
 
-      <!-- ログアウト -->
-      <v-btn v-if="user" class="mx-1" outlined @click="logout">
-        <v-icon left>
-          mdi-logout-variant
-        </v-icon>
-        Logout
-      </v-btn>
+        <!-- ログアウト -->
+        <v-btn class="mx-1" outlined @click="logout">
+          <v-icon left>
+            mdi-logout-variant
+          </v-icon>
+          Logout
+        </v-btn>
+      </template>
 
-      <!-- ログイン -->
-      <v-btn v-if="!user" class="mx-1" outlined to="login">
-        <v-icon left>
-          mdi-login-variant
-        </v-icon>
-        Login
-      </v-btn>
+      <!-- 未ログインメニュー -->
+      <template v-if="!userExists">
+        <!-- 新規ユーザー作成 -->
+        <v-btn class="mx-1" outlined to="register">
+          <v-icon left>
+            mdi-account-plus
+          </v-icon>
+          新規作成
+        </v-btn>
+
+        <!-- ログイン -->
+        <v-btn class="mx-1" outlined to="login">
+          <v-icon left>
+            mdi-login-variant
+          </v-icon>
+          Login
+        </v-btn>
+      </template>
     </v-app-bar>
 
     <!-- メインコンテンツ -->
@@ -205,11 +211,11 @@ export default {
     passwordChangeFormValue: {}
   }),
   computed: {
-    ...mapState("auth", {
-      user: "user"
-    }),
     ...mapGetters({
-      getPermission: "auth/getPermission"
+      user: "auth/user",
+      userExists: "auth/userExists",
+      permission: "auth/permission",
+      permissionExists: "auth/permissionExists"
     }),
 
     // snackbarの状態をstoreと同期させる
@@ -243,12 +249,12 @@ export default {
     },
     // データを更新
     async editSubmit() {
-      await this.$refs.editForm.validate().then(result => {
+      await this.$refs.editForm.validate().then(async result => {
         if (result) {
-          this.editData({
+          await this.editData({
             formValue: this.editFormValue
           })
-            .then(res => {
+            .then(() => {
               this.openSnackbar({
                 text: "ユーザーデータを更新しました。",
                 color: "success"
@@ -257,7 +263,7 @@ export default {
               this.$refs.editForm.reset()
               this.$store.dispatch("auth/nuxtClientInit")
             })
-            .catch(e => {
+            .catch(() => {
               this.openSnackbar({
                 text: "ユーザーデータの更新に失敗しました。",
                 color: "error"
@@ -274,10 +280,10 @@ export default {
     },
     // パスワードを変更
     async passwordChangeSubmit() {
-      await this.$refs.passwordChangeForm.validate().then(result => {
+      await this.$refs.passwordChangeForm.validate().then(async result => {
         if (result) {
-          this.passwordChange(this.passwordChangeFormValue)
-            .then(res => {
+          await this.passwordChange(this.passwordChangeFormValue)
+            .then(() => {
               this.openSnackbar({
                 text: "パスワードを変更しました。",
                 color: "success"
