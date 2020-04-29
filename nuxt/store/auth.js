@@ -47,8 +47,16 @@ export const mutations = {
 export const actions = {
   // ログイン
   async login({ commit }, { email, password, remember }) {
+    const loginData = {
+      email: email,
+      password: password
+    }
+    // remember me にチェックが入っている場合は remember オプションを追加
+    if (remember) {
+      loginData.remember = remember
+    }
     return await this.$axios
-      .post("/api/login", { email, password, remember })
+      .post("/api/login", loginData)
       .then(res => {
         commit("setUser", res.data)
         return res
