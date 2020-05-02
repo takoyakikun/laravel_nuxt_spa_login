@@ -75,7 +75,7 @@ export default {
             .catch(e => {
               this.openSnackbar({
                 text: "ユーザーデータの追加に失敗しました。",
-                color: "error"
+                options: { color: "error" }
               })
             })
         }

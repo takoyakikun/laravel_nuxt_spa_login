@@ -185,20 +185,20 @@
     </validation-observer>
 
     <!-- snackbar -->
-    <v-snackbar v-model="snackbar.snackbar" :color="snackbar.color">
-      {{ snackbar.text }}
-    </v-snackbar>
+    <Snackbar />
   </v-app>
 </template>
 
 <script>
 import { mapState, mapGetters, mapActions } from "vuex"
+import Snackbar from "~/components/snackbar/snackbar"
 import CMyDialog from "~/components/dialog/myDialog"
 import CUserForm from "~/components/users/userForm"
 import CPasswordChangeForm from "~/components/users/passwordChangeForm"
 
 export default {
   components: {
+    Snackbar,
     CMyDialog,
     CUserForm,
     CPasswordChangeForm
@@ -216,17 +216,7 @@ export default {
       userExists: "auth/userExists",
       permission: "auth/permission",
       permissionExists: "auth/permissionExists"
-    }),
-
-    // snackbarの状態をstoreと同期させる
-    snackbar: {
-      get() {
-        return this.$store.state.snackbar
-      },
-      set(val) {
-        this.$store.commit("snackbar/setSnackbar", val)
-      }
-    }
+    })
   },
   async created() {
     await this.$store.dispatch("auth/checkAuth", "admin-higher")

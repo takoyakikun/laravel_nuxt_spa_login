@@ -70,7 +70,7 @@ export default {
                 this.$refs.loginForm.reset()
                 this.openSnackbar({
                   text: "認証に失敗しました。",
-                  color: "error"
+                  options: { color: "error" }
                 })
               }
             })

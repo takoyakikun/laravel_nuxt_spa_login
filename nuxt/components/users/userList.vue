@@ -251,7 +251,7 @@ export default {
             .then(() => {
               this.openSnackbar({
                 text: "ユーザーデータを追加しました。",
-                color: "success"
+                options: { color: "success" }
               })
               this.$refs.createDialog.close()
               this.createFormValue = {}
@@ -260,7 +260,7 @@ export default {
             .catch(() => {
               this.openSnackbar({
                 text: "ユーザーデータの追加に失敗しました。",
-                color: "error"
+                options: { color: "error" }
               })
             })
         }
@@ -288,7 +288,7 @@ export default {
             .then(() => {
               this.openSnackbar({
                 text: "ユーザーデータを更新しました。",
-                color: "success"
+                options: { color: "success" }
               })
               this.$refs.editDialog.close()
               this.$refs.editForm.reset()
@@ -297,7 +297,7 @@ export default {
             .catch(() => {
               this.openSnackbar({
                 text: "ユーザーデータの更新に失敗しました。",
-                color: "error"
+                options: { color: "error" }
               })
             })
         }
@@ -314,14 +314,14 @@ export default {
         .then(() => {
           this.openSnackbar({
             text: "ユーザーデータを削除しました。",
-            color: "success"
+            options: { color: "success" }
           })
           this.$refs.deleteDialog.close()
         })
         .catch(() => {
           this.openSnackbar({
             text: "ユーザーデータの削除に失敗しました。",
-            color: "error"
+            options: { color: "error" }
           })
         })
     }

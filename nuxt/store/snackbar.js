@@ -1,21 +1,39 @@
 export const state = () => ({
-  snackbar: false,
-  color: "",
-  text: ""
+  value: false,
+  text: "",
+  options: {}
 })
 
+export const getters = {
+  value: state => state.value,
+  text: state => state.text,
+  options: state => state.options
+}
+
 export const mutations = {
-  // ダイアログの表示/非表示をセット
-  setSnackbar(state, snackbar) {
-    state.snackbar = true
-    state.color = snackbar.color
+  // snackbarの表示をセット
+  openSnackbar(state, snackbar) {
+    if (snackbar.options) {
+      state.options = snackbar.options
+    } else {
+      state.options = {}
+    }
+    state.value = true
     state.text = snackbar.text
+  },
+  // snackbarの非表示をセット
+  closeSnackbar(state) {
+    state.value = false
   }
 }
 
 export const actions = {
-  // ダイアログを開く
+  // snackbarを開く
   openSnackbar({ commit }, snackbar) {
-    commit("setSnackbar", snackbar)
+    commit("openSnackbar", snackbar)
+  },
+  // snackbarを閉じる
+  closeSnackbar({ commit }) {
+    commit("closeSnackbar")
   }
 }
