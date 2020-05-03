@@ -7,7 +7,7 @@
             <v-toolbar-title>Login form</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <c-login-form :form-value.sync="loginForm" @submit="submit" />
+            <LoginForm :form-value.sync="loginForm" @submit="submit" />
           </v-card-text>
           <v-card-actions>
             <v-btn :disabled="invalid" color="primary" @click="submit">
@@ -32,13 +32,13 @@
 
 <script>
 import { mapActions } from "vuex"
-import CLoginForm from "~/components/login/loginForm"
+import LoginForm from "~/components/login/loginForm"
 
 export default {
   middleware: "guest",
   layout: "login",
   components: {
-    CLoginForm
+    LoginForm
   },
   data() {
     return {

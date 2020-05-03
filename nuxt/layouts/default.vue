@@ -124,7 +124,7 @@
 
     <!-- 編集ダイアログ -->
     <validation-observer ref="editForm" v-slot="{ invalid }">
-      <c-my-dialog
+      <MyDialog
         ref="editDialog"
         :open.sync="editDialog"
         title="ユーザー編集"
@@ -132,7 +132,7 @@
         persistent
       >
         <template v-slot:content>
-          <c-user-form
+          <UserForm
             :form-value.sync="editFormValue"
             form-type="edit"
             myuser
@@ -149,12 +149,12 @@
           </v-btn>
           <v-spacer />
         </template>
-      </c-my-dialog>
+      </MyDialog>
     </validation-observer>
 
     <!-- パスワード変更ダイアログ -->
     <validation-observer ref="passwordChangeForm" v-slot="{ invalid }">
-      <c-my-dialog
+      <MyDialog
         ref="passwordChangeDialog"
         :open.sync="passwordChangeDialog"
         title="パスワード変更"
@@ -162,7 +162,7 @@
         persistent
       >
         <template v-slot:content>
-          <c-password-change-form
+          <PasswordChangeForm
             :form-value.sync="passwordChangeFormValue"
             @submit="passwordChangeSubmit"
           />
@@ -181,7 +181,7 @@
           </v-btn>
           <v-spacer />
         </template>
-      </c-my-dialog>
+      </MyDialog>
     </validation-observer>
 
     <!-- snackbar -->
@@ -192,16 +192,16 @@
 <script>
 import { mapState, mapGetters, mapActions } from "vuex"
 import Snackbar from "~/components/snackbar/snackbar"
-import CMyDialog from "~/components/dialog/myDialog"
-import CUserForm from "~/components/users/userForm"
-import CPasswordChangeForm from "~/components/users/passwordChangeForm"
+import MyDialog from "~/components/dialog/myDialog"
+import UserForm from "~/components/users/userForm"
+import PasswordChangeForm from "~/components/users/passwordChangeForm"
 
 export default {
   components: {
     Snackbar,
-    CMyDialog,
-    CUserForm,
-    CPasswordChangeForm
+    MyDialog,
+    UserForm,
+    PasswordChangeForm
   },
   data: () => ({
     drawer: false,

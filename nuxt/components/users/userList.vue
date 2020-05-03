@@ -61,7 +61,7 @@
 
     <!-- 新規追加ダイアログ -->
     <validation-observer ref="createForm" v-slot="{ invalid }">
-      <c-my-dialog
+      <MyDialog
         ref="createDialog"
         :open.sync="createDialog"
         title="新規ユーザー追加"
@@ -69,7 +69,7 @@
         persistent
       >
         <template v-slot:content>
-          <c-user-form
+          <UserForm
             :form-value.sync="createFormValue"
             form-type="create"
             @submit="createSubmit"
@@ -85,12 +85,12 @@
           </v-btn>
           <v-spacer />
         </template>
-      </c-my-dialog>
+      </MyDialog>
     </validation-observer>
 
     <!-- 編集ダイアログ -->
     <validation-observer ref="editForm" v-slot="{ invalid }">
-      <c-my-dialog
+      <MyDialog
         ref="editDialog"
         :open.sync="editDialog"
         title="ユーザー編集"
@@ -98,7 +98,7 @@
         persistent
       >
         <template v-slot:content>
-          <c-user-form
+          <UserForm
             :form-value.sync="editFormValue"
             form-type="edit"
             :myuser.sync="myuser"
@@ -115,11 +115,11 @@
           </v-btn>
           <v-spacer />
         </template>
-      </c-my-dialog>
+      </MyDialog>
     </validation-observer>
 
     <!-- 削除ダイアログ -->
-    <c-my-dialog
+    <MyDialog
       ref="deleteDialog"
       :open.sync="deleteDialog"
       title="ユーザー削除"
@@ -138,19 +138,19 @@
         </v-btn>
         <v-spacer />
       </template>
-    </c-my-dialog>
+    </MyDialog>
   </v-container>
 </template>
 
 <script>
 import { mapState, mapGetters, mapActions } from "vuex"
-import CMyDialog from "~/components/dialog/myDialog"
-import CUserForm from "~/components/users/userForm"
+import MyDialog from "~/components/dialog/myDialog"
+import UserForm from "~/components/users/userForm"
 
 export default {
   components: {
-    CMyDialog,
-    CUserForm
+    MyDialog,
+    UserForm
   },
   data() {
     return {

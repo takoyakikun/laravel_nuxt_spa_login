@@ -2,19 +2,19 @@
   <v-row align="center" justify="center">
     <v-col>
       <!-- ログインユーザー一覧 -->
-      <c-user-list />
+      <UserList />
     </v-col>
   </v-row>
 </template>
 
 <script>
-import CUserList from "~/components/users/userList"
+import UserList from "~/components/users/userList"
 
 export default {
   middleware: "admin",
   layout: "default",
   components: {
-    CUserList
+    UserList
   },
   async created() {
     await this.$store.dispatch("auth/checkAuth", "system-only")

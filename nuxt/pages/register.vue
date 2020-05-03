@@ -7,7 +7,7 @@
             <v-toolbar-title>新規ユーザー作成</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <c-user-form
+            <UserForm
               :form-value.sync="registerFormValue"
               form-type="create"
               myuser
@@ -37,13 +37,13 @@
 
 <script>
 import { mapActions } from "vuex"
-import CUserForm from "~/components/users/userForm"
+import UserForm from "~/components/users/userForm"
 
 export default {
   middleware: "guest",
   layout: "login",
   components: {
-    CUserForm
+    UserForm
   },
   data() {
     return {
