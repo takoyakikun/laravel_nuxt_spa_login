@@ -184,13 +184,17 @@
       </MyDialog>
     </validation-observer>
 
+    <!-- トップスクロールボタン -->
+    <TopScroll />
+
     <!-- snackbar -->
     <Snackbar />
   </v-app>
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from "vuex"
+import { mapGetters, mapActions } from "vuex"
+import TopScroll from "~/components/topScroll/topScroll"
 import Snackbar from "~/components/snackbar/snackbar"
 import MyDialog from "~/components/dialog/myDialog"
 import UserForm from "~/components/users/userForm"
@@ -198,6 +202,7 @@ import PasswordChangeForm from "~/components/users/passwordChangeForm"
 
 export default {
   components: {
+    TopScroll,
     Snackbar,
     MyDialog,
     UserForm,
