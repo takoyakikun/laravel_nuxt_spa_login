@@ -7,7 +7,7 @@
             <v-toolbar-title>Login form</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <LoginForm :form-value.sync="loginForm" @submit="submit" />
+            <LoginForm v-model="loginForm" @submit="submit" />
           </v-card-text>
           <v-card-actions>
             <v-btn :disabled="invalid" color="primary" @click="submit">

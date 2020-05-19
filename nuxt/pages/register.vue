@@ -8,7 +8,7 @@
           </v-toolbar>
           <v-card-text>
             <UserForm
-              :form-value.sync="registerFormValue"
+              v-model="registerFormValue"
               form-type="create"
               myuser
               @submit="submit"

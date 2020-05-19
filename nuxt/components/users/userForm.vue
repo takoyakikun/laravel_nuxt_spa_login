@@ -6,10 +6,10 @@
           v-slot="{ errors }"
           :rules="{ required, max: 255 }"
           name="ユーザー名"
-          mode="eager"
+          mode="lazy"
         >
           <v-text-field
-            v-model="formValue.name"
+            v-model="value.name"
             label="ユーザー名"
             max="255"
             required
@@ -26,10 +26,10 @@
           v-slot="{ errors }"
           :rules="{ required, email, max: 255 }"
           name="メールアドレス"
-          mode="eager"
+          mode="lazy"
         >
           <v-text-field
-            v-model="formValue.email"
+            v-model="value.email"
             label="メールアドレス"
             max="255"
             required
@@ -48,7 +48,7 @@
           :rules="{ required }"
           name="アクセス権限"
         >
-          <v-radio-group v-model="formValue.role" row :error-messages="errors">
+          <v-radio-group v-model="value.role" row :error-messages="errors">
             <v-radio
               v-for="item in role"
               :key="item.value"
@@ -69,10 +69,10 @@
           :rules="{ required, min: 8 }"
           name="パスワード"
           vid="password"
-          mode="eager"
+          mode="lazy"
         >
           <v-text-field
-            v-model="formValue.password"
+            v-model="value.password"
             type="password"
             label="パスワード"
             min="8"
@@ -90,10 +90,10 @@
           v-slot="{ errors }"
           :rules="{ required, min: 8, confirmed: 'password' }"
           name="パスワード(確認)"
-          mode="eager"
+          mode="lazy"
         >
           <v-text-field
-            v-model="formValue.password_confirmation"
+            v-model="value.password_confirmation"
             type="password"
             label="パスワード(確認)"
             min="8"
@@ -108,10 +108,10 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from "vuex"
+import { mapState, mapGetters } from "vuex"
 export default {
   props: {
-    formValue: {
+    value: {
       type: Object,
       default: () => ({})
     },

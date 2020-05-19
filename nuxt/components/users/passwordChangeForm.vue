@@ -6,10 +6,10 @@
           v-slot="{ errors }"
           :rules="{ required, min: 8 }"
           name="現在のパスワード"
-          mode="eager"
+          mode="lazy"
         >
           <v-text-field
-            v-model="formValue.current_password"
+            v-model="value.current_password"
             type="password"
             label="現在のパスワード"
             min="8"
@@ -28,10 +28,10 @@
           :rules="{ required, min: 8 }"
           name="変更後のパスワード"
           vid="password"
-          mode="eager"
+          mode="lazy"
         >
           <v-text-field
-            v-model="formValue.password"
+            v-model="value.password"
             type="password"
             label="変更後のパスワード"
             min="8"
@@ -49,10 +49,10 @@
           v-slot="{ errors }"
           :rules="{ required, min: 8, confirmed: 'password' }"
           name="変更後のパスワード(確認)"
-          mode="eager"
+          mode="lazy"
         >
           <v-text-field
-            v-model="formValue.password_confirmation"
+            v-model="value.password_confirmation"
             type="password"
             label="変更後のパスワード(確認)"
             min="8"
@@ -69,7 +69,7 @@
 <script>
 export default {
   props: {
-    formValue: {
+    value: {
       type: Object,
       default: () => ({})
     }

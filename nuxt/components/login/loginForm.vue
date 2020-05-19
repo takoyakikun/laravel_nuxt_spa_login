@@ -2,12 +2,12 @@
   <v-form>
     <validation-provider
       v-slot="{ errors }"
-      rules="required|max:255|email"
-      mode="eager"
+      :rules="{ required, max: 255, email }"
+      mode="lazy"
       name="Login"
     >
       <v-text-field
-        v-model="formValue.email"
+        v-model="value.email"
         label="Login"
         name="login"
         prepend-icon="mdi-account"
@@ -20,12 +20,13 @@
     <validation-provider
       v-slot="{ errors }"
       :rules="{ required }"
+      mode="lazy"
       name="Password"
       vid="password"
     >
       <v-text-field
         id="password"
-        v-model="formValue.password"
+        v-model="value.password"
         label="Password"
         name="password"
         prepend-icon="mdi-lock"
@@ -36,7 +37,7 @@
     </validation-provider>
 
     <v-checkbox
-      v-model="formValue.remember"
+      v-model="value.remember"
       color="primary"
       label="Remember me"
       @keydown.enter="submit"
@@ -47,7 +48,7 @@
 <script>
 export default {
   props: {
-    formValue: {
+    value: {
       type: Object,
       default: () => ({})
     }

@@ -133,7 +133,7 @@
       >
         <template v-slot:content>
           <UserForm
-            :form-value.sync="editFormValue"
+            v-model="editFormValue"
             form-type="edit"
             myuser
             @submit="editSubmit"
@@ -163,7 +163,7 @@
       >
         <template v-slot:content>
           <PasswordChangeForm
-            :form-value.sync="passwordChangeFormValue"
+            v-model="passwordChangeFormValue"
             @submit="passwordChangeSubmit"
           />
         </template>

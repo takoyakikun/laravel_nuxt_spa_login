@@ -70,7 +70,7 @@
       >
         <template v-slot:content>
           <UserForm
-            :form-value.sync="createFormValue"
+            v-model="createFormValue"
             form-type="create"
             @submit="createSubmit"
           />
@@ -99,7 +99,7 @@
       >
         <template v-slot:content>
           <UserForm
-            :form-value.sync="editFormValue"
+            v-model="editFormValue"
             form-type="edit"
             :myuser.sync="myuser"
             @submit="editSubmit"
