@@ -54,9 +54,9 @@ export default {
 
     async submit() {
       // ログイン処理
-      await this.$refs.loginForm.validate().then(result => {
+      await this.$refs.loginForm.validate().then(async result => {
         if (result) {
-          this.$store
+          await this.$store
             .dispatch("auth/login", {
               email: this.loginForm.email,
               password: this.loginForm.password,

@@ -248,22 +248,22 @@ export default {
         if (result) {
           await this.editData({
             formValue: this.editFormValue
-          })
-            .then(() => {
+          }).then(res => {
+            if (res.status === 200) {
               this.openSnackbar({
                 text: "ユーザーデータを更新しました。",
                 color: "success"
               })
               this.$refs.editDialog.close()
               this.$refs.editForm.reset()
-              this.$store.dispatch("auth/nuxtClientInit")
-            })
-            .catch(() => {
+              this.$store.dispatch("auth/setUser")
+            } else {
               this.openSnackbar({
                 text: "ユーザーデータの更新に失敗しました。",
                 color: "error"
               })
-            })
+            }
+          })
         }
       })
     },
@@ -277,25 +277,25 @@ export default {
     async passwordChangeSubmit() {
       await this.$refs.passwordChangeForm.validate().then(async result => {
         if (result) {
-          await this.passwordChange(this.passwordChangeFormValue)
-            .then(() => {
+          await this.passwordChange(this.passwordChangeFormValue).then(res => {
+            if (res.status === 200) {
               this.openSnackbar({
                 text: "パスワードを変更しました。",
                 color: "success"
               })
               this.$refs.passwordChangeDialog.close()
               this.$refs.passwordChangeForm.reset()
-            })
-            .catch(e => {
+            } else {
               let text = "パスワードの変更に失敗しました。"
-              if (e.response.data.error_message) {
-                text = e.response.data.error_message
+              if (res.data.error_message) {
+                text = res.data.error_message
               }
               this.openSnackbar({
                 text: text,
                 color: "error"
               })
-            })
+            }
+          })
         }
       })
     }

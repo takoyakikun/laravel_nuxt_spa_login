@@ -59,10 +59,10 @@ export default {
     ...mapActions("snackbar", ["openSnackbar"]),
 
     async submit(event) {
-      await this.$refs.registerForm.validate().then(result => {
+      await this.$refs.registerForm.validate().then(async result => {
         if (result) {
-          this.registerData(this.registerFormValue)
-            .then(res => {
+          await this.registerData(this.registerFormValue).then(res => {
+            if (res.status === 200) {
               this.$store
                 .dispatch("auth/login", {
                   email: this.registerFormValue.email,
@@ -71,13 +71,13 @@ export default {
                 .then(res => {
                   this.$router.push("/")
                 })
-            })
-            .catch(e => {
+            } else {
               this.openSnackbar({
                 text: "ユーザーデータの追加に失敗しました。",
                 options: { color: "error" }
               })
-            })
+            }
+          })
         }
       })
     }

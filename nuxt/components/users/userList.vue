@@ -247,8 +247,8 @@ export default {
     async createSubmit() {
       await this.$refs.createForm.validate().then(async result => {
         if (result) {
-          await this.createData(this.createFormValue)
-            .then(() => {
+          await this.createData(this.createFormValue).then(res => {
+            if (res.status === 200) {
               this.openSnackbar({
                 text: "ユーザーデータを追加しました。",
                 options: { color: "success" }
@@ -256,13 +256,13 @@ export default {
               this.$refs.createDialog.close()
               this.createFormValue = {}
               this.$refs.createForm.reset()
-            })
-            .catch(() => {
+            } else {
               this.openSnackbar({
                 text: "ユーザーデータの追加に失敗しました。",
                 options: { color: "error" }
               })
-            })
+            }
+          })
         }
       })
     },
@@ -284,22 +284,25 @@ export default {
             option.id = this.editId
           }
 
-          await this.editData(option)
-            .then(() => {
+          await this.editData(option).then(res => {
+            if (res.status === 200) {
               this.openSnackbar({
                 text: "ユーザーデータを更新しました。",
                 options: { color: "success" }
               })
               this.$refs.editDialog.close()
               this.$refs.editForm.reset()
-              this.$store.dispatch("auth/setUser")
-            })
-            .catch(() => {
+              // 自ユーザーはログインデータを更新
+              if (this.myuser) {
+                this.$store.dispatch("auth/setUser")
+              }
+            } else {
               this.openSnackbar({
                 text: "ユーザーデータの更新に失敗しました。",
                 options: { color: "error" }
               })
-            })
+            }
+          })
         }
       })
     },
@@ -310,20 +313,20 @@ export default {
     },
     // データを削除
     async deleteSubmit() {
-      await this.deleteData(this.deleteId)
-        .then(() => {
+      await this.deleteData(this.deleteId).then(res => {
+        if (res.status === 200) {
           this.openSnackbar({
             text: "ユーザーデータを削除しました。",
             options: { color: "success" }
           })
           this.$refs.deleteDialog.close()
-        })
-        .catch(() => {
+        } else {
           this.openSnackbar({
             text: "ユーザーデータの削除に失敗しました。",
             options: { color: "error" }
           })
-        })
+        }
+      })
     }
   }
 }
