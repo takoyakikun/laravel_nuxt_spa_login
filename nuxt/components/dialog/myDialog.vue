@@ -1,14 +1,8 @@
 <template>
   <!-- ダイアログ -->
-  <v-dialog
-    v-model="open"
-    :max-width="maxWidth"
-    :persistent="persistent"
-    :scrollable="scrollable"
-    @click:outside="outside"
-  >
+  <v-dialog v-model="dialog" v-bind="mergeOptions" @click:outside="outside">
     <v-card>
-      <v-app-bar :dark="dark" :color="color" class="headline">
+      <v-app-bar dark :color="color" class="headline">
         <slot :close="close" name="title">
           {{ title }}
           <v-spacer />
@@ -20,13 +14,13 @@
         </slot>
       </v-app-bar>
       <v-card-text class="mt-5">
-        <slot :close="close" name="content" />
+        <slot name="content" :color="color" :close="close" />
       </v-card-text>
       <v-card-actions>
-        <slot :close="close" name="actions">
+        <slot name="actions" :color="color" :close="close">
           <v-spacer />
         </slot>
-        <slot name="actionsClose">
+        <slot name="actionsClose" :color="color" :close="close">
           <v-btn @click="close">
             <v-icon left>
               mdi-close
@@ -42,45 +36,63 @@
 <script>
 export default {
   props: {
-    open: {
+    value: {
       type: Boolean,
       default: false
     },
-    maxWidth: {
-      type: Number,
-      default: 600
+    options: {
+      type: Object,
+      default: () => ({})
     },
-    persistent: {
-      type: Boolean,
-      default: false
-    },
-    scrollable: {
+    name: {
       type: String,
-      default: "scrollable"
-    },
-    color: {
-      type: String,
-      default: ""
-    },
-    dark: {
-      type: Boolean,
-      default: true
+      default: null
     },
     title: {
       type: String,
       default: ""
+    },
+    color: {
+      type: String,
+      default: "primary"
+    }
+  },
+  data() {
+    return {
+      defaultOptions: {
+        maxWidth: 600,
+        scrollable: "scrollable"
+      }
+    }
+  },
+  computed: {
+    // 入力されたオプションとデフォルトのオプションを組み合わせる
+    mergeOptions() {
+      return Object.assign(this.defaultOptions, this.options)
+    },
+    // name が指定されている場合はストアから、ない場合は value から状態を取得
+    dialog() {
+      if (this.name) {
+        return this.$store.getters["dialog/dialog"](this.name)
+      } else {
+        return this.value
+      }
     }
   },
   methods: {
     // ダイアログの外をクリック
     outside() {
-      if (this.persistent === false) {
+      if (!this.mergeOptions.persistent) {
         this.close()
       }
     },
     // ダイアログを閉じる
     close() {
-      this.$emit("update:open", false)
+      if (this.name) {
+        this.$store.dispatch("dialog/closeDialog", this.name)
+      } else {
+        this.$emit("input", false)
+      }
     }
   }
 }

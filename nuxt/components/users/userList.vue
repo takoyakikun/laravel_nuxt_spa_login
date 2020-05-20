@@ -63,12 +63,12 @@
     <validation-observer ref="createForm" v-slot="{ invalid }">
       <MyDialog
         ref="createDialog"
-        :open.sync="createDialog"
+        v-model="createDialog"
         title="新規ユーザー追加"
         color="info"
-        persistent
+        :options="{ persistent: true }"
       >
-        <template v-slot:content>
+        <template #content>
           <UserForm
             v-model="createFormValue"
             form-type="create"
@@ -76,8 +76,8 @@
           />
         </template>
 
-        <template v-slot:actions>
-          <v-btn :disabled="invalid" color="info" @click="createSubmit">
+        <template #actions="{ color }">
+          <v-btn :disabled="invalid" :color="color" @click="createSubmit">
             <v-icon left>
               mdi-account-plus
             </v-icon>
@@ -92,12 +92,12 @@
     <validation-observer ref="editForm" v-slot="{ invalid }">
       <MyDialog
         ref="editDialog"
-        :open.sync="editDialog"
+        v-model="editDialog"
         title="ユーザー編集"
         color="success"
-        persistent
+        :options="{ persistent: true }"
       >
-        <template v-slot:content>
+        <template #content>
           <UserForm
             v-model="editFormValue"
             form-type="edit"
@@ -106,8 +106,8 @@
           />
         </template>
 
-        <template v-slot:actions>
-          <v-btn :disabled="invalid" color="success" @click="editSubmit">
+        <template #actions="{ color }">
+          <v-btn :disabled="invalid" :color="color" @click="editSubmit">
             <v-icon left>
               mdi-account-edit
             </v-icon>
@@ -121,16 +121,16 @@
     <!-- 削除ダイアログ -->
     <MyDialog
       ref="deleteDialog"
-      :open.sync="deleteDialog"
+      v-model="deleteDialog"
       title="ユーザー削除"
       color="error"
     >
-      <template v-slot:content>
+      <template #content>
         ユーザーを削除しますか？
       </template>
 
-      <template v-slot:actions>
-        <v-btn color="error" @click="deleteSubmit">
+      <template #actions="{ color }">
+        <v-btn :color="color" @click="deleteSubmit">
           <v-icon left>
             mdi-delete
           </v-icon>

@@ -123,15 +123,15 @@
     </v-footer>
 
     <!-- 編集ダイアログ -->
-    <validation-observer ref="editForm" v-slot="{ invalid }">
+    <validation-observer ref="editFormValidate" v-slot="{ invalid }">
       <MyDialog
         ref="editDialog"
-        :open.sync="editDialog"
+        v-model="editDialog"
         title="ユーザー編集"
-        color="success"
-        persistent
+        color="primary"
+        :options="{ persistent: true }"
       >
-        <template v-slot:content>
+        <template #content>
           <UserForm
             v-model="editFormValue"
             form-type="edit"
@@ -140,8 +140,8 @@
           />
         </template>
 
-        <template v-slot:actions>
-          <v-btn :disabled="invalid" color="success" @click="editSubmit">
+        <template #actions="{ color }">
+          <v-btn :disabled="invalid" :color="color" @click="editSubmit">
             <v-icon left>
               mdi-account-edit
             </v-icon>
@@ -153,25 +153,25 @@
     </validation-observer>
 
     <!-- パスワード変更ダイアログ -->
-    <validation-observer ref="passwordChangeForm" v-slot="{ invalid }">
+    <validation-observer ref="passwordChangeFormValidate" v-slot="{ invalid }">
       <MyDialog
         ref="passwordChangeDialog"
-        :open.sync="passwordChangeDialog"
+        v-model="passwordChangeDialog"
         title="パスワード変更"
-        color="success"
-        persistent
+        color="primary"
+        :options="{ persistent: true }"
       >
-        <template v-slot:content>
+        <template #content>
           <PasswordChangeForm
             v-model="passwordChangeFormValue"
             @submit="passwordChangeSubmit"
           />
         </template>
 
-        <template v-slot:actions>
+        <template #actions="{ color }">
           <v-btn
             :disabled="invalid"
-            color="success"
+            :color="color"
             @click="passwordChangeSubmit"
           >
             <v-icon left>
