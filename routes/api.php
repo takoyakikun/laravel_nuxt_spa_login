@@ -25,7 +25,7 @@ Route::get('/user', function () {
     if (Gate::allows('user-higher')) {
         return Auth::user();
     }
-});
+})->name('user');
 
 // 全ユーザ
 Route::group(['middleware' => ['auth', 'can:user-higher']], function () {

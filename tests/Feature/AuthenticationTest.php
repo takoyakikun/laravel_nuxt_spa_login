@@ -61,4 +61,26 @@ class AuthenticationTest extends TestCase
         // ユーザーが認証されていないことを確認
         $this->assertGuest();
     }
+
+    /**
+     * ユーザー取得テスト
+     */
+    public function testUser(): void
+    {
+        // actingAsヘルパで現在認証済みのユーザーを指定する
+        $actingAs = $this->actingAs($this->user);
+
+        // ユーザー取得リクエストを送信
+        $response = $actingAs->json('GET', route('user'), [], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        // 正しいレスポンスが返り、ユーザ名が取得できることを確認
+        $response
+            ->assertStatus(200)
+            ->assertJson(['name' => $this->user->name]);
+
+        // 指定したユーザーが認証されていることを確認
+        $this->assertAuthenticatedAs($this->user);
+
+    }
+
 }
