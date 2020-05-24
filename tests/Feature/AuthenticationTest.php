@@ -18,8 +18,6 @@ class AuthenticationTest extends TestCase
     {
         parent::setUp();
 
-        $this->artisan('migrate');
-
         // テストユーザ作成
         $this->user = factory(User::class)->create();
     }
