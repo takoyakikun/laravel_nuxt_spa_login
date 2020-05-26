@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Gate;
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false, 'verify' => false]);
 
 // ユーザー追加
-Route::post('register', 'MyuserController@store');
+Route::post('register', 'MyuserController@store')->name('register');
 
 // ユーザーを取得
 Route::get('/user', function () {
@@ -36,10 +36,10 @@ Route::group(['middleware' => ['auth', 'can:user-higher']], function () {
     });
 
     // ユーザー編集
-    Route::patch('myuser/update', 'MyuserController@update');
+    Route::patch('myuser/update', 'MyuserController@update')->name('myuser.update');
 
     // パスワード変更
-    Route::patch('myuser/passwordChange', 'MyuserController@passwordChange');
+    Route::patch('myuser/passwordChange', 'MyuserController@passwordChange')->name('myuser.passwordChange');
 
 });
 
