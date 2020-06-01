@@ -53,12 +53,20 @@ class UsersController extends Controller
             $role = \Config::get('settings.roleLevel.user');
         }
 
-        $user = User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-            'role' => $role,
-        ]);
+        \DB::beginTransaction();
+        try {
+            $user = User::create([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+                'role' => $role,
+            ]);
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollback();
+            throw $e;
+        }
+
         return response($user);
     }
 
@@ -92,7 +100,16 @@ class UsersController extends Controller
         }
 
         $user = User::find($id);
-        $user->fill($updateData)->save();
+
+        \DB::beginTransaction();
+        try {
+            $user->fill($updateData)->save();
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollback();
+            throw $e;
+        }
+
         return response($user);
     }
 
@@ -104,7 +121,14 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        User::destroy($id);
+        \DB::beginTransaction();
+        try {
+            User::destroy($id);
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollback();
+            throw $e;
+        }
         return response([]);
     }
 }

@@ -29,12 +29,20 @@ class MyuserController extends Controller
     public function store(MyuserStoreRequest $request)
     {
         
-        $user = User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-            'role' => \Config::get('settings.roleLevel.user'),
-        ]);
+        \DB::beginTransaction();
+        try {
+            $user = User::create([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+                'role' => \Config::get('settings.roleLevel.user'),
+            ]);
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollback();
+            throw $e;
+        }
+
         return response($user);
 
     }
@@ -53,7 +61,16 @@ class MyuserController extends Controller
         ];
 
         $user = User::find(\Auth::user()->id);
-        $user->fill($updateData)->save();
+
+        \DB::beginTransaction();
+        try {
+            $user->fill($updateData)->save();
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollback();
+            throw $e;
+        }
+
         return response($user);
     }
 
@@ -75,7 +92,16 @@ class MyuserController extends Controller
         ];
 
         $user = User::find(\Auth::user()->id);
-        $user->fill($updateData)->save();
+
+        \DB::beginTransaction();
+        try {
+            $user->fill($updateData)->save();
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollback();
+            throw $e;
+        }
+
         return response($user);
     }
 
