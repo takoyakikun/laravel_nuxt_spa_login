@@ -27,6 +27,9 @@ Route::get('/user', function () {
     }
 })->name('user');
 
+// コンフィグを取得
+Route::get('/config', 'ConfigController@index')->name('config');
+
 // 全ユーザ
 Route::group(['middleware' => ['auth', 'can:user-higher']], function () {
 

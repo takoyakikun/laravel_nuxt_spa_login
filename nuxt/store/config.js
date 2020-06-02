@@ -1,11 +1,5 @@
 export const state = () => ({
-  data: {
-    role: [
-      { value: 1, text: "開発者" },
-      { value: 5, text: "管理者" },
-      { value: 10, text: "一般" }
-    ]
-  }
+  data: {}
 })
 
 export const getters = {
@@ -17,5 +11,25 @@ export const getters = {
     } else {
       return ""
     }
+  }
+}
+
+export const mutations = {
+  // コンフィグデータをセット
+  setConfig(state, config) {
+    state.data = { ...state.data, ...config }
+  }
+}
+
+export const actions = {
+  // APIサーバから取得したコンフィグデータをセットする
+  async setConfig({ commit }) {
+    return await this.$axios
+      .get("/api/config")
+      .then(res => {
+        commit("setConfig", res.data)
+        return res
+      })
+      .catch(e => e.response)
   }
 }

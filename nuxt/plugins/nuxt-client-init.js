@@ -1,3 +1,6 @@
 export default async context => {
-  return await context.store.dispatch("auth/setUser", context)
+  await Promise.all([
+    context.store.dispatch("auth/setUser", context),
+    context.store.dispatch("config/setConfig", context)
+  ])
 }
