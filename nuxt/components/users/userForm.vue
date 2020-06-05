@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex"
+import { mapGetters } from "vuex"
 export default {
   props: {
     value: {
@@ -125,10 +125,8 @@ export default {
     }
   },
   computed: {
-    ...mapState("config", {
-      config: "data"
-    }),
     ...mapGetters({
+      config: "config/config",
       permission: "auth/permission"
     }),
 

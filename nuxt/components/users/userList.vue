@@ -23,7 +23,7 @@
           class="elevation-1"
         >
           <template v-slot:item.role="{ value }">
-            {{ getConfigText("role", value) }}
+            {{ getConfigData("role", value) }}
           </template>
           <template v-slot:item.action="{ item }">
             <v-tooltip left color="success">
@@ -182,12 +182,12 @@ export default {
     }
   },
   computed: {
-    ...mapState("config", { config: "data" }),
     ...mapState("users", {
       userList: "list"
     }),
     ...mapGetters({
-      getConfigText: "config/getConfigText",
+      config: "config/config",
+      getConfigData: "config/getConfigData",
       user: "auth/user",
       userExists: "auth/userExists",
       permission: "auth/permission"

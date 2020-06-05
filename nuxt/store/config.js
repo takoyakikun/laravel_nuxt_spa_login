@@ -3,13 +3,24 @@ export const state = () => ({
 })
 
 export const getters = {
-  // コンフィグからテキストを取得
-  getConfigText: state => (name, value) => {
-    const data = state.data[name].find(item => item.value === value)
-    if (data) {
-      return data.text
+  // コンフィグ
+  config: state => state.data,
+
+  // コンフィグから中身のデータを取得
+  getConfigData: state => (name, search, getName = "text", searchName = "value") => {
+    const data = state.data[name].find(item => item[searchName] === search)
+    if (getName === "object") {
+      if (data) {
+        return data
+      } else {
+        return {}
+      }
     } else {
-      return ""
+      if (data && data[getName]) {
+        return data[getName]
+      } else {
+        return ""
+      }
     }
   }
 }
