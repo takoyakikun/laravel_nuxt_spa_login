@@ -2,7 +2,9 @@ export const state = () => ({
   list: []
 })
 
-export const getters = {}
+export const getters = {
+  list: state => state.list
+}
 
 export const mutations = {
   setList(state, list) {

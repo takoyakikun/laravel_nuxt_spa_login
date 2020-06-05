@@ -143,7 +143,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from "vuex"
+import { mapGetters, mapActions } from "vuex"
 import MyDialog from "~/components/dialog/myDialog"
 import UserForm from "~/components/users/userForm"
 
@@ -182,15 +182,13 @@ export default {
     }
   },
   computed: {
-    ...mapState("users", {
-      userList: "list"
-    }),
     ...mapGetters({
       config: "config/config",
       getConfigData: "config/getConfigData",
       user: "auth/user",
       userExists: "auth/userExists",
-      permission: "auth/permission"
+      permission: "auth/permission",
+      userList: "users/list"
     }),
 
     // 編集不可のユーザー
