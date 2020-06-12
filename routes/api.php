@@ -14,8 +14,11 @@ use Illuminate\Support\Facades\Gate;
 |
 */
 
-// ログイン・ログアウト
-Auth::routes(['register' => false, 'reset' => false, 'confirm' => false, 'verify' => false]);
+// ログイン
+Route::post('login', 'Auth\LoginController@login')->name('login');
+
+// ログアウト
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 // ユーザー追加
 Route::post('register', 'MyuserController@store')->name('register');
@@ -36,20 +39,29 @@ Route::group(['middleware' => ['auth', 'can:user-higher']], function () {
     // アクセス権限のチェック
     Route::get('permission/{category}', function ($category) {
         return response([Gate::allows($category)]);
+    })->name('permission');
+
+    // ユーザー認証メール再送信
+    Route::post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
+
+    // 認証済
+    Route::group(['middleware' => ['verified']], function () {
+        // ユーザー編集
+        Route::patch('myuser/update', 'MyuserController@update')->name('myuser.update');
+
+        // パスワード変更
+        Route::patch('myuser/passwordChange', 'MyuserController@passwordChange')->name('myuser.passwordChange');
     });
-
-    // ユーザー編集
-    Route::patch('myuser/update', 'MyuserController@update')->name('myuser.update');
-
-    // パスワード変更
-    Route::patch('myuser/passwordChange', 'MyuserController@passwordChange')->name('myuser.passwordChange');
 
 });
 
 // 管理者以上
 Route::group(['middleware' => ['auth', 'can:admin-higher']], function () {
-    // ログインユーザー
-    Route::resource('users', 'UsersController', ['only' => ['index', 'store', 'update', 'destroy']]);
+    // 認証済
+    Route::group(['middleware' => ['verified']], function () {
+        // ログインユーザー
+        Route::resource('users', 'UsersController', ['only' => ['index', 'store', 'update', 'destroy']]);
+    });
 
 });
 

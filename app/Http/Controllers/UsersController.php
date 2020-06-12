@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 // 追加フォームバリデーション
 use App\Http\Requests\UserStoreRequest;
@@ -61,6 +62,7 @@ class UsersController extends Controller
                 'password' => Hash::make($request->input('password')),
                 'role' => $role,
             ]);
+            event(new Registered($user));
             \DB::commit();
         } catch (\Exception $e) {
             \DB::rollback();

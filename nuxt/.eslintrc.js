@@ -25,6 +25,11 @@ module.exports = {
     'no-unused-vars': 'off',
     "no-irregular-whitespace": "off",
     "vue/max-attributes-per-line": "off",
+    "vue/html-self-closing": ["error", {
+      "html": {
+        "void": "always",
+      }
+    }],
     "prettier/prettier": ["error", { "semi": false }],
   }
 }

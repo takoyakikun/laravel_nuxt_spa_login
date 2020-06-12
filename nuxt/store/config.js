@@ -7,7 +7,12 @@ export const getters = {
   config: state => state.data,
 
   // コンフィグから中身のデータを取得
-  getConfigData: state => (name, search, getName = "text", searchName = "value") => {
+  getConfigData: state => (
+    name,
+    search,
+    getName = "text",
+    searchName = "value"
+  ) => {
     const data = state.data[name].find(item => item[searchName] === search)
     if (getName === "object") {
       if (data) {

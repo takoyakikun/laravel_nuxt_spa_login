@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 // 追加フォームバリデーション
 use App\Http\Requests\MyuserStoreRequest;
@@ -37,6 +38,7 @@ class MyuserController extends Controller
                 'password' => Hash::make($request->input('password')),
                 'role' => \Config::get('settings.roleLevel.user'),
             ]);
+            event(new Registered($user));
             \DB::commit();
         } catch (\Exception $e) {
             \DB::rollback();

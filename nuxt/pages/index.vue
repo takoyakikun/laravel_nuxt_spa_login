@@ -8,6 +8,7 @@
 
 <script>
 export default {
+  middleware: "verified",
   layout: "default"
 }
 </script>

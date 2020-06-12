@@ -25,11 +25,15 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        // メール認証済
+        Gate::define('verified', function ($user) {
+            return ($user->hasVerifiedEmail());
+        });
         // 開発者のみ許可
         Gate::define('system-only', function ($user) {
             return ($user->role === \Config::get('settings.roleLevel.system'));
         });
-        // 管理者以上（管理者＆システム管理者）に許可
+        // 管理者以上（管理者＆開発者）に許可
         Gate::define('admin-higher', function ($user) {
             return ($user->role > 0 && $user->role <= \Config::get('settings.roleLevel.admin'));
         });

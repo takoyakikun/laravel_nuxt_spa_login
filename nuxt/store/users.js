@@ -37,6 +37,12 @@ export const actions = {
       return res
     })
   },
+  // 認証メール再送信
+  async resendMail({ dispatch }, formValue) {
+    return await this.$axios.post("/api/email/resend", formValue).then(res => {
+      return res
+    })
+  },
   // データ更新
   async editData({ dispatch, rootGetters }, { formValue, id }) {
     // id がある場合は指定したユーザーを変更、ない場合は自分のユーザーを変更
