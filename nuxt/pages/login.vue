@@ -8,6 +8,9 @@
           </v-toolbar>
           <v-card-text>
             <LoginForm v-model="loginForm" @submit="submit" />
+            <nuxt-link to="passwordReset">
+              パスワードを忘れた方はこちら
+            </nuxt-link>
           </v-card-text>
           <v-card-actions>
             <v-btn :disabled="invalid" color="primary" @click="submit">

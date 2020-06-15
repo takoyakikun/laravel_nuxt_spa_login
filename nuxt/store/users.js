@@ -26,22 +26,31 @@ export const actions = {
   },
   // 新規作成ページから新規ユーザー作成
   async registerData({ dispatch }, formValue) {
-    return await this.$axios.post("/api/register", formValue).then(res => {
-      return res
-    })
+    return await this.$axios
+      .post("/api/register", formValue)
+      .then(res => {
+        return res
+      })
+      .catch(err => err.response)
   },
   // ユーザー管理から新規ユーザー作成
   async createData({ dispatch }, formValue) {
-    return await this.$axios.post("/api/users", formValue).then(res => {
-      dispatch("getList")
-      return res
-    })
+    return await this.$axios
+      .post("/api/users", formValue)
+      .then(res => {
+        dispatch("getList")
+        return res
+      })
+      .catch(err => err.response)
   },
   // 認証メール再送信
   async resendMail({ dispatch }, formValue) {
-    return await this.$axios.post("/api/email/resend", formValue).then(res => {
-      return res
-    })
+    return await this.$axios
+      .post("/api/email/resend", formValue)
+      .then(res => {
+        return res
+      })
+      .catch(err => err.response)
   },
   // データ更新
   async editData({ dispatch, rootGetters }, { formValue, id }) {
@@ -53,6 +62,7 @@ export const actions = {
           dispatch("getList")
           return res
         })
+        .catch(err => err.response)
     } else {
       return await this.$axios
         .patch("/api/myuser/update", formValue)
@@ -63,14 +73,18 @@ export const actions = {
           }
           return res
         })
+        .catch(err => err.response)
     }
   },
   // データ削除
   async deleteData({ dispatch }, id) {
-    return await this.$axios.delete("/api/users/" + id).then(res => {
-      dispatch("getList")
-      return res
-    })
+    return await this.$axios
+      .delete("/api/users/" + id)
+      .then(res => {
+        dispatch("getList")
+        return res
+      })
+      .catch(err => err.response)
   },
   // パスワード変更
   async passwordChange({ dispatch }, formValue) {
@@ -80,5 +94,24 @@ export const actions = {
         dispatch("getList")
         return res
       })
+      .catch(err => err.response)
+  },
+  // パスワードリセットメール送信
+  async passwordResetMail({ dispatch }, formValue) {
+    return await this.$axios
+      .post("/api/password/email", formValue)
+      .then(res => {
+        return res
+      })
+      .catch(err => err.response)
+  },
+  // パスワードリセット
+  async passwordReset({ dispatch }, formValue) {
+    return await this.$axios
+      .post("/api/password/reset", formValue)
+      .then(res => {
+        return res
+      })
+      .catch(err => err.response)
   }
 }

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Notifications\CustomVerifyEmail;
+use App\Notifications\CustomResetPassword;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -144,6 +145,60 @@ class AuthenticationTest extends TestCase
 
         // メール認証済なのでtrueを返す
         $response->assertJson([true]);
+
+    }
+
+    /**
+     * パスワードリセットテスト
+     *
+     * @return void
+     */
+    public function testPasswordReset()
+    {
+        // 実際にメール送信しないようにする
+        Notification::fake();
+
+        // サンプルデータを追加
+        $user = factory(User::class)->create([
+            'email' => 'sample@test.com',
+        ]);
+
+        // パスワードリセットメール送信のリクエストを送信
+        $response = $this->json('POST', route('password.email'), ['email' => $user->email], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        // 正しいレスポンスが返ってくることを確認
+        $response->assertStatus(200);
+
+        // パスワードリセットメールが入力されたメールアドレスに送信されているか確認
+        $token = '';
+        Notification::assertSentTo(
+            $user,
+            CustomResetPassword::class,
+            function (CustomResetPassword $notification) use (&$token) {
+                $token = $notification->token;
+                return true;
+            }
+        );
+
+        // 変更するパスワードデータ
+        $newPasswordData = [
+            'token'  => $token,
+            'email' => $user->email,
+            'password' => 'resetpass',
+            'password_confirmation' => 'resetpass'
+        ];
+
+        // パスワードリセットのリクエストを送信
+        $response = $this->json('POST', route('password.update'), $newPasswordData, ['X-Requested-With' => 'XMLHttpRequest']);
+
+        // 正しいレスポンスが返ってくることを確認
+        $response->assertStatus(200);
+
+        // 認証されていることを確認
+        $this->assertTrue(\Auth::check());
+
+        // 変更されたパスワードが保存されていることを確認
+        $this->assertTrue(\Hash::check($newPasswordData['password'], $user->fresh()->password));
 
     }
 

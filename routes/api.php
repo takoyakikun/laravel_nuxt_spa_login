@@ -30,6 +30,12 @@ Route::get('/user', function () {
     }
 })->name('user');
 
+// パスワードリセットメール送信
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+
+// パスワードリセット
+Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
+
 // コンフィグを取得
 Route::get('/config', 'ConfigController@index')->name('config');
 

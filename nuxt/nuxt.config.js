@@ -90,7 +90,8 @@ export default {
     transpile: ["vee-validate/dist/rules"]
   },
   generate: {
-    dir: "../public/dist"
+    dir: "../public/dist",
+    fallback: true
   },
   vue: {
     config: {
