@@ -1,114 +1,10 @@
 <template>
   <v-app id="inspire">
     <!-- サイドバー -->
-    <v-navigation-drawer v-model="drawer" app>
-      <v-list dense>
-        <!-- Topページ -->
-        <v-list-item link to="/">
-          <v-list-item-action>
-            <v-icon>mdi-home</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Top</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <!-- 認証済ページ -->
-        <v-list-item v-if="userExists" link to="auth">
-          <v-list-item-action>
-            <v-icon>mdi-lock</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Auth</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <!-- ユーザー管理 -->
-        <v-list-item v-if="permission('admin-higher')" link to="users">
-          <v-list-item-action>
-            <v-icon>mdi-account-group</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Users</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+    <SideBar v-model="drawer" />
 
     <!-- ヘッダー -->
-    <v-app-bar app color="indigo" dark>
-      <!-- サイドバー開閉 -->
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-
-      <v-toolbar-title>Application</v-toolbar-title>
-      <v-spacer />
-
-      <!-- ログイン済ユーザーメニュー -->
-      <template v-if="userExists">
-        <!-- マイユーザー管理 -->
-        <v-menu v-if="userExists" offset-y>
-          <template v-slot:activator="{ on }">
-            <v-btn class="mx-1" outlined rounded v-on="on">
-              <v-icon left>
-                mdi-account-circle
-              </v-icon>
-              {{ user.name }}
-              <v-icon right>
-                mdi-menu-down
-              </v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <!-- マイユーザー編集 -->
-            <v-list-item @click="openEditDialog">
-              <v-list-item-title>
-                <v-icon left>
-                  mdi-account-edit
-                </v-icon>
-                編集
-              </v-list-item-title>
-            </v-list-item>
-
-            <!-- パスワード変更 -->
-            <v-list-item @click="openPasswordChangeDialog">
-              <v-list-item-title>
-                <v-icon left>
-                  mdi-lock
-                </v-icon>
-                パスワード変更
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-
-        <!-- ログアウト -->
-        <v-btn class="mx-1" outlined @click="logout">
-          <v-icon left>
-            mdi-logout-variant
-          </v-icon>
-          Logout
-        </v-btn>
-      </template>
-
-      <!-- 未ログインメニュー -->
-      <template v-if="!userExists">
-        <!-- 新規ユーザー作成 -->
-        <v-btn class="mx-1" outlined to="register">
-          <v-icon left>
-            mdi-account-plus
-          </v-icon>
-          新規作成
-        </v-btn>
-
-        <!-- ログイン -->
-        <v-btn class="mx-1" outlined to="login">
-          <v-icon left>
-            mdi-login-variant
-          </v-icon>
-          Login
-        </v-btn>
-      </template>
-    </v-app-bar>
+    <Header :drawer="drawer" @drawer="setDrawer" />
 
     <!-- メインコンテンツ -->
     <v-content>
@@ -118,15 +14,14 @@
     </v-content>
 
     <!-- フッター -->
-    <v-footer color="indigo" app>
-      <span class="white--text">&copy; 2019</span>
-    </v-footer>
+    <Footer />
 
     <!-- 編集ダイアログ -->
     <validation-observer ref="editFormValidate" v-slot="{ invalid }">
       <MyDialog
         ref="editDialog"
         v-model="editDialog"
+        name="myuserEdit"
         title="ユーザー編集"
         color="primary"
         :options="{ persistent: true }"
@@ -157,6 +52,7 @@
       <MyDialog
         ref="passwordChangeDialog"
         v-model="passwordChangeDialog"
+        name="passwordChange"
         title="パスワード変更"
         color="primary"
         :options="{ persistent: true }"
@@ -193,27 +89,23 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex"
+import { mapGetters } from "vuex"
 import TopScroll from "~/components/topScroll/topScroll"
 import Snackbar from "~/components/snackbar/snackbar"
-import MyDialog from "~/components/dialog/myDialog"
-import UserForm from "~/components/users/userForm"
-import PasswordChangeForm from "~/components/users/passwordChangeForm"
+import SideBar from "~/components/layouts/default/sideBar"
+import Header from "~/components/layouts/default/header"
+import Footer from "~/components/layouts/default/footer"
 
 export default {
   components: {
     TopScroll,
     Snackbar,
-    MyDialog,
-    UserForm,
-    PasswordChangeForm
+    SideBar,
+    Header,
+    Footer
   },
   data: () => ({
-    drawer: false,
-    editDialog: false,
-    editFormValue: {},
-    passwordChangeDialog: false,
-    passwordChangeFormValue: {}
+    drawer: false
   }),
   computed: {
     ...mapGetters({
@@ -227,77 +119,9 @@ export default {
     await this.$store.dispatch("auth/checkAuth", "admin-higher")
   },
   methods: {
-    ...mapActions("snackbar", ["openSnackbar"]),
-    ...mapActions("users", ["editData", "passwordChange"]),
-
-    // ログアウト
-    async logout() {
-      await this.$store.dispatch("auth/logout")
-
-      this.$router.push("/")
-    },
-
-    // 編集ダイアログを開く
-    openEditDialog() {
-      this.editDialog = true
-      this.editFormValue = JSON.parse(JSON.stringify(this.user)) // ディープコピー
-    },
-    // データを更新
-    async editSubmit() {
-      await this.$refs.editForm.validate().then(async result => {
-        if (result) {
-          await this.editData({
-            formValue: this.editFormValue
-          }).then(res => {
-            if (res.status === 200) {
-              this.openSnackbar({
-                text: "ユーザーデータを更新しました。",
-                color: "success"
-              })
-              this.$refs.editDialog.close()
-              this.$refs.editForm.reset()
-              this.$store.dispatch("auth/setUser")
-            } else {
-              this.openSnackbar({
-                text: "ユーザーデータの更新に失敗しました。",
-                color: "error"
-              })
-            }
-          })
-        }
-      })
-    },
-
-    // パスワード変更ダイアログを開く
-    openPasswordChangeDialog() {
-      this.passwordChangeDialog = true
-      this.passwordChangeFormValue = {}
-    },
-    // パスワードを変更
-    async passwordChangeSubmit() {
-      await this.$refs.passwordChangeForm.validate().then(async result => {
-        if (result) {
-          await this.passwordChange(this.passwordChangeFormValue).then(res => {
-            if (res.status === 200) {
-              this.openSnackbar({
-                text: "パスワードを変更しました。",
-                color: "success"
-              })
-              this.$refs.passwordChangeDialog.close()
-              this.$refs.passwordChangeForm.reset()
-            } else {
-              let text = "パスワードの変更に失敗しました。"
-              if (res.data.error_message) {
-                text = res.data.error_message
-              }
-              this.openSnackbar({
-                text: text,
-                color: "error"
-              })
-            }
-          })
-        }
-      })
+    // サイドバーの状態をセット
+    setDrawer(value) {
+      this.drawer = value
     }
   }
 }
