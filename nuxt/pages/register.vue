@@ -15,7 +15,12 @@
             />
           </v-card-text>
           <v-card-actions>
-            <v-btn :disabled="invalid" color="primary" @click="submit">
+            <v-btn
+              :disabled="invalid"
+              :loading="loading"
+              color="primary"
+              @click="submit"
+            >
               <v-icon left>
                 mdi-account-plus
               </v-icon>
@@ -51,35 +56,50 @@ export default {
         email: "",
         password: "",
         remember: false
-      }
+      },
+      loading: false
     }
   },
   methods: {
     ...mapActions("users", ["registerData"]),
     ...mapActions("snackbar", ["openSnackbar"]),
 
+    // フォームを送信
     async submit(event) {
-      await this.$refs.registerForm.validate().then(async result => {
-        if (result) {
-          await this.registerData(this.registerFormValue).then(res => {
-            if (res.status === 200) {
-              this.$store
-                .dispatch("auth/login", {
-                  email: this.registerFormValue.email,
-                  password: this.registerFormValue.password
+      if (!this.loading) {
+        this.loading = true
+        await this.$refs.registerForm.validate().then(async result => {
+          if (result) {
+            await this.registerData(this.registerFormValue).then(async res => {
+              if (res.status === 200) {
+                // ユーザー追加した後にログインする
+                await this.$store
+                  .dispatch("auth/login", {
+                    email: this.registerFormValue.email,
+                    password: this.registerFormValue.password
+                  })
+                  .then(res => {
+                    if (res.status === 200) {
+                      this.$router.push("/resend")
+                    } else {
+                      this.openSnackbar({
+                        text: "認証に失敗しました。",
+                        options: { color: "error" }
+                      })
+                      this.$router.push("/login")
+                    }
+                  })
+              } else {
+                this.openSnackbar({
+                  text: "ユーザーデータの追加に失敗しました。",
+                  options: { color: "error" }
                 })
-                .then(res => {
-                  this.$router.push("/")
-                })
-            } else {
-              this.openSnackbar({
-                text: "ユーザーデータの追加に失敗しました。",
-                options: { color: "error" }
-              })
-            }
-          })
-        }
-      })
+              }
+            })
+          }
+        })
+        this.loading = false
+      }
     }
   }
 }
