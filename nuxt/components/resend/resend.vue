@@ -9,9 +9,27 @@
       </v-alert>
       このページを閲覧するには、Eメールによる認証が必要です。<br />
       もし認証用のメールを受け取っていない場合、
-      <a @click="resendMail()">こちらのリンク</a>
+      <v-btn color="primary" small :loading="loading" @click="resendMail">
+        認証メール再送信
+      </v-btn>
       をクリックして、認証メールを受け取ってください。
     </v-card-text>
+
+    <v-card-actions>
+      <v-btn color="primary" :loading="loading" @click="resendMail">
+        <v-icon left>
+          mdi-email-send-outline
+        </v-icon>
+        認証メール再送信
+      </v-btn>
+      <v-spacer />
+      <v-btn @click="logout">
+        <v-icon left>
+          mdi-logout-variant
+        </v-icon>
+        Logout
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -19,14 +37,34 @@
 export default {
   data() {
     return {
-      resend: false
+      resend: false,
+      loading: false
     }
   },
   methods: {
+    // 認証メール再送信
     async resendMail() {
-      this.$store.dispatch("users/resendMail").then(res => {
-        this.resend = true
-      })
+      if (!this.loading) {
+        this.loading = true
+        await this.$store.dispatch("users/resendMail").then(res => {
+          if (res.status === 200) {
+            this.resend = true
+          } else {
+            this.openSnackbar({
+              text: "認証メールの再送信に失敗しました。",
+              options: { color: "error" }
+            })
+          }
+        })
+        this.loading = false
+      }
+    },
+
+    // ログアウト
+    async logout() {
+      await this.$store.dispatch("auth/logout")
+
+      this.$router.push("/")
     }
   }
 }
