@@ -23,7 +23,7 @@
         </template>
         <v-list>
           <!-- マイユーザー編集 -->
-          <v-list-item @click="openEditDialog">
+          <v-list-item id="openEditDialog" @click="openEditDialog">
             <v-list-item-title>
               <v-icon left>
                 mdi-account-edit
@@ -33,7 +33,10 @@
           </v-list-item>
 
           <!-- パスワード変更 -->
-          <v-list-item @click="openPasswordChangeDialog">
+          <v-list-item
+            id="openPasswordChangeDialog"
+            @click="openPasswordChangeDialog"
+          >
             <v-list-item-title>
               <v-icon left>
                 mdi-lock

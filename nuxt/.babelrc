@@ -11,7 +11,8 @@
               "~": "."
             }
           }
-        ]
+        ],
+        "require-context-hook",
       ],
       "presets": [
         [
