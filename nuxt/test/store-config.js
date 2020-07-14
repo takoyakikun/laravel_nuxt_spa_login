@@ -6,7 +6,8 @@ stores.keys().forEach(key => {
     namespaced: true,
     state: store.state,
     getters: store.getters,
-    mutations: store.mutations
+    mutations: store.mutations,
+    actions: store.actions
   }
 })
 
