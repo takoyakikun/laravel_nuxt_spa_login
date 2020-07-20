@@ -20,6 +20,12 @@
 <script>
 import goTo from "vuetify/es5/services/goto"
 export default {
+  props: {
+    options: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data() {
     return {
       showTopScroll: false
@@ -38,7 +44,7 @@ export default {
     },
     // 画面トップにスクロール
     topScroll() {
-      return goTo(0)
+      goTo(0, this.options)
     }
   }
 }
