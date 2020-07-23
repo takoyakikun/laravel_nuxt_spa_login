@@ -3,6 +3,7 @@
   <v-fade-transition>
     <v-btn
       v-show="showTopScroll"
+      id="topScrollButton"
       color="primary"
       transition="fade-transition"
       dark

@@ -9,6 +9,7 @@ let vuetify = new Vuetify()
 
 describe("components/topScroll", () => {
   describe("topScroll", () => {
+    const topScroll = jest.spyOn(TopScroll.methods, "topScroll")
     let wrapper
     beforeEach(() => {
       wrapper = shallowMount(TopScroll, { store, vuetify })
@@ -33,6 +34,24 @@ describe("components/topScroll", () => {
       window.scrollY = 100
       wrapper.vm.handleScroll()
       expect(wrapper.vm.showTopScroll).toBeFalsy()
+    })
+
+    test("トップスクロールボタンを押してトップへスクロールする", () => {
+      // トップスクロールボタンをクリック
+      wrapper.find("#topScrollButton").vm.$emit("click")
+
+      // topScroll メソッドが実行されたか
+      expect(topScroll).toHaveBeenCalled()
+    })
+
+    test("destroy時のremoveEventListener動作", () => {
+      const removeEventListener = jest.spyOn(window, "removeEventListener")
+
+      // destroyする
+      wrapper.destroy()
+
+      // window.removeEventListener が実行されたか
+      expect(removeEventListener).toHaveBeenCalled()
     })
   })
 })
