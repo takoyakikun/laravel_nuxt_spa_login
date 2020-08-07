@@ -3,16 +3,9 @@
     "test": {
       "plugins": [
         [
-          "module-resolver",
-          {
-            "root": ["."],
-            "alias": {
-              "@": ".",
-              "~": "."
-            }
-          }
+          "module-resolver"
         ],
-        "require-context-hook",
+        "require-context-hook"
       ],
       "presets": [
         [
