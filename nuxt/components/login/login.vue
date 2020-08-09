@@ -1,6 +1,6 @@
 <template>
-  <validation-observer ref="loginForm" v-slot="{ invalid }">
-    <v-card class="elevation-12">
+  <v-card class="elevation-12">
+    <validation-observer ref="loginForm" v-slot="{ invalid }">
       <v-toolbar color="primary" dark flat>
         <v-toolbar-title>Login form</v-toolbar-title>
       </v-toolbar>
@@ -32,8 +32,8 @@
           Top
         </v-btn>
       </v-card-actions>
-    </v-card>
-  </validation-observer>
+    </validation-observer>
+  </v-card>
 </template>
 
 <script>
