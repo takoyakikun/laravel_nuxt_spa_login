@@ -48,8 +48,7 @@ export default {
     return {
       registerFormValue: {
         email: "",
-        password: "",
-        remember: false
+        password: ""
       },
       loading: false
     }

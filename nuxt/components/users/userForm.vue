@@ -10,6 +10,7 @@
         >
           <v-text-field
             v-model="value.name"
+            name="name"
             label="ユーザー名"
             max="255"
             required
@@ -30,6 +31,7 @@
         >
           <v-text-field
             v-model="value.email"
+            name="email"
             label="メールアドレス"
             max="255"
             required
@@ -48,7 +50,12 @@
           :rules="{ required }"
           name="アクセス権限"
         >
-          <v-radio-group v-model="value.role" row :error-messages="errors">
+          <v-radio-group
+            v-model="value.role"
+            name="role"
+            row
+            :error-messages="errors"
+          >
             <v-radio
               v-for="item in role"
               :key="item.value"
@@ -73,6 +80,7 @@
         >
           <v-text-field
             v-model="value.password"
+            name="password"
             type="password"
             label="パスワード"
             min="8"
@@ -94,6 +102,7 @@
         >
           <v-text-field
             v-model="value.password_confirmation"
+            name="password_confirmation"
             type="password"
             label="パスワード(確認)"
             min="8"
