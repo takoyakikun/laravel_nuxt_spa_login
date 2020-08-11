@@ -1,6 +1,6 @@
 <template>
   <v-row align="center" justify="center">
-    <v-col v-if="$store.state.auth.user" class="text-center">
+    <v-col v-if="userExists" class="text-center">
       {{ user.name }}
     </v-col>
   </v-row>
@@ -14,7 +14,8 @@ export default {
   layout: "default",
   computed: {
     ...mapGetters({
-      user: "auth/user"
+      user: "auth/user",
+      userExists: "auth/userExists"
     })
   }
 }
