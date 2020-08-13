@@ -13,8 +13,8 @@ let vuetify = new Vuetify()
 
 jest.useFakeTimers()
 
-describe("components/login", () => {
-  describe("login", () => {
+describe("components/register", () => {
+  describe("register", () => {
     let wrapper
     beforeEach(() => {
       const router = { push: jest.fn() }
