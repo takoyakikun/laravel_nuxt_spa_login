@@ -59,20 +59,22 @@ export default {
       if (!this.loading) {
         this.loading = true
         await this.$refs.sendMailValidate.validate().then(async result => {
-          await this.$store
-            .dispatch("users/passwordResetMail", this.formValue)
-            .then(res => {
-              if (res.status === 200) {
-                this.send = true
-              } else {
-                this.openSnackbar({
-                  text: "パスワードリセットメール送信に失敗しました。",
-                  options: { color: "error" }
-                })
-              }
-            })
-          this.loading = false
+          if (result) {
+            await this.$store
+              .dispatch("users/passwordResetMail", this.formValue)
+              .then(res => {
+                if (res.status === 200) {
+                  this.send = true
+                } else {
+                  this.openSnackbar({
+                    text: "パスワードリセットメール送信に失敗しました。",
+                    options: { color: "error" }
+                  })
+                }
+              })
+          }
         })
+        this.loading = false
       }
     }
   }

@@ -49,26 +49,28 @@ export default {
       if (!this.loading) {
         this.loading = true
         await this.$refs.passwordResetValidate.validate().then(async result => {
-          this.formValue.token = this.$nuxt.$route.params.token
-          await this.$store
-            .dispatch("users/passwordReset", this.formValue)
-            .then(async res => {
-              if (res.status === 200) {
-                await this.$store.dispatch("auth/setUser")
-                this.openSnackbar({
-                  text: "パスワードリセットしました。",
-                  options: { color: "success" }
-                })
-                this.$router.push("/")
-              } else {
-                this.openSnackbar({
-                  text: "パスワードリセットに失敗しました。",
-                  options: { color: "error" }
-                })
-              }
-            })
-          this.loading = false
+          if (result) {
+            this.formValue.token = this.$nuxt.$route.params.token
+            await this.$store
+              .dispatch("users/passwordReset", this.formValue)
+              .then(async res => {
+                if (res.status === 200) {
+                  await this.$store.dispatch("auth/setUser")
+                  this.openSnackbar({
+                    text: "パスワードリセットしました。",
+                    options: { color: "success" }
+                  })
+                  this.$router.push("/")
+                } else {
+                  this.openSnackbar({
+                    text: "パスワードリセットに失敗しました。",
+                    options: { color: "error" }
+                  })
+                }
+              })
+          }
         })
+        this.loading = false
       }
     }
   }

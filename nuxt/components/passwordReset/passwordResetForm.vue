@@ -28,6 +28,7 @@
         v-model="value.password"
         type="password"
         label="パスワード"
+        name="password"
         prepend-icon="mdi-lock"
         min="8"
         required
@@ -46,6 +47,7 @@
         v-model="value.password_confirmation"
         type="password"
         label="パスワード(確認)"
+        name="password_confirmation"
         prepend-icon="mdi-lock"
         min="8"
         required
