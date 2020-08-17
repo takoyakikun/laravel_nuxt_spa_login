@@ -18,7 +18,7 @@ export default {
   },
   async created() {
     await this.$store.dispatch("auth/checkAuth", "system-only")
-    this.$store.dispatch("users/getList")
+    this.$store.dispatch("users/setList")
   }
 }
 </script>

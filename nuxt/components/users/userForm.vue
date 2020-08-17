@@ -141,11 +141,9 @@ export default {
 
     // 権限ごとに選択できる権限を変える
     role() {
-      if (this.permission("system-only")) {
-        return this.config.role
-      } else {
-        return this.config.role.filter(item => item.value > 1)
-      }
+      return this.permission("system-only")
+        ? this.config.role
+        : this.config.role.filter(item => item.value > 1)
     }
   },
   methods: {

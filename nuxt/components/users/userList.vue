@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row dense>
       <v-col>
-        <v-btn color="info" dark @click="openCreateDialog(item)">
+        <v-btn color="info" dark @click="openCreateDialog()">
           <v-icon left>
             mdi-account-plus
           </v-icon>
@@ -216,11 +216,11 @@ export default {
           // 自ユーザーは削除不可
           result = true
         } else if (this.permission("system-only")) {
-          // 開発者権限はすべて編集可能
+          // 開発者権限はすべて削除可能
           result = false
         } else if (this.permission("admin-higher")) {
           if (item.role > 1) {
-            // 管理者権限は開発者権限以外編集可能
+            // 管理者権限は開発者権限以外削除可能
             result = false
           }
         }

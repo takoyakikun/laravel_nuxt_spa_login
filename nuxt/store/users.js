@@ -7,15 +7,15 @@ export const getters = {
 }
 
 export const mutations = {
+  // ユーザーデータをセット
   setList(state, list) {
-    // ユーザーデータをセット
     state.list = list
   }
 }
 
 export const actions = {
   // データの取得
-  async getList({ commit }) {
+  async setList({ commit }) {
     return await this.$axios
       .get("/api/users")
       .then(res => {
@@ -38,7 +38,7 @@ export const actions = {
     return await this.$axios
       .post("/api/users", formValue)
       .then(res => {
-        dispatch("getList")
+        dispatch("setList")
         return res
       })
       .catch(err => err.response)
@@ -59,7 +59,7 @@ export const actions = {
       return await this.$axios
         .patch("/api/users/" + id, formValue)
         .then(res => {
-          dispatch("getList")
+          dispatch("setList")
           return res
         })
         .catch(err => err.response)
@@ -69,7 +69,7 @@ export const actions = {
         .then(res => {
           // 管理者権限以上は全ユーザーデータを再取得
           if (rootGetters["auth/permission"]("admin-higher")) {
-            dispatch("getList")
+            dispatch("setList")
           }
           return res
         })
@@ -81,7 +81,7 @@ export const actions = {
     return await this.$axios
       .delete("/api/users/" + id)
       .then(res => {
-        dispatch("getList")
+        dispatch("setList")
         return res
       })
       .catch(err => err.response)
@@ -91,7 +91,7 @@ export const actions = {
     return await this.$axios
       .patch("/api/myuser/passwordChange", formValue)
       .then(res => {
-        dispatch("getList")
+        dispatch("setList")
         return res
       })
       .catch(err => err.response)

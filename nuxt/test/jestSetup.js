@@ -12,6 +12,10 @@ import * as rules from "vee-validate/dist/rules" // 全てのバリデーショ�
 import registerRequireContextHook from "babel-plugin-require-context-hook/register"
 
 Vue.use(Vuetify)
+const app = document.createElement("div")
+app.setAttribute("data-app", true)
+document.body.append(app)
+
 Vue.use(Vuex)
 
 // forループで全てのバリデーションルールをextendで登録する

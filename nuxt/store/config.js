@@ -1,5 +1,7 @@
 export const state = () => ({
-  data: {}
+  data: {
+    role: []
+  }
 })
 
 export const getters = {
