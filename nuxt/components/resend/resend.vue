@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex"
+
 export default {
   data() {
     return {
@@ -42,6 +44,8 @@ export default {
     }
   },
   methods: {
+    ...mapActions("snackbar", ["openSnackbar"]),
+
     // 認証メール再送信
     async resendMail() {
       if (!this.loading) {

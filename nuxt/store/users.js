@@ -44,9 +44,9 @@ export const actions = {
       .catch(err => err.response)
   },
   // 認証メール再送信
-  async resendMail({ dispatch }, formValue) {
+  async resendMail({ dispatch }) {
     return await this.$axios
-      .post("/api/email/resend", formValue)
+      .post("/api/email/resend")
       .then(res => {
         return res
       })
