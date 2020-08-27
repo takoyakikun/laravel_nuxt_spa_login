@@ -10,6 +10,7 @@
         >
           <v-text-field
             v-model="value.current_password"
+            name="current_password"
             type="password"
             label="現在のパスワード"
             min="8"
@@ -32,6 +33,7 @@
         >
           <v-text-field
             v-model="value.password"
+            name="password"
             type="password"
             label="変更後のパスワード"
             min="8"
@@ -53,6 +55,7 @@
         >
           <v-text-field
             v-model="value.password_confirmation"
+            name="password_confirmation"
             type="password"
             label="変更後のパスワード(確認)"
             min="8"

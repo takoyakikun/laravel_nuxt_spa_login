@@ -155,10 +155,12 @@ export default {
   props: {
     drawer: {
       type: Boolean,
-      default: false
+      default: false,
+      required: true
     }
   },
   data: () => ({
+    dataDrawer: false,
     editDialog: false,
     editFormValue: {},
     passwordChangeDialog: false,
@@ -172,14 +174,22 @@ export default {
       "permissionExists"
     ])
   },
+  watch: {
+    drawer: {
+      immediate: true,
+      handler(value) {
+        this.dataDrawer = value
+      }
+    }
+  },
   methods: {
     ...mapActions("snackbar", ["openSnackbar"]),
     ...mapActions("users", ["editData", "passwordChange"]),
 
     // サイドバーの表示切り替え
     toggleDrawer() {
-      this.drawer = !this.drawer
-      this.$emit("drawer", this.drawer)
+      this.dataDrawer = !this.dataDrawer
+      this.$emit("drawer", this.dataDrawer)
     },
 
     // ログアウト
