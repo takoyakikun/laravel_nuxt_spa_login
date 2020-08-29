@@ -1,35 +1,54 @@
-import { shallowMount } from "@vue/test-utils"
+import { createLocalVue, shallowMount } from "@vue/test-utils"
 import Vuetify from "vuetify"
 import Vuex from "vuex"
 import storeConfig from "@/test/storeConfig"
-import Snackbar from "@/components/snackbar/snackbar.vue"
+import Snackbar from "@/components/snackbar/snackbar"
 
-let store = new Vuex.Store(storeConfig)
-let vuetify = new Vuetify()
+const localVue = createLocalVue()
+localVue.use(Vuex)
 
-describe("components/snackbar", () => {
-  describe("snackbar", () => {
+const vuetify = new Vuetify()
+
+let store
+beforeEach(() => {
+  store = new Vuex.Store(storeConfig)
+})
+
+afterEach(() => {
+  jest.clearAllMocks()
+})
+
+describe("components/snackbar/snackbar", () => {
+  describe("shallowMount", () => {
+    let wrapper
+    beforeEach(() => {
+      wrapper = shallowMount(Snackbar, {
+        localVue,
+        store,
+        vuetify,
+        sync: false
+      })
+    })
+
     test("is a Vue instance", () => {
-      const wrapper = shallowMount(Snackbar, { store, vuetify })
       expect(wrapper.vm).toBeTruthy()
     })
 
     test("snackbarを表示する", () => {
-      const wrapper = shallowMount(Snackbar, { store, vuetify })
+      // snackbarを開く処理
       wrapper.vm.$store.dispatch("snackbar/openSnackbar", {
         text: "テスト",
         options: { color: "success" }
       })
-      const VSnackbar = wrapper.find("v-snackbar-stub")
 
       // snackbarが開いているか
-      expect(VSnackbar.vm.value).toBeTruthy()
+      expect(wrapper.vm.value).toBeTruthy()
 
       // snackbarに指定したテキストが表示されているか
-      expect(VSnackbar.vm.text).toBe("テスト")
+      expect(wrapper.vm.text).toBe("テスト")
 
       // snackbarが指定した色で表示されているか
-      expect(VSnackbar.vm.options.color).toBe("success")
+      expect(wrapper.vm.options.color).toBe("success")
     })
   })
 })
