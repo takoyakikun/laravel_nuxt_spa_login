@@ -86,7 +86,26 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {},
+    extend(config, ctx) {
+      if (!ctx.isDev) {
+        const vueLoader = config.module.rules.find(
+          rule => rule.loader === "vue-loader"
+        )
+        vueLoader.options.compilerModules = [
+          {
+            preTransformNode(astEl) {
+              const { attrsMap, attrsList } = astEl
+              if (attrsMap["data-test"]) {
+                delete attrsMap["data-test"]
+                const index = attrsList.findIndex(x => x.name == "data-test")
+                attrsList.splice(index, 1)
+              }
+              return astEl
+            }
+          }
+        ]
+      }
+    },
     transpile: ["vee-validate/dist/rules"]
   },
   generate: {
