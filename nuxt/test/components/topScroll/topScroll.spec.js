@@ -1,18 +1,33 @@
-import { shallowMount } from "@vue/test-utils"
+import { createLocalVue, shallowMount, mount } from "@vue/test-utils"
 import Vuetify from "vuetify"
 import Vuex from "vuex"
 import storeConfig from "@/test/storeConfig"
-import TopScroll from "@/components/topScroll/topScroll.vue"
+import TopScroll from "@/components/topScroll/topScroll"
 
-let store = new Vuex.Store(storeConfig)
-let vuetify = new Vuetify()
+const localVue = createLocalVue()
+localVue.use(Vuex)
+
+const vuetify = new Vuetify()
+
+let store
+beforeEach(() => {
+  store = new Vuex.Store(storeConfig)
+})
+
+afterEach(() => {
+  jest.clearAllMocks()
+})
 
 describe("components/topScroll", () => {
-  describe("topScroll", () => {
-    const topScroll = jest.spyOn(TopScroll.methods, "topScroll")
+  describe("shallowMount", () => {
     let wrapper
     beforeEach(() => {
-      wrapper = shallowMount(TopScroll, { store, vuetify })
+      wrapper = shallowMount(TopScroll, {
+        localVue,
+        store,
+        vuetify,
+        sync: false
+      })
     })
 
     test("is a Vue instance", () => {
@@ -36,14 +51,6 @@ describe("components/topScroll", () => {
       expect(wrapper.vm.showTopScroll).toBeFalsy()
     })
 
-    test("トップスクロールボタンを押してトップへスクロールする", () => {
-      // トップスクロールボタンをクリック
-      wrapper.find("#topScrollButton").vm.$emit("click")
-
-      // topScroll メソッドが実行されたか
-      expect(topScroll).toHaveBeenCalled()
-    })
-
     test("destroy時のremoveEventListener動作", () => {
       const removeEventListener = jest.spyOn(window, "removeEventListener")
 
@@ -52,6 +59,28 @@ describe("components/topScroll", () => {
 
       // window.removeEventListener が実行されたか
       expect(removeEventListener).toHaveBeenCalled()
+    })
+  })
+
+  describe("mount", () => {
+    let wrapper
+    let topScroll
+    beforeEach(() => {
+      topScroll = jest.spyOn(TopScroll.methods, "topScroll")
+      wrapper = mount(TopScroll, {
+        localVue,
+        store,
+        vuetify,
+        sync: false
+      })
+    })
+
+    test("トップスクロールボタンを押してトップへスクロールする", () => {
+      // トップスクロールボタンをクリック
+      wrapper.find("[data-test='topScrollButton']").vm.$emit("click")
+
+      // topScroll メソッドが実行されたか
+      expect(topScroll).toHaveBeenCalled()
     })
   })
 })
