@@ -60,7 +60,7 @@ describe("components/layouts/default/header", () => {
         expect(wrapper.vm.dataDrawer).toBeTruthy()
 
         // trueをemitする
-        expect(wrapper.emitted().drawer[0]).toBeTruthy()
+        expect(wrapper.emitted().drawer[0][0]).toBeTruthy()
       })
 
       test("開から閉", () => {
@@ -75,7 +75,7 @@ describe("components/layouts/default/header", () => {
         expect(wrapper.vm.dataDrawer).toBeFalsy()
 
         // falseをemitする
-        expect(wrapper.emitted().drawer[0]).toBeTruthy()
+        expect(wrapper.emitted().drawer[0][0]).toBeFalsy()
       })
     })
 
