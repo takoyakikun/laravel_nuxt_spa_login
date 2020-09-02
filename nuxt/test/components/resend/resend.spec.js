@@ -23,7 +23,6 @@ afterEach(() => {
 
 describe("components/resend", () => {
   describe("resend", () => {
-    const router = { push: jest.fn() }
     let wrapper
     beforeEach(() => {
       const router = { push: jest.fn() }
@@ -146,6 +145,50 @@ describe("components/resend", () => {
       // Topへリダイレクトした
       expect(routerPush).toHaveBeenCalled()
       expect(routerPush).toHaveBeenCalledWith("/")
+    })
+  })
+
+  describe("ボタン動作テスト", () => {
+    let wrapper
+    let resendMail
+    let logout
+    beforeEach(() => {
+      resendMail = jest
+        .spyOn(Resend.methods, "resendMail")
+        .mockReturnValue(true)
+      logout = jest.spyOn(Resend.methods, "logout").mockReturnValue(true)
+      wrapper = mount(Resend, {
+        localVue,
+        store,
+        vuetify,
+        sync: false
+      })
+    })
+
+    describe("認証メール再送信ボタン", () => {
+      test("resendMailContentButton", () => {
+        // ボタンをクリック
+        wrapper.find("[data-test='resendMailContentButton']").vm.$emit("click")
+
+        // メソッドが実行されたか
+        expect(resendMail).toHaveBeenCalled()
+      })
+
+      test("resendMailFooterButton", () => {
+        // ボタンをクリック
+        wrapper.find("[data-test='resendMailFooterButton']").vm.$emit("click")
+
+        // メソッドが実行されたか
+        expect(resendMail).toHaveBeenCalled()
+      })
+    })
+
+    test("ログアウトボタン", () => {
+      // ボタンをクリック
+      wrapper.find("[data-test='logoutButton']").vm.$emit("click")
+
+      // メソッドが実行されたか
+      expect(logout).toHaveBeenCalled()
     })
   })
 })

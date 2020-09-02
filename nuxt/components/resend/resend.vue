@@ -9,21 +9,32 @@
       </v-alert>
       このページを閲覧するには、Eメールによる認証が必要です。<br />
       もし認証用のメールを受け取っていない場合、
-      <v-btn color="primary" small :loading="loading" @click="resendMail">
+      <v-btn
+        data-test="resendMailContentButton"
+        color="primary"
+        small
+        :loading="loading"
+        @click="resendMail"
+      >
         認証メール再送信
       </v-btn>
       をクリックして、認証メールを受け取ってください。
     </v-card-text>
 
     <v-card-actions>
-      <v-btn color="primary" :loading="loading" @click="resendMail">
+      <v-btn
+        data-test="resendMailFooterButton"
+        color="primary"
+        :loading="loading"
+        @click="resendMail"
+      >
         <v-icon left>
           mdi-email-send-outline
         </v-icon>
         認証メール再送信
       </v-btn>
       <v-spacer />
-      <v-btn @click="logout">
+      <v-btn data-test="logoutButton" @click="logout">
         <v-icon left>
           mdi-logout-variant
         </v-icon>
