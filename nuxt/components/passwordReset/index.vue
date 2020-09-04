@@ -26,7 +26,7 @@
           パスワードリセットメール送信
         </v-btn>
         <v-spacer />
-        <v-btn to="login">
+        <v-btn data-test="loginButtonLink" to="login">
           <v-icon left>
             mdi-login-variant
           </v-icon>

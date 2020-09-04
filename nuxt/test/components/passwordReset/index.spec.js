@@ -174,4 +174,24 @@ describe("components/passwordReset/index", () => {
       expect(sendMail).toHaveBeenCalled()
     })
   })
+
+  describe("リンク動作テスト", () => {
+    let wrapper
+    beforeEach(() => {
+      wrapper = mount(PasswordReset, {
+        localVue,
+        store,
+        router,
+        vuetify,
+        sync: false
+      })
+    })
+
+    test("ログインボタンリンク", () => {
+      // 正しいリンク先が設定されているか
+      expect(wrapper.find("[data-test='loginButtonLink']").props().to).toBe(
+        "login"
+      )
+    })
+  })
 })
