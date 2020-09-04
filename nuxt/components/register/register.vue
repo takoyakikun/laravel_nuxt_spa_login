@@ -14,6 +14,7 @@
       </v-card-text>
       <v-card-actions>
         <v-btn
+          data-test="submitButton"
           :disabled="invalid"
           :loading="loading"
           color="primary"
@@ -25,7 +26,7 @@
           新規作成
         </v-btn>
         <v-spacer />
-        <v-btn to="/">
+        <v-btn data-test="topButtonLink" to="/">
           <v-icon left>
             mdi-home
           </v-icon>

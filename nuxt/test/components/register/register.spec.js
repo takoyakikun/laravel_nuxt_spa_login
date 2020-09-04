@@ -257,4 +257,45 @@ describe("components/register/register", () => {
       })
     })
   })
+
+  describe("ボタン動作テスト", () => {
+    let wrapper
+    let submit
+    beforeEach(() => {
+      submit = jest.spyOn(Register.methods, "submit").mockReturnValue(true)
+      wrapper = mount(Register, {
+        localVue,
+        store,
+        router,
+        vuetify,
+        sync: false
+      })
+    })
+
+    test("パスワードリセットボタン", () => {
+      // ボタンをクリック
+      wrapper.find("[data-test='submitButton']").trigger("click")
+
+      // メソッドが実行されたか
+      expect(submit).toHaveBeenCalled()
+    })
+  })
+
+  describe("リンク動作テスト", () => {
+    let wrapper
+    beforeEach(() => {
+      wrapper = mount(Register, {
+        localVue,
+        store,
+        router,
+        vuetify,
+        sync: false
+      })
+    })
+
+    test("トップボタンリンク", () => {
+      // 正しいリンク先が設定されているか
+      expect(wrapper.find("[data-test='topButtonLink']").props().to).toBe("/")
+    })
+  })
 })
