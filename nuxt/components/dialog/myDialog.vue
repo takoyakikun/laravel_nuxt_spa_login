@@ -8,20 +8,22 @@
           <v-spacer />
         </slot>
         <slot name="titleClose">
-          <v-btn icon="icon" @click="close">
+          <v-btn data-test="titleCloseButton" icon="icon" @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </slot>
       </v-app-bar>
+
       <v-card-text class="mt-5">
         <slot name="content" :color="color" :close="close" />
       </v-card-text>
+
       <v-card-actions>
         <slot name="actions" :color="color" :close="close">
           <v-spacer />
         </slot>
         <slot name="actionsClose" :color="color" :close="close">
-          <v-btn @click="close">
+          <v-btn data-test="actionsCloseButton" @click="close">
             <v-icon left>
               mdi-close
             </v-icon>

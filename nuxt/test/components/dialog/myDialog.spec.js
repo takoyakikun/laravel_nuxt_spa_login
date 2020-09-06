@@ -1,4 +1,4 @@
-import { createLocalVue, shallowMount } from "@vue/test-utils"
+import { createLocalVue, shallowMount, mount } from "@vue/test-utils"
 import Vuetify from "vuetify"
 import Vuex from "vuex"
 import storeConfig from "@/test/storeConfig"
@@ -91,6 +91,40 @@ describe("components/dialog/myDialog", () => {
         wrapper.vm.outside()
 
         // ダイアログを閉じる処理を実行したか
+        expect(close).toHaveBeenCalled()
+      })
+    })
+  })
+
+  describe("ボタン動作テスト", () => {
+    let wrapper
+    let close
+    beforeEach(() => {
+      close = jest.spyOn(MyDialog.methods, "close").mockReturnValue(true)
+      wrapper = mount(MyDialog, {
+        localVue,
+        store,
+        vuetify,
+        sync: false,
+        propsData: {
+          value: true
+        }
+      })
+    })
+
+    describe("閉じるボタン", () => {
+      test("titleCloseButton", () => {
+        // ボタンをクリック
+        wrapper.find("[data-test='titleCloseButton']").trigger("click")
+      })
+
+      test("actionsCloseButton", () => {
+        // ボタンをクリック
+        wrapper.find("[data-test='actionsCloseButton']").trigger("click")
+      })
+
+      afterEach(() => {
+        // メソッドが実行されたか
         expect(close).toHaveBeenCalled()
       })
     })
