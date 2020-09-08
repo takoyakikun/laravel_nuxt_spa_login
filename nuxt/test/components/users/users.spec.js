@@ -505,4 +505,129 @@ describe("components/users/userList", () => {
       })
     })
   })
+
+  describe("ボタン動作テスト", () => {
+    let wrapper
+    let openCreateDialog
+    let createSubmit
+    let openEditDialog
+    let editSubmit
+    let openDeleteDialog
+    let deleteSubmit
+    beforeEach(() => {
+      openCreateDialog = jest
+        .spyOn(UserList.methods, "openCreateDialog")
+        .mockReturnValue(true)
+      createSubmit = jest
+        .spyOn(UserList.methods, "createSubmit")
+        .mockReturnValue(true)
+      openEditDialog = jest
+        .spyOn(UserList.methods, "openEditDialog")
+        .mockReturnValue(true)
+      editSubmit = jest
+        .spyOn(UserList.methods, "editSubmit")
+        .mockReturnValue(true)
+      openDeleteDialog = jest
+        .spyOn(UserList.methods, "openDeleteDialog")
+        .mockReturnValue(true)
+      deleteSubmit = jest
+        .spyOn(UserList.methods, "deleteSubmit")
+        .mockReturnValue(true)
+      wrapper = mount(UserList, {
+        localVue,
+        store,
+        vuetify,
+        sync: false
+      })
+    })
+
+    test("新規追加ダイアログボタン", () => {
+      // ボタンをクリック
+      wrapper.find("[data-test='createDialogButton']").trigger("click")
+
+      // メソッドが実行されたか
+      expect(openCreateDialog).toHaveBeenCalled()
+    })
+
+    test("新規追加ボタン", async () => {
+      // ダイアログを開く
+      await wrapper.setData({ createDialog: true })
+
+      // ボタンをクリック
+      wrapper.find("[data-test='createSubmitButton']").trigger("click")
+
+      // メソッドが実行されたか
+      expect(createSubmit).toHaveBeenCalled()
+    })
+
+    test("編集ダイアログボタン", async () => {
+      // 権限を開発者にする
+      await wrapper.vm.$store.commit("auth/setPermission", {
+        category: "system-only",
+        permission: true
+      })
+
+      // テーブルにデータを追加
+      await wrapper.vm.$store.commit("users/setList", [
+        {
+          id: 1,
+          name: "テスト",
+          email: "test@test.com",
+          role: 10
+        }
+      ])
+
+      // ボタンをクリック
+      wrapper.find("[data-test='editDialogButton']").trigger("click")
+
+      // メソッドが実行されたか
+      expect(openEditDialog).toHaveBeenCalled()
+    })
+
+    test("更新ボタン", async () => {
+      // ダイアログを開く
+      await wrapper.setData({ editDialog: true })
+
+      // ボタンをクリック
+      wrapper.find("[data-test='editSubmitButton']").trigger("click")
+
+      // メソッドが実行されたか
+      expect(editSubmit).toHaveBeenCalled()
+    })
+
+    test("削除ダイアログボタン", async () => {
+      // 権限を開発者にする
+      await wrapper.vm.$store.commit("auth/setPermission", {
+        category: "system-only",
+        permission: true
+      })
+
+      // テーブルにデータを追加
+      await wrapper.vm.$store.commit("users/setList", [
+        {
+          id: 1,
+          name: "テスト",
+          email: "test@test.com",
+          role: 10
+        }
+      ])
+
+      // ボタンをクリック
+      wrapper.find("[data-test='deleteDialogButton']").trigger("click")
+
+      // メソッドが実行されたか
+      expect(openDeleteDialog).toHaveBeenCalled()
+    })
+
+    test("削除ボタン", async () => {
+      // ダイアログを開く
+      await wrapper.setData({ deleteDialog: true })
+
+      // ボタンをクリック
+      wrapper.find("[data-test='deleteSubmitButton']").trigger("click")
+
+      // メソッドが実行されたか
+      expect(deleteSubmit).toHaveBeenCalled()
+    })
+  })
 })

@@ -2,7 +2,12 @@
   <v-container fluid>
     <v-row dense>
       <v-col>
-        <v-btn color="info" dark @click="openCreateDialog()">
+        <v-btn
+          data-test="createDialogButton"
+          color="info"
+          dark
+          @click="openCreateDialog()"
+        >
           <v-icon left>
             mdi-account-plus
           </v-icon>
@@ -22,13 +27,14 @@
           hide-default-footer
           class="elevation-1"
         >
-          <template v-slot:item.role="{ value }">
+          <template v-slot:[`item.role`]="{ value }">
             {{ getConfigData("role", value) }}
           </template>
-          <template v-slot:item.action="{ item }">
+          <template v-slot:[`item.action`]="{ item }">
             <v-tooltip left color="success">
               <template v-slot:activator="{ on }">
                 <v-btn
+                  data-test="editDialogButton"
                   icon
                   color="success"
                   :disabled="editDisabled(item)"
@@ -43,6 +49,7 @@
             <v-tooltip right color="error">
               <template v-slot:activator="{ on }">
                 <v-btn
+                  data-test="deleteDialogButton"
                   icon
                   color="error"
                   :disabled="deleteDisabled(item)"
@@ -60,7 +67,7 @@
     </v-row>
 
     <!-- 新規追加ダイアログ -->
-    <validation-observer ref="createForm" v-slot="{ invalid }">
+    <validation-observer id="aaa" ref="createForm" v-slot="{ invalid }">
       <MyDialog
         ref="createDialog"
         v-model="createDialog"
@@ -77,7 +84,12 @@
         </template>
 
         <template #actions="{ color }">
-          <v-btn :disabled="invalid" :color="color" @click="createSubmit">
+          <v-btn
+            data-test="createSubmitButton"
+            :disabled="invalid"
+            :color="color"
+            @click="createSubmit"
+          >
             <v-icon left>
               mdi-account-plus
             </v-icon>
@@ -107,7 +119,12 @@
         </template>
 
         <template #actions="{ color }">
-          <v-btn :disabled="invalid" :color="color" @click="editSubmit">
+          <v-btn
+            data-test="editSubmitButton"
+            :disabled="invalid"
+            :color="color"
+            @click="editSubmit"
+          >
             <v-icon left>
               mdi-account-edit
             </v-icon>
@@ -130,7 +147,11 @@
       </template>
 
       <template #actions="{ color }">
-        <v-btn :color="color" @click="deleteSubmit">
+        <v-btn
+          data-test="deleteSubmitButton"
+          :color="color"
+          @click="deleteSubmit"
+        >
           <v-icon left>
             mdi-delete
           </v-icon>
