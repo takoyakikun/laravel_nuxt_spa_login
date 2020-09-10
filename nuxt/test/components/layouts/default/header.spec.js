@@ -423,4 +423,84 @@ describe("components/layouts/default/header", () => {
       })
     })
   })
+
+  describe("ボタン動作テスト", () => {
+    let wrapper
+    let openEditDialog
+    let editSubmit
+    let openPasswordChangeDialog
+    let passwordChangeSubmit
+    beforeEach(() => {
+      openEditDialog = jest
+        .spyOn(Header.methods, "openEditDialog")
+        .mockReturnValue(true)
+      editSubmit = jest
+        .spyOn(Header.methods, "editSubmit")
+        .mockReturnValue(true)
+      openPasswordChangeDialog = jest
+        .spyOn(Header.methods, "openPasswordChangeDialog")
+        .mockReturnValue(true)
+      passwordChangeSubmit = jest
+        .spyOn(Header.methods, "passwordChangeSubmit")
+        .mockReturnValue(true)
+      wrapper = mount(Header, {
+        localVue,
+        store,
+        router,
+        vuetify,
+        sync: false,
+        propsData: {
+          drawer: false
+        }
+      })
+    })
+
+    describe("マイユーザー管理メニュー", () => {
+      beforeEach(async () => {
+        // ログインデータを登録
+        await wrapper.vm.$store.commit("auth/setUser", { id: 1 })
+
+        // マイユーザー管理メニューを開く
+        wrapper.find("[data-test='myuserMenu']").trigger("click")
+      })
+
+      test("編集ダイアログ項目", () => {
+        // ボタンをクリック
+        wrapper.find("[data-test='editDialogItem']").vm.$emit("click")
+
+        // メソッドが実行されたか
+        expect(openEditDialog).toHaveBeenCalled()
+      })
+
+      test("パスワード変更ダイアログ項目", () => {
+        // ボタンをクリック
+        wrapper.find("[data-test='passwordChangeDialogItem']").trigger("click")
+
+        // メソッドが実行されたか
+        expect(openPasswordChangeDialog).toHaveBeenCalled()
+      })
+    })
+
+    test("更新ボタン", async () => {
+      // ダイアログを開く
+      await wrapper.setData({ editDialog: true })
+
+      // ボタンをクリック
+      wrapper.find("[data-test='editSubmitButton']").trigger("click")
+
+      // メソッドが実行されたか
+      expect(editSubmit).toHaveBeenCalled()
+    })
+
+    test("パスワード変更ボタン", async () => {
+      // ダイアログを開く
+      await wrapper.setData({ passwordChangeDialog: true })
+
+      // ボタンをクリック
+      wrapper.find("[data-test='passwordChangeSubmitButton']").trigger("click")
+
+      // メソッドが実行されたか
+      expect(passwordChangeSubmit).toHaveBeenCalled()
+    })
+  })
 })

@@ -11,7 +11,7 @@
       <!-- マイユーザー管理 -->
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn class="mx-1" outlined rounded v-on="on">
+          <v-btn data-test="myuserMenu" class="mx-1" outlined rounded v-on="on">
             <v-icon left>
               mdi-account-circle
             </v-icon>
@@ -23,7 +23,7 @@
         </template>
         <v-list>
           <!-- マイユーザー編集 -->
-          <v-list-item id="openEditDialog" @click="openEditDialog">
+          <v-list-item data-test="editDialogItem" @click="openEditDialog">
             <v-list-item-title>
               <v-icon left>
                 mdi-account-edit
@@ -34,7 +34,7 @@
 
           <!-- パスワード変更 -->
           <v-list-item
-            id="openPasswordChangeDialog"
+            data-test="passwordChangeDialogItem"
             @click="openPasswordChangeDialog"
           >
             <v-list-item-title>
@@ -94,7 +94,12 @@
         </template>
 
         <template #actions="{ color }">
-          <v-btn :disabled="invalid" :color="color" @click="editSubmit">
+          <v-btn
+            data-test="editSubmitButton"
+            :disabled="invalid"
+            :color="color"
+            @click="editSubmit"
+          >
             <v-icon left>
               mdi-account-edit
             </v-icon>
@@ -123,6 +128,7 @@
 
         <template #actions="{ color }">
           <v-btn
+            data-test="passwordChangeSubmitButton"
             :disabled="invalid"
             :color="color"
             @click="passwordChangeSubmit"
