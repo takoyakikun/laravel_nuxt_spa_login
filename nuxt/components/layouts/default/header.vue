@@ -11,7 +11,13 @@
       <!-- マイユーザー管理 -->
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn data-test="myuserMenu" class="mx-1" outlined rounded v-on="on">
+          <v-btn
+            data-test="myuserMenuButton"
+            class="mx-1"
+            outlined
+            rounded
+            v-on="on"
+          >
             <v-icon left>
               mdi-account-circle
             </v-icon>
@@ -48,7 +54,7 @@
       </v-menu>
 
       <!-- ログアウト -->
-      <v-btn class="mx-1" outlined @click="logout">
+      <v-btn data-test="logoutButton" class="mx-1" outlined @click="logout">
         <v-icon left>
           mdi-logout-variant
         </v-icon>
@@ -56,10 +62,10 @@
       </v-btn>
     </template>
 
-    <!-- 未ログインメニュー -->
+    <!-- ログアウトメニュー -->
     <template v-if="!userExists">
       <!-- 新規ユーザー作成 -->
-      <v-btn class="mx-1" outlined to="register">
+      <v-btn data-test="registerButton" class="mx-1" outlined to="register">
         <v-icon left>
           mdi-account-plus
         </v-icon>
@@ -67,7 +73,7 @@
       </v-btn>
 
       <!-- ログイン -->
-      <v-btn class="mx-1" outlined to="login">
+      <v-btn data-test="loginButton" class="mx-1" outlined to="login">
         <v-icon left>
           mdi-login-variant
         </v-icon>

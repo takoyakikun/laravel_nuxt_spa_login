@@ -27,7 +27,7 @@ afterEach(() => {
 })
 
 describe("components/layouts/default/header", () => {
-  describe("shallowMount", () => {
+  describe("テスト", () => {
     let wrapper
     beforeEach(() => {
       router.push = jest.fn()
@@ -107,7 +107,7 @@ describe("components/layouts/default/header", () => {
     })
   })
 
-  describe("mount", () => {
+  describe("フォーム動作テスト", () => {
     let wrapper
     beforeEach(() => {
       wrapper = mount(Header, {
@@ -461,11 +461,11 @@ describe("components/layouts/default/header", () => {
         await wrapper.vm.$store.commit("auth/setUser", { id: 1 })
 
         // マイユーザー管理メニューを開く
-        wrapper.find("[data-test='myuserMenu']").trigger("click")
+        wrapper.find("[data-test='myuserMenuButton']").trigger("click")
       })
 
       test("編集ダイアログ項目", () => {
-        // ボタンをクリック
+        // 項目をクリック
         wrapper.find("[data-test='editDialogItem']").vm.$emit("click")
 
         // メソッドが実行されたか
@@ -473,7 +473,7 @@ describe("components/layouts/default/header", () => {
       })
 
       test("パスワード変更ダイアログ項目", () => {
-        // ボタンをクリック
+        // 項目をクリック
         wrapper.find("[data-test='passwordChangeDialogItem']").trigger("click")
 
         // メソッドが実行されたか
@@ -501,6 +501,152 @@ describe("components/layouts/default/header", () => {
 
       // メソッドが実行されたか
       expect(passwordChangeSubmit).toHaveBeenCalled()
+    })
+  })
+
+  describe("項目表示テスト", () => {
+    let wrapper
+    beforeEach(() => {
+      wrapper = mount(Header, {
+        localVue,
+        store,
+        router,
+        vuetify,
+        sync: false,
+        propsData: {
+          drawer: false
+        }
+      })
+    })
+
+    test("ログアウト", () => {
+      // マイユーザー管理ボタン
+      expect(
+        wrapper.find("[data-test='myuserMenuButton']").exists()
+      ).toBeFalsy()
+
+      // ログアウトボタン
+      expect(wrapper.find("[data-test='logoutButton']").exists()).toBeFalsy()
+
+      // 新規作成ボタン
+      expect(wrapper.find("[data-test='registerButton']").exists()).toBeTruthy()
+
+      // ログインボタン
+      expect(wrapper.find("[data-test='loginButton']").exists()).toBeTruthy()
+    })
+
+    test("一般権限", async () => {
+      // ログインデータを追加
+      await wrapper.vm.$store.commit("auth/setUser", {
+        name: "テスト",
+        email: "test@test.com",
+        role: 10
+      })
+
+      // マイユーザー管理ボタン
+      expect(
+        wrapper.find("[data-test='myuserMenuButton']").exists()
+      ).toBeTruthy()
+
+      // マイユーザー管理メニューを開く
+      await wrapper.find("[data-test='myuserMenuButton']").trigger("click")
+
+      // マイユーザー編集項目
+      expect(wrapper.find("[data-test='editDialogItem']").exists()).toBeTruthy()
+
+      // パスワード変更項目
+      expect(
+        wrapper.find("[data-test='passwordChangeDialogItem']").exists()
+      ).toBeTruthy()
+
+      // ログアウトボタン
+      expect(wrapper.find("[data-test='logoutButton']").exists()).toBeTruthy()
+
+      // 新規作成ボタン
+      expect(wrapper.find("[data-test='registerButton']").exists()).toBeFalsy()
+
+      // ログインボタン
+      expect(wrapper.find("[data-test='loginButton']").exists()).toBeFalsy()
+    })
+
+    test("管理者権限", async () => {
+      // ログインデータを追加
+      await wrapper.vm.$store.commit("auth/setUser", {
+        name: "テスト",
+        email: "test@test.com",
+        role: 5
+      })
+
+      // 権限を管理者以上にする
+      await wrapper.vm.$store.commit("auth/setPermission", {
+        category: "admin-higher",
+        permission: true
+      })
+
+      // マイユーザー管理ボタン
+      expect(
+        wrapper.find("[data-test='myuserMenuButton']").exists()
+      ).toBeTruthy()
+
+      // マイユーザー管理メニューを開く
+      await wrapper.find("[data-test='myuserMenuButton']").trigger("click")
+
+      // マイユーザー編集項目
+      expect(wrapper.find("[data-test='editDialogItem']").exists()).toBeTruthy()
+
+      // パスワード変更項目
+      expect(
+        wrapper.find("[data-test='passwordChangeDialogItem']").exists()
+      ).toBeTruthy()
+
+      // ログアウトボタン
+      expect(wrapper.find("[data-test='logoutButton']").exists()).toBeTruthy()
+
+      // 新規作成ボタン
+      expect(wrapper.find("[data-test='registerButton']").exists()).toBeFalsy()
+
+      // ログインボタン
+      expect(wrapper.find("[data-test='loginButton']").exists()).toBeFalsy()
+    })
+
+    test("開発者権限", async () => {
+      // ログインデータを追加
+      await wrapper.vm.$store.commit("auth/setUser", {
+        name: "テスト",
+        email: "test@test.com",
+        role: 1
+      })
+
+      // 権限を開発者にする
+      await wrapper.vm.$store.commit("auth/setPermission", {
+        category: "system-only",
+        permission: true
+      })
+
+      // マイユーザー管理ボタン
+      expect(
+        wrapper.find("[data-test='myuserMenuButton']").exists()
+      ).toBeTruthy()
+
+      // マイユーザー管理メニューを開く
+      await wrapper.find("[data-test='myuserMenuButton']").trigger("click")
+
+      // マイユーザー編集項目
+      expect(wrapper.find("[data-test='editDialogItem']").exists()).toBeTruthy()
+
+      // パスワード変更項目
+      expect(
+        wrapper.find("[data-test='passwordChangeDialogItem']").exists()
+      ).toBeTruthy()
+
+      // ログアウトボタン
+      expect(wrapper.find("[data-test='logoutButton']").exists()).toBeTruthy()
+
+      // 新規作成ボタン
+      expect(wrapper.find("[data-test='registerButton']").exists()).toBeFalsy()
+
+      // ログインボタン
+      expect(wrapper.find("[data-test='loginButton']").exists()).toBeFalsy()
     })
   })
 })
