@@ -2,7 +2,7 @@
   <v-navigation-drawer v-model="value" app>
     <v-list dense>
       <!-- Topページ -->
-      <v-list-item link to="/">
+      <v-list-item data-test="topItemLink" link to="/">
         <v-list-item-action>
           <v-icon>mdi-home</v-icon>
         </v-list-item-action>
@@ -12,7 +12,7 @@
       </v-list-item>
 
       <!-- 認証済ページ -->
-      <v-list-item v-if="userExists" link to="auth">
+      <v-list-item v-if="userExists" data-test="authItemLink" link to="auth">
         <v-list-item-action>
           <v-icon>mdi-lock</v-icon>
         </v-list-item-action>
@@ -22,7 +22,12 @@
       </v-list-item>
 
       <!-- ユーザー管理 -->
-      <v-list-item v-if="permission('admin-higher')" link to="users">
+      <v-list-item
+        v-if="permission('admin-higher')"
+        data-test="usersItemLink"
+        link
+        to="users"
+      >
         <v-list-item-action>
           <v-icon>mdi-account-group</v-icon>
         </v-list-item-action>

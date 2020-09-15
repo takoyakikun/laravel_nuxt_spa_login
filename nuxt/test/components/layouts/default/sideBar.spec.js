@@ -1,14 +1,17 @@
-import { createLocalVue, shallowMount } from "@vue/test-utils"
+import { createLocalVue, shallowMount, mount } from "@vue/test-utils"
 import Vuetify from "vuetify"
 import Vuex from "vuex"
+import VueRouter from "vue-router"
 import storeConfig from "@/test/storeConfig"
 import setConfigData from "@/test/setConfigData"
 import SideBar from "@/components/layouts/default/sideBar"
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
+localVue.use(VueRouter)
 
-let vuetify = new Vuetify()
+const router = new VueRouter()
+const vuetify = new Vuetify()
 
 let store
 beforeEach(() => {
@@ -21,20 +24,75 @@ afterEach(() => {
 })
 
 describe("components/layouts/default/sideBar", () => {
-  let wrapper
-  beforeEach(() => {
-    wrapper = shallowMount(SideBar, {
-      localVue,
-      store,
-      vuetify,
-      sync: false,
-      propsData: {
-        value: false
-      }
+  describe("テスト", () => {
+    let wrapper
+    beforeEach(() => {
+      wrapper = shallowMount(SideBar, {
+        localVue,
+        store,
+        vuetify,
+        sync: false,
+        propsData: {
+          value: false
+        }
+      })
+    })
+
+    test("is a Vue instance", () => {
+      expect(wrapper.vm).toBeTruthy()
     })
   })
 
-  test("is a Vue instance", () => {
-    expect(wrapper.vm).toBeTruthy()
+  describe("リンク動作テスト", () => {
+    let wrapper
+    beforeEach(() => {
+      wrapper = mount(SideBar, {
+        localVue,
+        store,
+        router,
+        vuetify,
+        sync: false,
+        propsData: {
+          value: false
+        }
+      })
+    })
+
+    test("トップページリンク", () => {
+      // 正しいリンク先が設定されているか
+      expect(wrapper.find("[data-test='topItemLink']").props().to).toBe("/")
+    })
+
+    test("認証済ページリンク", async () => {
+      // ログインデータを追加
+      await wrapper.vm.$store.commit("auth/setUser", {
+        name: "テスト",
+        email: "test@test.com",
+        role: 10
+      })
+
+      // 正しいリンク先が設定されているか
+      expect(wrapper.find("[data-test='authItemLink']").props().to).toBe("auth")
+    })
+
+    test("ユーザー管理ページリンク", async () => {
+      // 権限を管理者以上にする
+      await wrapper.vm.$store.commit("auth/setPermission", {
+        category: "admin-higher",
+        permission: true
+      })
+
+      // ログインデータを追加
+      await wrapper.vm.$store.commit("auth/setUser", {
+        name: "テスト",
+        email: "test@test.com",
+        role: 5
+      })
+
+      // 正しいリンク先が設定されているか
+      expect(wrapper.find("[data-test='usersItemLink']").props().to).toBe(
+        "users"
+      )
+    })
   })
 })
