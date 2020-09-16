@@ -95,4 +95,103 @@ describe("components/layouts/default/sideBar", () => {
       )
     })
   })
+
+  describe("項目表示テスト", () => {
+    let wrapper
+    beforeEach(() => {
+      wrapper = mount(SideBar, {
+        localVue,
+        store,
+        router,
+        vuetify,
+        sync: false,
+        propsData: {
+          value: false
+        }
+      })
+    })
+
+    test("ログアウト", () => {
+      // トップページリンク項目
+      expect(wrapper.find("[data-test='topItemLink']").exists()).toBeTruthy()
+
+      // 認証済ページリンク項目
+      expect(wrapper.find("[data-test='authItemLink']").exists()).toBeFalsy()
+
+      // ユーザー管理リンク項目
+      expect(wrapper.find("[data-test='usersItemLink']").exists()).toBeFalsy()
+    })
+
+    test("一般権限", async () => {
+      // ログインデータを追加
+      await wrapper.vm.$store.commit("auth/setUser", {
+        name: "テスト",
+        email: "test@test.com",
+        role: 10
+      })
+
+      // トップページリンク項目
+      expect(wrapper.find("[data-test='topItemLink']").exists()).toBeTruthy()
+
+      // 認証済ページリンク項目
+      expect(wrapper.find("[data-test='authItemLink']").exists()).toBeTruthy()
+
+      // ユーザー管理リンク項目
+      expect(wrapper.find("[data-test='usersItemLink']").exists()).toBeFalsy()
+    })
+
+    test("管理者権限", async () => {
+      // 権限を管理者以上にする
+      await wrapper.vm.$store.commit("auth/setPermission", {
+        category: "admin-higher",
+        permission: true
+      })
+
+      // ログインデータを追加
+      await wrapper.vm.$store.commit("auth/setUser", {
+        name: "テスト",
+        email: "test@test.com",
+        role: 5
+      })
+
+      // トップページリンク項目
+      expect(wrapper.find("[data-test='topItemLink']").exists()).toBeTruthy()
+
+      // 認証済ページリンク項目
+      expect(wrapper.find("[data-test='authItemLink']").exists()).toBeTruthy()
+
+      // ユーザー管理リンク項目
+      expect(wrapper.find("[data-test='usersItemLink']").exists()).toBeTruthy()
+    })
+
+    test("開発者権限", async () => {
+      // 権限を開発者にする
+      await wrapper.vm.$store.commit("auth/setPermission", {
+        category: "system-only",
+        permission: true
+      })
+
+      // 権限を管理者以上にする
+      await wrapper.vm.$store.commit("auth/setPermission", {
+        category: "admin-higher",
+        permission: true
+      })
+
+      // ログインデータを追加
+      await wrapper.vm.$store.commit("auth/setUser", {
+        name: "テスト",
+        email: "test@test.com",
+        role: 1
+      })
+
+      // トップページリンク項目
+      expect(wrapper.find("[data-test='topItemLink']").exists()).toBeTruthy()
+
+      // 認証済ページリンク項目
+      expect(wrapper.find("[data-test='authItemLink']").exists()).toBeTruthy()
+
+      // ユーザー管理リンク項目
+      expect(wrapper.find("[data-test='usersItemLink']").exists()).toBeTruthy()
+    })
+  })
 })
