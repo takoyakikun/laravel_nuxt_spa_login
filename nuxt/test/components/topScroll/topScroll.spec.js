@@ -18,8 +18,8 @@ afterEach(() => {
   jest.clearAllMocks()
 })
 
-describe("components/topScroll", () => {
-  describe("shallowMount", () => {
+describe("components/topScroll/topScroll", () => {
+  describe("テスト", () => {
     let wrapper
     beforeEach(() => {
       wrapper = shallowMount(TopScroll, {
@@ -34,7 +34,7 @@ describe("components/topScroll", () => {
       expect(wrapper.vm).toBeTruthy()
     })
 
-    test("トップスクロールボタンを表示する", () => {
+    test("トップスクロールボタンの表示/非表示", () => {
       // 縦の位置が100px以下は表示しない
       window.scrollY = 100
       wrapper.vm.handleScroll()
@@ -62,7 +62,7 @@ describe("components/topScroll", () => {
     })
   })
 
-  describe("mount", () => {
+  describe("ボタン動作テスト", () => {
     let wrapper
     let topScroll
     beforeEach(() => {
@@ -77,7 +77,7 @@ describe("components/topScroll", () => {
 
     test("トップスクロールボタンを押してトップへスクロールする", () => {
       // トップスクロールボタンをクリック
-      wrapper.find("[data-test='topScrollButton']").vm.$emit("click")
+      wrapper.find("[data-test='topScrollButton']").trigger("click")
 
       // topScroll メソッドが実行されたか
       expect(topScroll).toHaveBeenCalled()

@@ -1,35 +1,51 @@
 <template>
   <!-- トップスクロールボタン -->
-  <v-fade-transition>
-    <v-btn
-      v-show="showTopScroll"
-      data-test="topScrollButton"
-      color="primary"
-      transition="fade-transition"
-      dark
-      fixed
-      bottom
-      right
-      fab
-      @click="topScroll"
-    >
-      <v-icon>mdi-chevron-up</v-icon>
-    </v-btn>
-  </v-fade-transition>
+  <v-btn
+    v-show="showTopScroll"
+    data-test="topScrollButton"
+    v-bind="mergeButtonOptions"
+    @click="topScroll"
+  >
+    <slot name="buttonContent">
+      <v-icon>{{ icon }}</v-icon>
+    </slot>
+  </v-btn>
 </template>
 
 <script>
 import goTo from "vuetify/es5/services/goto"
 export default {
   props: {
-    options: {
+    scrollOptions: {
       type: Object,
       default: () => ({})
+    },
+    buttonOptions: {
+      type: Object,
+      default: () => ({})
+    },
+    icon: {
+      type: String,
+      default: "mdi-chevron-up"
     }
   },
   data() {
     return {
-      showTopScroll: false
+      showTopScroll: false,
+      defaultButtonOptions: {
+        color: "primary",
+        transition: "fade-transition",
+        fixed: true,
+        bottom: true,
+        right: true,
+        fab: true
+      }
+    }
+  },
+  computed: {
+    // 入力されたオプションとデフォルトのオプションを組み合わせる
+    mergeButtonOptions() {
+      return Object.assign(this.defaultButtonOptions, this.buttonOptions)
     }
   },
   mounted() {
@@ -45,7 +61,7 @@ export default {
     },
     // 画面トップにスクロール
     topScroll() {
-      goTo(0, this.options)
+      goTo(0, this.scrollOptions)
     }
   }
 }
