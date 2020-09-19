@@ -15,6 +15,7 @@ use App\Http\Requests\UserUpdateRequest;
 
 // ユーザーモデル
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
@@ -38,19 +39,11 @@ class UsersController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
-        if ($request->input('role')) {
-            if (Gate::allows('system-only')) {
-                // 入力者が開発者権限の場合は入力値を設定
-                $role = $request->input('role');
-            } elseif (Gate::allows('admin-higher') && $request->input('role') !== \Config::get('settings.roleLevel.system')) {
-                // 入力者が管理者権限の場合は開発者権限以外の入力値を設定
-                $role = $request->input('role');
-            } else {
-                // それ以外は最低レベル(一般)の権限を設定
-                $role = \Config::get('settings.roleLevel.user');
-            }
+        if ((int)$request->input('role') <= (int)Auth::user()->role) {
+            // 入力者より権限が同じか下の場合は入力値を設定
+            $role = $request->input('role');
         } else {
-            // 権限の入力がない場合は最低レベル(一般)の権限を設定
+            // それ以外は最低レベル(一般)の権限を設定
             $role = \Config::get('settings.roleLevel.user');
         }
 
@@ -81,27 +74,21 @@ class UsersController extends Controller
      */
     public function update(UserUpdateRequest $request, $id)
     {
+        $user = User::find($id);
+
+        if ((int)$user->role < (int)Auth::user()->role) {
+            // 入力者より権限が上の場合は変更不可
+            return response([], 403);
+        }
+
         $updateData = [
             'name' => $request->input('name'),
             'email' => $request->input('email'),
         ];
-        if ($request->input('role')) {
-            if (Gate::allows('system-only')) {
-                // 入力者が開発者権限の場合は入力値を設定
-                $updateData['role'] = $request->input('role');
-            } elseif (Gate::allows('admin-higher') && $request->input('role') !== \Config::get('settings.roleLevel.system')) {
-                // 入力者が管理者権限の場合は開発者権限以外の入力値を設定
-                $updateData['role'] = $request->input('role');
-            } else {
-                // それ以外は最低レベル(一般)の権限を設定
-                $updateData['role'] = \Config::get('settings.roleLevel.user');
-            }
-        } else {
-            // 権限の入力がない場合は最低レベル(一般)の権限を設定
-            $updateData['role'] = \Config::get('settings.roleLevel.user');
+        if ((int)$request->input('role') >= (int)Auth::user()->role) {
+            // 入力者より権限が同じか下の場合は入力値を設定
+            $updateData['role'] = $request->input('role');
         }
-
-        $user = User::find($id);
 
         \DB::beginTransaction();
         try {
@@ -123,6 +110,18 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
+        if ((int)$id === (int)Auth::id()) {
+            // 自ユーザーの場合は削除不可
+            return response([], 403);
+        }
+        
+        $user = User::find($id);
+
+        if ((int)$user->role < (int)Auth::user()->role) {
+            // 入力者より権限が上の場合は削除不可
+            return response([], 403);
+        }
+    
         \DB::beginTransaction();
         try {
             User::destroy($id);

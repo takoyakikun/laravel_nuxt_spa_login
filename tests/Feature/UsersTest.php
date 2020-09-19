@@ -49,11 +49,9 @@ class UsersTest extends TestCase
             'email' => 'sample@test.com',
         ]);
 
-        // 一般ユーザーからリクエストを送信
+        // 一般ユーザーはアクセス不可
         $response = $this->actingAs($this->user)
             ->json('GET', route('users.index'), [], ['X-Requested-With' => 'XMLHttpRequest']);
-
-        // 一般ユーザーはアクセス不可
         $response->assertStatus(403);
 
         // 管理者ユーザーからリクエストを送信
@@ -88,11 +86,9 @@ class UsersTest extends TestCase
             'role' => \Config::get('settings.roleLevel.user')
         ];
 
-        // 一般ユーザーからリクエストを送信
+        // 一般ユーザーはアクセス不可
         $response = $this->actingAs($this->user)
             ->json('POST', route('users.store'), $newData, ['X-Requested-With' => 'XMLHttpRequest']);
-
-        // 一般ユーザーはアクセス不可
         $response->assertStatus(403);
 
         // 管理者ユーザーからリクエストを送信
@@ -162,6 +158,11 @@ class UsersTest extends TestCase
         // サンプルデータを追加
         $sample = factory(User::class)->create([
             'email' => 'sample@test.com',
+            'role' => 10
+        ]);
+        $sampleSystem = factory(User::class)->create([
+            'email' => 'sample_system@test.com',
+            'role' => 1
         ]);
 
         // 編集するデータ
@@ -171,18 +172,19 @@ class UsersTest extends TestCase
             'role' => \Config::get('settings.roleLevel.admin')
         ];
 
-        // 一般ユーザーからリクエストを送信
+        // 一般ユーザーはアクセス不可
         $response = $this->actingAs($this->user)
             ->json('PATCH', route('users.update', $sample->id), $newData, ['X-Requested-With' => 'XMLHttpRequest']);
-
-        // 一般ユーザーはアクセス不可
         $response->assertStatus(403);
 
-        // 管理者ユーザーからリクエストを送信
+        // 管理者ユーザーから開発者ユーザー変更はアクセス不可
+        $response = $this->actingAs($this->adminUser)
+            ->json('PATCH', route('users.update', $sampleSystem->id), $newData, ['X-Requested-With' => 'XMLHttpRequest']);
+        $response->assertStatus(403);
+
+        // 管理者ユーザーは正常レスポンスを返す
         $response = $this->actingAs($this->adminUser)
             ->json('PATCH', route('users.update', $sample->id), $newData, ['X-Requested-With' => 'XMLHttpRequest']);
-
-        // 正しいレスポンスが返ってくることを確認
         $response->assertStatus(200);
 
         // データベースに編集したユーザーデータが入っているか確認
@@ -204,20 +206,31 @@ class UsersTest extends TestCase
         // サンプルデータを追加
         $sample = factory(User::class)->create([
             'email' => 'sample@test.com',
+            'role' => 10
+        ]);
+        $sampleSystem = factory(User::class)->create([
+            'email' => 'sample_system@test.com',
+            'role' => 1
         ]);
 
-        // 一般ユーザーからリクエストを送信
+        // 一般ユーザーはアクセス不可
         $response = $this->actingAs($this->user)
             ->json('DELETE', route('users.destroy', $sample->id), [], ['X-Requested-With' => 'XMLHttpRequest']);
-
-        // 一般ユーザーはアクセス不可
         $response->assertStatus(403);
 
-        // 管理者ユーザーからリクエストを送信
+        // 管理者ユーザーから開発者ユーザー削除はアクセス不可
+        $response = $this->actingAs($this->adminUser)
+            ->json('DELETE', route('users.destroy', $sampleSystem->id), [], ['X-Requested-With' => 'XMLHttpRequest']);
+        $response->assertStatus(403);
+
+        // 開発者ユーザーから自ユーザー削除はアクセス不可
+        $response = $this->actingAs($this->systemUser)
+            ->json('DELETE', route('users.destroy', $this->systemUser->id), [], ['X-Requested-With' => 'XMLHttpRequest']);
+        $response->assertStatus(403);
+
+        // 管理者ユーザーは正常レスポンスを返す
         $response = $this->actingAs($this->adminUser)
             ->json('DELETE', route('users.destroy', $sample->id), [], ['X-Requested-With' => 'XMLHttpRequest']);
-
-        // 正しいレスポンスが返ってくることを確認
         $response->assertStatus(200);
 
         // ユーザーが削除されているか確認
