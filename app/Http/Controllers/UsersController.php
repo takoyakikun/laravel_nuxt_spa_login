@@ -49,7 +49,7 @@ class UsersController extends Controller
 
         \DB::beginTransaction();
         try {
-            $user = User::create([
+            $user = resolve(User::class)->create([
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
                 'password' => Hash::make($request->input('password')),
@@ -74,7 +74,7 @@ class UsersController extends Controller
      */
     public function update(UserUpdateRequest $request, $id)
     {
-        $user = User::find($id);
+        $user = resolve(User::class)->find($id);
 
         if ((int)$user->role < (int)Auth::user()->role) {
             // 入力者より権限が上の場合は変更不可
@@ -115,7 +115,7 @@ class UsersController extends Controller
             return response([], 403);
         }
         
-        $user = User::find($id);
+        $user = resolve(User::class)->find($id);
 
         if ((int)$user->role < (int)Auth::user()->role) {
             // 入力者より権限が上の場合は削除不可
@@ -124,7 +124,7 @@ class UsersController extends Controller
     
         \DB::beginTransaction();
         try {
-            User::destroy($id);
+            resolve(User::class)->destroy($id);
             \DB::commit();
         } catch (\Exception $e) {
             \DB::rollback();
