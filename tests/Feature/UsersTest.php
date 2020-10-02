@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Notifications\CustomVerifyEmail;
+use App\Notifications\CustomResetPassword;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -89,8 +89,6 @@ class UsersTest extends TestCase
         $newData = [
             'name'  => 'テスト',
             'email' => 'sample@test.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
             'role' => \Config::get('settings.roleLevel.user')
         ];
 
@@ -113,15 +111,14 @@ class UsersTest extends TestCase
             'role' => $newData['role']
         ]);
 
-        // 追加したユーザーのメールアドレスに送信されているか確認
+        // パスワード設定メールが入力されたメールアドレスに送信されているか確認
         $user = User::orderBy('id', 'desc')->first();
-        $url = '';
+        $token = '';
         Notification::assertSentTo(
             $user,
-            CustomVerifyEmail::class,
-            function (CustomVerifyEmail $notification) use (&$url, $user) {
-                $mail = $notification->toMail($user);
-                $url = $mail->actionUrl;
+            CustomResetPassword::class,
+            function (CustomResetPassword $notification) use (&$token) {
+                $token = $notification->token;
                 return true;
             }
         );
@@ -135,18 +132,32 @@ class UsersTest extends TestCase
         // この時点ではメール認証されていないのでfalseを返す
         $response->assertJson([false]);
 
-        // メール認証ボタンを押す
-        $response = $this->actingAs($user)->get($url);
+        // 設定するパスワードデータ
+        $newPasswordData = [
+            'token'  => $token,
+            'email' => $user->email,
+            'password' => 'resetpass',
+            'password_confirmation' => 'resetpass'
+        ];
 
-        // Topへリダイレクトすることを確認
-        $response->assertStatus(302)->assertRedirect('/');
+        // パスワードリセットのリクエストを送信
+        $response = $this->json('POST', route('password.passwordSet'), $newPasswordData, ['X-Requested-With' => 'XMLHttpRequest']);
+
+        // 正しいレスポンスが返ってくることを確認
+        $response->assertStatus(200);
+
+        // 認証されていることを確認
+        $this->assertTrue(\Auth::check());
+
+        // 設定されたパスワードが保存されていることを確認
+        $this->assertTrue(\Hash::check($newPasswordData['password'], $user->fresh()->password));
 
         // データベースにメール認証時刻が入っているか確認
         $verificationUser = User::find($user->id);
         $this->assertNotNull($verificationUser->email_verified_at);
 
         // メール認証のアクセス権限のリクエストを送信
-        $response = $this->actingAs($user)->json('GET', route('permission', ['verified']), [], ['X-Requested-With' => 'XMLHttpRequest']);
+        $response = $this->actingAs($verificationUser)->json('GET', route('permission', ['verified']), [], ['X-Requested-With' => 'XMLHttpRequest']);
 
         // 正しいレスポンスが返ってくることを確認
         $response->assertStatus(200);

@@ -41,11 +41,19 @@ class CustomResetPassword extends ResetPassword
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-            ->subject(__('Reset Password'))
-            ->line(__('Click button below and reset password.'))
-            ->action(__('Reset password'), url('passwordReset/' . $this->token))
-            ->line(__('If you did not request a password reset, no further action is required.'));
+        if (url()->current() === url(route('users.store'))) {
+            return (new MailMessage)
+                ->subject('パスワードを設定してください')
+                ->line('下のボタンをクリックしてパスワードを設定してください。')
+                ->action('パスワード設定', url('passwordSet/' . $this->token))
+                ->line('もし、「パスワード設定」がうまく機能しない場合、以下のURLをコピー＆ペーストして直接ブラウザからアクセスしてください。');
+        } else {
+            return (new MailMessage)
+                ->subject(__('Reset Password'))
+                ->line(__('Click button below and reset password.'))
+                ->action(__('Reset password'), url('passwordReset/' . $this->token))
+                ->line(__('If you did not request a password reset, no further action is required.'));
+        }
     }
 
     /**

@@ -36,6 +36,9 @@ Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail'
 // パスワードリセット
 Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
 
+// パスワードセット
+Route::post('password/passwordSet', 'Auth\ResetPasswordController@passwordSet')->name('password.passwordSet');
+
 // コンフィグを取得
 Route::get('/config', 'ConfigController@index')->name('config');
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 
 // 追加フォームバリデーション
 use App\Http\Requests\UserStoreRequest;
@@ -19,6 +20,8 @@ use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
+    use SendsPasswordResetEmails;
+
     /**
      * Display a listing of the resource.
      *
@@ -55,7 +58,10 @@ class UsersController extends Controller
                 'password' => Hash::make($request->input('password')),
                 'role' => $role,
             ]);
-            event(new Registered($user));
+            $this->broker()->sendResetLink(
+                $this->credentials($request)
+            );
+
             \DB::commit();
         } catch (\Exception $e) {
             \DB::rollback();

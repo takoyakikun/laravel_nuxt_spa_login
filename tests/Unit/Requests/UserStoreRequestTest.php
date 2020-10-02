@@ -43,14 +43,6 @@ class UserStoreRequestTest extends TestCase
         $rule     = \Arr::only($rules, $item);
 
         $dataList = [$item => $data];
-        if ($item === 'password') {
-            // 確認パスワードを入力状態にする
-            if (isset($options['confirmed'])) {
-                $dataList['password_confirmation'] = $options['confirmed'];
-            } else {
-                $dataList['password_confirmation'] = $data;
-            }
-        }
 
         $validator = Validator::make($dataList, $rule);
         $result    = $validator->passes();
@@ -81,14 +73,6 @@ class UserStoreRequestTest extends TestCase
             'email_max_false' => ['email', str_repeat('a', 247) . '@test.com', false],
             'email_max_true' => ['email', str_repeat('a', 246) . '@test.com', true],
             'email_unique' => ['email', 'test@test.com', false],
-
-            // パスワード
-            'password_true' => ['password', 'password', true],
-            'password_required_null' => ['password', null, false],
-            'password_required_empty' => ['password', '', false],
-            'password_confirmed' => ['password', 'password', false, ['confirmed' => 'confirmed']],
-            'password_min_false' => ['password', str_repeat('a', 7), false],
-            'password_min_true' => ['password', str_repeat('a', 8), true],
 
             // 権限
             'role_true' => ['role', 1, true],
