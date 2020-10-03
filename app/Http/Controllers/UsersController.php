@@ -55,7 +55,7 @@ class UsersController extends Controller
             $user = resolve(User::class)->create([
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
-                'password' => Hash::make($request->input('password')),
+                'password' => Hash::make(\Str::random(32)),
                 'role' => $role,
             ]);
             $this->broker()->sendResetLink(
