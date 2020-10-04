@@ -113,5 +113,14 @@ export const actions = {
         return res
       })
       .catch(err => err.response)
+  },
+  // パスワードリセット
+  async passwordSet({ dispatch }, formValue) {
+    return await this.$axios
+      .post("/api/password/passwordSet", formValue)
+      .then(res => {
+        return res
+      })
+      .catch(err => err.response)
   }
 }

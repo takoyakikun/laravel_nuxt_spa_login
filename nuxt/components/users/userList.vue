@@ -67,7 +67,7 @@
     </v-row>
 
     <!-- 新規追加ダイアログ -->
-    <validation-observer id="aaa" ref="createForm" v-slot="{ invalid }">
+    <validation-observer ref="createForm" v-slot="{ invalid }">
       <MyDialog
         ref="createDialog"
         v-model="createDialog"
@@ -78,7 +78,7 @@
         <template #content>
           <UserForm
             v-model="createFormValue"
-            form-type="create"
+            form-type="usersCreate"
             @submit="createSubmit"
           />
         </template>
@@ -165,8 +165,8 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex"
-import MyDialog from "~/components/dialog/myDialog"
-import UserForm from "~/components/users/userForm"
+import MyDialog from "@/components/dialog/myDialog"
+import UserForm from "@/components/users/userForm"
 
 export default {
   components: {
