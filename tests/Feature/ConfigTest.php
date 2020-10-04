@@ -2,9 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\ConfigController;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Mockery;
 
 class ConfigTest extends TestCase
 {
@@ -50,7 +53,9 @@ class ConfigTest extends TestCase
                     'key1' => 'value2-1',
                     'key2' => 'value2-2',
                 ]
-            ]
+            ],
+            // 取得しないデータ
+            'test6' => 'hidden'
         ];
 
         // テストコンフィグデータをセット
@@ -88,6 +93,14 @@ class ConfigTest extends TestCase
             ]
         ];
 
+        // hiddenプロパティをテストデータに書き換える
+        $mock = Mockery::mock(ConfigController::class)->makePartial();
+        $reflectionClass = new \ReflectionClass($mock);
+        $property = $reflectionClass->getProperty('hidden');
+        $property->setAccessible(true);
+        $property->setValue($mock, ['test6']);
+        $this->instance(ConfigController::class, $mock);
+
         // コンフィグ取得のリクエストを送信
         $response = $this->json('GET', route('config'), [], ['X-Requested-With' => 'XMLHttpRequest']);
 
@@ -96,6 +109,7 @@ class ConfigTest extends TestCase
 
         // 正しいレスポンスデータが返っているか確認
         $response->assertJson($trueResponse, true);
-
+        $response->assertJsonCount(5);
+        
     }
 }
