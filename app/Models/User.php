@@ -60,4 +60,37 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new CustomResetPassword($token));
     }
 
+    /**
+     * 権限レベルのカラム
+     *
+     * @return array
+     */
+    public function getRoleLevelAttribute () {
+        $roleLevels = [];
+        foreach (array_keys(\Config::get('settings.roleLevel')) as $roleTypeKey) {
+            $roleLevels[$roleTypeKey] = $this->roleLevel($this->role, $roleTypeKey);
+        }
+
+        return $roleLevels;
+    }
+
+    /**
+     * 権限レベルを返す
+     *
+     * @param int $role
+     * @param string $roleType
+     * @return int
+     */
+    static public function roleLevel ($role, $roleType = 'auth') {
+        $roleTypeLevel = \Config::get('settings.roleLevel.'.$roleType);
+        if (\Config::get('settings.role.'.$role.'.'.$roleType)) {
+            $roleKey = \Config::get('settings.role.'.$role.'.'.$roleType);
+        } else {
+            $roleTypeLevelMax = array_keys($roleTypeLevel, max($roleTypeLevel));
+            $roleKey = $roleTypeLevelMax[0];
+        }
+        $roleLevel = $roleTypeLevel[$roleKey];
+
+        return $roleLevel;
+    }
 }

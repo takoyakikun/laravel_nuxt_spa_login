@@ -42,12 +42,12 @@ class UsersController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
-        if ((int)Auth::user()->role <= (int)$request->input('role')) {
+        if ((int)Auth::user()->role_level['auth'] <= (int)User::roleLevel($request->input('role'), 'auth')) {
             // 入力者より権限が同じか下の場合は入力値を設定
             $role = $request->input('role');
         } else {
             // それ以外は最低レベル(一般)の権限を設定
-            $role = \Config::get('settings.roleLevel.user');
+            $role = 3;
         }
 
         \DB::beginTransaction();
@@ -82,7 +82,7 @@ class UsersController extends Controller
     {
         $user = resolve(User::class)->find($id);
 
-        if ((int)Auth::user()->role > (int)$user->role) {
+        if ((int)Auth::user()->role_level['auth'] > (int)$user->role_level['auth']) {
             // 入力者より権限が上の場合は変更不可
             return response([], 403);
         }
@@ -91,7 +91,7 @@ class UsersController extends Controller
             'name' => $request->input('name'),
             'email' => $request->input('email'),
         ];
-        if ((int)Auth::user()->role <= (int)$request->input('role')) {
+        if ((int)Auth::user()->role_level['auth'] <= (int)User::roleLevel($request->input('role'), 'auth')) {
             // 入力者より権限が同じか下の場合は入力値を設定
             $updateData['role'] = $request->input('role');
         }
@@ -123,7 +123,7 @@ class UsersController extends Controller
         
         $user = resolve(User::class)->find($id);
 
-        if ((int)Auth::user()->role > (int)$user->role) {
+        if ((int)Auth::user()->role_level['auth'] > (int)$user->role_level['auth']) {
             // 入力者より権限が上の場合は削除不可
             return response([], 403);
         }

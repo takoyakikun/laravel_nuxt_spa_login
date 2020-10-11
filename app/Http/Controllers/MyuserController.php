@@ -36,7 +36,7 @@ class MyuserController extends Controller
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
                 'password' => Hash::make($request->input('password')),
-                'role' => \Config::get('settings.roleLevel.user'),
+                'role' => 3,
             ]);
             event(new Registered($user));
             \DB::commit();

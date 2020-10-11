@@ -221,7 +221,7 @@ export default {
           result = false
         } else if (this.permission("admin-higher")) {
           // 管理者権限は開発者権限以外編集可能
-          if (item.role > 1) {
+          if (item.role !== 1) {
             result = false
           }
         }
@@ -240,7 +240,7 @@ export default {
           // 開発者権限はすべて削除可能
           result = false
         } else if (this.permission("admin-higher")) {
-          if (item.role > 1) {
+          if (item.role !== 1) {
             // 管理者権限は開発者権限以外削除可能
             result = false
           }

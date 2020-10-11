@@ -24,7 +24,7 @@ afterEach(() => {
 })
 
 describe("components/users/userList", () => {
-  describe("shallowMount", () => {
+  describe("テスト", () => {
     let wrapper
     beforeEach(async () => {
       wrapper = shallowMount(UserList, {
@@ -149,7 +149,7 @@ describe("components/users/userList", () => {
     })
   })
 
-  describe("mount", () => {
+  describe("フォーム動作テスト", () => {
     let wrapper
     beforeEach(async () => {
       wrapper = mount(UserList, {
@@ -206,11 +206,7 @@ describe("components/users/userList", () => {
           // フォームを入力してユーザー追加処理
           wrapper.find("input[name='name']").setValue("テスト")
           wrapper.find("input[name='email']").setValue("test@test.com")
-          wrapper.find("input[name='role'][value='10']").setChecked()
-          wrapper.find("input[name='password']").setValue("password")
-          wrapper
-            .find("input[name='password_confirmation']")
-            .setValue("password")
+          wrapper.find("input[name='role'][value='3']").setChecked()
           await wrapper.vm.createSubmit()
           jest.runAllTimers()
 
@@ -222,9 +218,7 @@ describe("components/users/userList", () => {
           expect(axiosPost).toHaveBeenCalledWith("/api/users", {
             name: "テスト",
             email: "test@test.com",
-            role: 10,
-            password: "password",
-            password_confirmation: "password"
+            role: 3
           })
 
           // snackbarのエラー表示
@@ -251,9 +245,7 @@ describe("components/users/userList", () => {
         // フォームを入力してユーザー追加処理
         wrapper.find("input[name='name']").setValue("テスト")
         wrapper.find("input[name='email']").setValue("test@test.com")
-        wrapper.find("input[name='role'][value='10']").setChecked()
-        wrapper.find("input[name='password']").setValue("password")
-        wrapper.find("input[name='password_confirmation']").setValue("password")
+        wrapper.find("input[name='role'][value='3']").setChecked()
         await wrapper.vm.createSubmit()
         jest.runAllTimers()
 
@@ -265,9 +257,7 @@ describe("components/users/userList", () => {
         expect(axiosPost).toHaveBeenCalledWith("/api/users", {
           name: "テスト",
           email: "test@test.com",
-          role: 10,
-          password: "password",
-          password_confirmation: "password"
+          role: 3
         })
 
         // snackbarの完了表示
@@ -293,7 +283,7 @@ describe("components/users/userList", () => {
           id: 1,
           name: "テスト",
           email: "test@test.com",
-          role: 10
+          role: 3
         })
       })
 
@@ -333,7 +323,7 @@ describe("components/users/userList", () => {
           // フォームを入力してユーザー編集処理
           wrapper.find("input[name='name']").setValue("テスト")
           wrapper.find("input[name='email']").setValue("test@test.com")
-          wrapper.find("input[name='role'][value='10']").setChecked()
+          wrapper.find("input[name='role'][value='3']").setChecked()
           await wrapper.vm.editSubmit()
           jest.runAllTimers()
 
@@ -346,7 +336,7 @@ describe("components/users/userList", () => {
             id: 1,
             name: "テスト",
             email: "test@test.com",
-            role: 10
+            role: 3
           })
 
           // snackbarのエラー表示
@@ -378,7 +368,7 @@ describe("components/users/userList", () => {
             // フォームを入力してユーザー編集処理
             wrapper.find("input[name='name']").setValue("テスト")
             wrapper.find("input[name='email']").setValue("test@test.com")
-            wrapper.find("input[name='role'][value='10']").setChecked()
+            wrapper.find("input[name='role'][value='3']").setChecked()
             await wrapper.vm.editSubmit()
             jest.runAllTimers()
 
@@ -391,7 +381,7 @@ describe("components/users/userList", () => {
               id: 1,
               name: "テスト",
               email: "test@test.com",
-              role: 10
+              role: 3
             })
 
             // snackbarの完了表示
@@ -407,7 +397,7 @@ describe("components/users/userList", () => {
             // フォームを入力してユーザー編集処理
             wrapper.find("input[name='name']").setValue("テスト")
             wrapper.find("input[name='email']").setValue("test@test.com")
-            wrapper.find("input[name='role'][value='10']").setChecked()
+            wrapper.find("input[name='role'][value='3']").setChecked()
             await wrapper.vm.editSubmit()
             jest.runAllTimers()
 
@@ -420,7 +410,7 @@ describe("components/users/userList", () => {
               id: 1,
               name: "テスト",
               email: "test@test.com",
-              role: 10
+              role: 3
             })
 
             // snackbarの完了表示

@@ -11,6 +11,7 @@ import Resend from "@/pages/resend"
 import Users from "@/pages/users"
 import PasswordReset from "@/pages/passwordReset/index"
 import PasswordResetToken from "@/pages/passwordReset/_token"
+import PasswordSetToken from "@/pages/passwordSet/_token"
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -155,6 +156,23 @@ describe("passwordReset", () => {
 
     test("guestミドルウェアが登録されているか", () => {
       expect(wrapper.vm.$options.middleware).toContain("guest")
+    })
+  })
+
+  describe("passwordSet", () => {
+    describe("_token", () => {
+      let wrapper
+      beforeEach(() => {
+        wrapper = shallowMount(PasswordSetToken, { store, vuetify })
+      })
+
+      test("is a Vue instance", () => {
+        expect(wrapper.vm).toBeTruthy()
+      })
+
+      test("guestミドルウェアが登録されているか", () => {
+        expect(wrapper.vm.$options.middleware).toContain("guest")
+      })
     })
   })
 })

@@ -89,7 +89,7 @@ class UsersTest extends TestCase
         $newData = [
             'name'  => 'テスト',
             'email' => 'sample@test.com',
-            'role' => \Config::get('settings.roleLevel.user')
+            'role' => 3
         ];
 
         // 一般ユーザーはアクセス不可
@@ -177,14 +177,14 @@ class UsersTest extends TestCase
         // サンプルデータを追加
         $sample = factory(User::class)->create([
             'email' => 'sample@test.com',
-            'role' => 10
+            'role' => 3
         ]);
 
         // 編集するデータ
         $newData = [
             'name'  => '編集テスト',
             'email' => 'change@test.com',
-            'role' => \Config::get('settings.roleLevel.admin')
+            'role' => 2
         ];
 
         // 管理者ユーザーからリクエストを送信
@@ -213,11 +213,11 @@ class UsersTest extends TestCase
         // サンプルデータを追加
         $sample = factory(User::class)->create([
             'email' => 'sample@test.com',
-            'role' => 10
+            'role' => 3
         ]);
         $sampleAdmin = factory(User::class)->create([
             'email' => 'sample_admin@test.com',
-            'role' => 5
+            'role' => 2
         ]);
         $sampleSystem = factory(User::class)->create([
             'email' => 'sample_system@test.com',
@@ -228,7 +228,7 @@ class UsersTest extends TestCase
         $newData = [
             'name'  => '編集テスト',
             'email' => 'change@test.com',
-            'role' => \Config::get('settings.roleLevel.user')
+            'role' => 3
         ];
 
         // モデルをモックする
@@ -288,7 +288,7 @@ class UsersTest extends TestCase
         // サンプルデータを追加
         $sample = factory(User::class)->create([
             'email' => 'sample@test.com',
-            'role' => 10
+            'role' => 3
         ]);
 
         // 管理者ユーザーからリクエストを送信
@@ -313,11 +313,11 @@ class UsersTest extends TestCase
         // サンプルデータを追加
         $sample = factory(User::class)->create([
             'email' => 'sample@test.com',
-            'role' => 10
+            'role' => 3
         ]);
         $sampleAdmin = factory(User::class)->create([
             'email' => 'sample_admin@test.com',
-            'role' => 5
+            'role' => 2
         ]);
         $sampleSystem = factory(User::class)->create([
             'email' => 'sample_system@test.com',

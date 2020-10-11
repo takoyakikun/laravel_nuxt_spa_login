@@ -23,7 +23,7 @@ afterEach(() => {
 })
 
 describe("components/users/userForm", () => {
-  describe("shallowMount", () => {
+  describe("テスト", () => {
     let wrapper
     beforeEach(async () => {
       wrapper = shallowMount(UserForm, {
@@ -73,12 +73,12 @@ describe("components/users/userForm", () => {
         })
 
         // 全ての権限を返す
-        expect(wrapper.vm.role.map(item => item.value)).toEqual([1, 5, 10])
+        expect(wrapper.vm.role.map(item => item.value)).toEqual([1, 2, 3])
       })
 
       test("それ以外", () => {
         // 管理者以外を返す
-        expect(wrapper.vm.role.map(item => item.value)).toEqual([5, 10])
+        expect(wrapper.vm.role.map(item => item.value)).toEqual([2, 3])
       })
     })
   })

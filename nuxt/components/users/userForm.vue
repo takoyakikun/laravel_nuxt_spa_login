@@ -143,7 +143,7 @@ export default {
     role() {
       return this.permission("system-only")
         ? this.config.role
-        : this.config.role.filter(item => item.value > 1)
+        : this.config.role.filter(item => item.value !== 1)
     }
   },
   methods: {

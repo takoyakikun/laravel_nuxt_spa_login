@@ -12,7 +12,7 @@ class ConfigController extends Controller
      *
      * @var array
      */
-    protected $hidden = ['roleLevel'];
+    protected $hidden = ['roleLevel', 'role'];
 
     /**
      * コンフィグを取得する
