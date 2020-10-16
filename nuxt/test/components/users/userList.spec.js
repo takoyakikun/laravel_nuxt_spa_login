@@ -17,6 +17,7 @@ let store
 beforeEach(() => {
   store = new Vuex.Store(storeConfig)
   store.commit("config/setConfig", setConfigData)
+  store.commit("users/setRoleOptions", [1, 2, 3])
 })
 
 afterEach(() => {

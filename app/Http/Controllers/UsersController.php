@@ -2,12 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-
 // 追加フォームバリデーション
 use App\Http\Requests\UserStoreRequest;
 
@@ -16,6 +10,12 @@ use App\Http\Requests\UserUpdateRequest;
 
 // ユーザーモデル
 use App\Models\User;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
@@ -138,4 +138,24 @@ class UsersController extends Controller
         }
         return response([]);
     }
+
+    /**
+     * 権限の選択オプションを返す
+     *
+     * @return void
+     */
+    public function roleOptions()
+    {
+        $roleOptions = [];
+        foreach(array_keys(\Config::get('settings.roleOptions')) as $key) {
+            // ログインしているユーザーと同じか下の権限レベルのユーザー権限を返す
+            if (User::roleLevel($key, 'auth') >= (int)Auth::user()->role_level['auth']) {
+                $roleOptions[] = $key;
+            }
+        }
+
+        return response($roleOptions);
+
+    }
+
 }

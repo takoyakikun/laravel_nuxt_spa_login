@@ -136,14 +136,15 @@ export default {
   computed: {
     ...mapGetters({
       config: "config/config",
-      permission: "auth/permission"
+      permission: "auth/permission",
+      roleOptions: "users/roleOptions"
     }),
 
     // 権限ごとに選択できる権限を変える
     role() {
-      return this.permission("system-only")
-        ? this.config.role
-        : this.config.role.filter(item => item.value !== 1)
+      return this.config.roleOptions.filter(item =>
+        this.roleOptions.includes(item.value)
+      )
     }
   },
   methods: {

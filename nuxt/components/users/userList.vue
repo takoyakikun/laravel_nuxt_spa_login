@@ -28,7 +28,7 @@
           class="elevation-1"
         >
           <template v-slot:[`item.role`]="{ value }">
-            {{ getConfigData("role", value) }}
+            {{ getConfigData("roleOptions", value) }}
           </template>
           <template v-slot:[`item.action`]="{ item }">
             <v-tooltip left color="success">

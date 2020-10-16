@@ -66,17 +66,17 @@ describe("components/users/userForm", () => {
 
     describe("権限ごとに選択できる権限を変える", () => {
       test("開発者権限", () => {
-        // 権限を開発者にする
-        wrapper.vm.$store.commit("auth/setPermission", {
-          category: "system-only",
-          permission: true
-        })
+        // 選択オプションデータをセット
+        wrapper.vm.$store.commit("users/setRoleOptions", [1, 2, 3])
 
         // 全ての権限を返す
         expect(wrapper.vm.role.map(item => item.value)).toEqual([1, 2, 3])
       })
 
       test("それ以外", () => {
+        // 選択オプションデータをセット
+        wrapper.vm.$store.commit("users/setRoleOptions", [2, 3])
+
         // 管理者以外を返す
         expect(wrapper.vm.role.map(item => item.value)).toEqual([2, 3])
       })

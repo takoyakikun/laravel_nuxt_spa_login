@@ -381,5 +381,30 @@ class UsersTest extends TestCase
 
     }
 
+    /**
+     * 権限の選択オプションテスト
+     *
+     * @return void
+     */
+    public function testRoleOptions()
+    {
+        // 一般ユーザーはアクセス不可
+        $response = $this->actingAs($this->user)
+            ->json('GET', route('users.roleOptions'), [], ['X-Requested-With' => 'XMLHttpRequest']);
+        $response->assertStatus(403);
+
+        // 管理者ユーザーは開発者ユーザー以下の権限レベルの選択オプションを返す
+        $response = $this->actingAs($this->adminUser)
+            ->json('GET', route('users.roleOptions'), [], ['X-Requested-With' => 'XMLHttpRequest']);
+        $response->assertStatus(200)
+            ->assertJson([2,3]);
+
+        // 開発者ユーザーは全選択オプションを返す
+        $response = $this->actingAs($this->systemUser)
+            ->json('GET', route('users.roleOptions'), [], ['X-Requested-With' => 'XMLHttpRequest']);
+        $response->assertStatus(200)
+            ->assertJson(array_keys(\Config::get('settings.roleOptions')));
+
+    }
 
 }

@@ -70,6 +70,9 @@ Route::group(['middleware' => ['auth', 'can:admin-higher']], function () {
     Route::group(['middleware' => ['verified']], function () {
         // ログインユーザー
         Route::resource('users', 'UsersController', ['only' => ['index', 'store', 'update', 'destroy']]);
+
+        // 権限の選択オプション
+        Route::get('users/roleOptions', 'UsersController@roleOptions')->name('users.roleOptions');
     });
 
 });

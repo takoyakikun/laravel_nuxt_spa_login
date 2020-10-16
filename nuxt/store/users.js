@@ -1,15 +1,21 @@
 export const state = () => ({
-  list: []
+  list: [],
+  roleOptions: []
 })
 
 export const getters = {
-  list: state => state.list
+  list: state => state.list,
+  roleOptions: state => state.roleOptions
 }
 
 export const mutations = {
   // ユーザーデータをセット
   setList(state, list) {
     state.list = list
+  },
+  // 権限の選択オプションをセット
+  setRoleOptions(state, roleOptions) {
+    state.roleOptions = roleOptions
   }
 }
 
@@ -114,11 +120,21 @@ export const actions = {
       })
       .catch(err => err.response)
   },
-  // パスワードリセット
+  // パスワードセット
   async passwordSet({ dispatch }, formValue) {
     return await this.$axios
       .post("/api/password/passwordSet", formValue)
       .then(res => {
+        return res
+      })
+      .catch(err => err.response)
+  },
+  // 権限の選択オプションをセット
+  async setRoleOptions({ commit }) {
+    return await this.$axios
+      .get("/api/users/roleOptions")
+      .then(res => {
+        commit("setRoleOptions", res.data)
         return res
       })
       .catch(err => err.response)
