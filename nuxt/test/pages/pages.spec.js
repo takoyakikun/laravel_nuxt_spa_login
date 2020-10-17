@@ -123,8 +123,8 @@ describe("users", () => {
     const storeDispatch = jest.spyOn(wrapper.vm.$store, "dispatch")
 
     // createdのdispatchが実行されているか
-    expect(storeDispatch).toHaveBeenCalledWith("auth/checkAuth", "system-only")
     expect(storeDispatch).toHaveBeenCalledWith("users/setList")
+    expect(storeDispatch).toHaveBeenCalledWith("users/setRoleOptions")
   })
 })
 

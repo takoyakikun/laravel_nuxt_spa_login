@@ -37,7 +37,7 @@
                   data-test="editDialogButton"
                   icon
                   color="success"
-                  :disabled="editDisabled(item)"
+                  :disabled="!item.modify_flg"
                   v-on="on"
                   @click="openEditDialog(item)"
                 >
@@ -52,7 +52,7 @@
                   data-test="deleteDialogButton"
                   icon
                   color="error"
-                  :disabled="deleteDisabled(item)"
+                  :disabled="!item.delete_flg"
                   v-on="on"
                   @click="openDeleteDialog(item)"
                 >
@@ -211,43 +211,6 @@ export default {
       permission: "auth/permission",
       userList: "users/list"
     }),
-
-    // 編集不可のユーザー
-    editDisabled() {
-      return item => {
-        let result = true
-        if (this.permission("system-only")) {
-          // 開発者権限はすべて編集可能
-          result = false
-        } else if (this.permission("admin-higher")) {
-          // 管理者権限は開発者権限以外編集可能
-          if (item.role !== 1) {
-            result = false
-          }
-        }
-        return result
-      }
-    },
-
-    // 削除不可のユーザー
-    deleteDisabled() {
-      return item => {
-        let result = true
-        if (this.user && this.user.id === item.id) {
-          // 自ユーザーは削除不可
-          result = true
-        } else if (this.permission("system-only")) {
-          // 開発者権限はすべて削除可能
-          result = false
-        } else if (this.permission("admin-higher")) {
-          if (item.role !== 1) {
-            // 管理者権限は開発者権限以外削除可能
-            result = false
-          }
-        }
-        return result
-      }
-    },
 
     // 自ユーザーかどうか
     myuser() {

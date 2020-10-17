@@ -8,6 +8,7 @@ use App\Notifications\CustomResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -56,7 +57,8 @@ class User extends Authenticatable implements MustVerifyEmail
      * @param string $token
      * @return void
      */
-    public function sendPasswordResetNotification($token) {
+    public function sendPasswordResetNotification($token)
+    {
         $this->notify(new CustomResetPassword($token));
     }
 
@@ -65,13 +67,49 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return array
      */
-    public function getRoleLevelAttribute () {
+    public function getRoleLevelAttribute ()
+    {
         $roleLevels = [];
         foreach (array_keys(\Config::get('settings.roleLevel')) as $roleTypeKey) {
             $roleLevels[$roleTypeKey] = $this->roleLevel($this->role, $roleTypeKey);
         }
 
         return $roleLevels;
+    }
+
+     /**
+     * 編集可能ユーザーのカラム
+     *
+     * @return int
+     */
+    public function getModifyFlgAttribute ()
+    {
+        if ((int)Auth::user()->role_level['auth'] > (int)$this->role_level['auth']) {
+            // 入力者より権限が上の場合は変更不可
+            return 0;
+        }
+
+        return 1;
+    }
+
+   /**
+     * 削除可能ユーザーのカラム
+     *
+     * @return int
+     */
+    public function getDeleteFlgAttribute ()
+    {
+        if ((int)$this->id === (int)Auth::id()) {
+            // 自ユーザーの場合は削除不可
+            return 0;
+        }
+
+        if ((int)Auth::user()->role_level['auth'] > (int)$this->role_level['auth']) {
+            // 入力者より権限が上の場合は削除不可
+            return 0;
+        }
+
+        return 1;
     }
 
     /**
@@ -81,7 +119,8 @@ class User extends Authenticatable implements MustVerifyEmail
      * @param string $roleType
      * @return int
      */
-    static public function roleLevel ($role, $roleType = 'auth') {
+    static public function roleLevel ($role, $roleType = 'auth')
+    {
         $roleTypeLevel = \Config::get('settings.roleLevel.'.$roleType);
         if (\Config::get('settings.role.'.$role.'.'.$roleType)) {
             $roleKey = \Config::get('settings.role.'.$role.'.'.$roleType);

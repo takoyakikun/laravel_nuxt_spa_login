@@ -82,8 +82,7 @@ class UsersController extends Controller
     {
         $user = resolve(User::class)->find($id);
 
-        if ((int)Auth::user()->role_level['auth'] > (int)$user->role_level['auth']) {
-            // 入力者より権限が上の場合は変更不可
+        if ((int)$user->modify_flg !== 1){
             return response([], 403);
         }
 
@@ -116,15 +115,9 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        if ((int)$id === (int)Auth::id()) {
-            // 自ユーザーの場合は削除不可
-            return response([], 403);
-        }
-        
         $user = resolve(User::class)->find($id);
 
-        if ((int)Auth::user()->role_level['auth'] > (int)$user->role_level['auth']) {
-            // 入力者より権限が上の場合は削除不可
+        if ((int)$user->delete_flg !== 1){
             return response([], 403);
         }
     

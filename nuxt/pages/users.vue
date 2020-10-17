@@ -16,8 +16,7 @@ export default {
   components: {
     UserList
   },
-  async created() {
-    await this.$store.dispatch("auth/checkAuth", "system-only")
+  created() {
     this.$store.dispatch("users/setList")
     this.$store.dispatch("users/setRoleOptions")
   }

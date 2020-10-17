@@ -40,97 +40,6 @@ describe("components/users/userList", () => {
       expect(wrapper.vm).toBeTruthy()
     })
 
-    describe("編集不可のユーザー", () => {
-      test("開発者権限", () => {
-        // 権限を開発者にする
-        wrapper.vm.$store.commit("auth/setPermission", {
-          category: "system-only",
-          permission: true
-        })
-
-        // 全てfalseを返す
-        expect(wrapper.vm.editDisabled()).toBeFalsy()
-      })
-
-      describe("管理者権限", () => {
-        beforeEach(() => {
-          // 権限を管理者以上にする
-          wrapper.vm.$store.commit("auth/setPermission", {
-            category: "admin-higher",
-            permission: true
-          })
-        })
-        test("開発者ユーザー", () => {
-          // 開発者ユーザーはtrueを返す
-          const item = { role: 1 }
-          expect(wrapper.vm.editDisabled(item)).toBeTruthy()
-        })
-        test("それ以外", () => {
-          // それ以外はfalseを返す
-          const item = { role: 5 }
-          expect(wrapper.vm.editDisabled(item)).toBeFalsy()
-        })
-      })
-
-      test("それ以外", () => {
-        // 全てtrueを返す
-        expect(wrapper.vm.editDisabled()).toBeTruthy()
-      })
-    })
-
-    describe("削除不可のユーザー", () => {
-      test("自ユーザー", () => {
-        // ログインデータを登録
-        wrapper.vm.$store.commit("auth/setUser", { id: 1 })
-
-        // 権限を開発者にする
-        wrapper.vm.$store.commit("auth/setPermission", {
-          category: "system-only",
-          permission: true
-        })
-
-        // 自ユーザーはtrueを返す
-        const item = { id: 1 }
-        expect(wrapper.vm.deleteDisabled(item)).toBeTruthy()
-      })
-
-      test("開発者権限", () => {
-        // 権限を開発者にする
-        wrapper.vm.$store.commit("auth/setPermission", {
-          category: "system-only",
-          permission: true
-        })
-
-        // 全てfalseを返す
-        expect(wrapper.vm.deleteDisabled()).toBeFalsy()
-      })
-
-      describe("管理者権限", () => {
-        beforeEach(() => {
-          // 権限を管理者以上にする
-          wrapper.vm.$store.commit("auth/setPermission", {
-            category: "admin-higher",
-            permission: true
-          })
-        })
-        test("開発者ユーザー", () => {
-          // 開発者ユーザーはtrueを返す
-          const item = { role: 1 }
-          expect(wrapper.vm.deleteDisabled(item)).toBeTruthy()
-        })
-        test("それ以外", () => {
-          // それ以外はfalseを返す
-          const item = { role: 5 }
-          expect(wrapper.vm.deleteDisabled(item)).toBeFalsy()
-        })
-      })
-
-      test("それ以外", () => {
-        // 全てtrueを返す
-        expect(wrapper.vm.deleteDisabled()).toBeTruthy()
-      })
-    })
-
     describe("自ユーザーかどうか", () => {
       beforeEach(() => {
         // ログインデータを登録
@@ -272,6 +181,14 @@ describe("components/users/userList", () => {
     })
 
     describe("ユーザー編集", () => {
+      const editUser = {
+        id: 1,
+        name: "テスト",
+        email: "test@test.com",
+        role: 3,
+        modify_flg: 1
+      }
+
       let editFormValidate
       let axiosPatch
       beforeEach(() => {
@@ -280,12 +197,7 @@ describe("components/users/userList", () => {
         axiosPatch = jest.spyOn(axios, "patch")
 
         // ダイアログを開く
-        wrapper.vm.openEditDialog({
-          id: 1,
-          name: "テスト",
-          email: "test@test.com",
-          role: 3
-        })
+        wrapper.vm.openEditDialog(editUser)
       })
 
       describe("失敗", () => {
@@ -333,12 +245,7 @@ describe("components/users/userList", () => {
 
           // API送信をした
           expect(axiosPatch).toHaveBeenCalled()
-          expect(axiosPatch).toHaveBeenCalledWith("/api/users/1", {
-            id: 1,
-            name: "テスト",
-            email: "test@test.com",
-            role: 3
-          })
+          expect(axiosPatch).toHaveBeenCalledWith("/api/users/1", editUser)
 
           // snackbarのエラー表示
           expect(wrapper.vm.$store.getters["snackbar/text"]).toBe(
@@ -378,12 +285,10 @@ describe("components/users/userList", () => {
 
             // API送信をした
             expect(axiosPatch).toHaveBeenCalled()
-            expect(axiosPatch).toHaveBeenCalledWith("/api/myuser/update", {
-              id: 1,
-              name: "テスト",
-              email: "test@test.com",
-              role: 3
-            })
+            expect(axiosPatch).toHaveBeenCalledWith(
+              "/api/myuser/update",
+              editUser
+            )
 
             // snackbarの完了表示
             expect(wrapper.vm.$store.getters["snackbar/text"]).toBe(
@@ -407,12 +312,7 @@ describe("components/users/userList", () => {
 
             // API送信をした
             expect(axiosPatch).toHaveBeenCalled()
-            expect(axiosPatch).toHaveBeenCalledWith("/api/users/1", {
-              id: 1,
-              name: "テスト",
-              email: "test@test.com",
-              role: 3
-            })
+            expect(axiosPatch).toHaveBeenCalledWith("/api/users/1", editUser)
 
             // snackbarの完了表示
             expect(wrapper.vm.$store.getters["snackbar/text"]).toBe(
@@ -427,18 +327,21 @@ describe("components/users/userList", () => {
     })
 
     describe("ユーザー削除", () => {
+      const deleteUser = {
+        id: 1,
+        name: "テスト",
+        email: "test@test.com",
+        role: 3,
+        delete_flg: 1
+      }
+
       let axiosDelete
       beforeEach(() => {
         // spyOn
         axiosDelete = jest.spyOn(axios, "delete")
 
         // ダイアログを開く
-        wrapper.vm.openDeleteDialog({
-          id: 1,
-          name: "テスト",
-          email: "test@test.com",
-          role: 10
-        })
+        wrapper.vm.openDeleteDialog(deleteUser)
       })
 
       test("失敗", async () => {
@@ -552,19 +455,14 @@ describe("components/users/userList", () => {
     })
 
     test("編集ダイアログボタン", async () => {
-      // 権限を開発者にする
-      await wrapper.vm.$store.commit("auth/setPermission", {
-        category: "system-only",
-        permission: true
-      })
-
       // テーブルにデータを追加
       await wrapper.vm.$store.commit("users/setList", [
         {
           id: 1,
           name: "テスト",
           email: "test@test.com",
-          role: 10
+          role: 3,
+          modify_flg: 1
         }
       ])
 
@@ -587,19 +485,14 @@ describe("components/users/userList", () => {
     })
 
     test("削除ダイアログボタン", async () => {
-      // 権限を開発者にする
-      await wrapper.vm.$store.commit("auth/setPermission", {
-        category: "system-only",
-        permission: true
-      })
-
       // テーブルにデータを追加
       await wrapper.vm.$store.commit("users/setList", [
         {
           id: 1,
           name: "テスト",
           email: "test@test.com",
-          role: 10
+          role: 3,
+          delete_flg: 1
         }
       ])
 
