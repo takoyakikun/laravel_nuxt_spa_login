@@ -42,6 +42,13 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
+     * json出力に追加するカラム
+     *
+     * @var array
+     */
+    protected $appends = ['role_level', 'modify_flg', 'delete_flg'];
+
+    /**
      * 認証メールを紐付ける
      *
      * @return void
