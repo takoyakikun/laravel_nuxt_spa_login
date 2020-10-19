@@ -91,8 +91,13 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getModifyFlgAttribute ()
     {
+        // ログインしていない場合は変更不可
+        if (!Auth::user()) {
+            return 0;
+        }
+
+        // 入力者より権限が上の場合は変更不可
         if ((int)Auth::user()->role_level['auth'] > (int)$this->role_level['auth']) {
-            // 入力者より権限が上の場合は変更不可
             return 0;
         }
 
@@ -106,13 +111,18 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getDeleteFlgAttribute ()
     {
-        if ((int)$this->id === (int)Auth::id()) {
-            // 自ユーザーの場合は削除不可
+        // ログインしていない場合は削除不可
+        if (!Auth::user()) {
             return 0;
         }
 
+        // 自ユーザーの場合は削除不可
+        if ((int)$this->id === (int)Auth::id()) {
+            return 0;
+        }
+
+        // 入力者より権限が上の場合は削除不可
         if ((int)Auth::user()->role_level['auth'] > (int)$this->role_level['auth']) {
-            // 入力者より権限が上の場合は削除不可
             return 0;
         }
 
