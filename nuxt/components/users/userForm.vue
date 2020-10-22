@@ -44,7 +44,7 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="!myuser" dense>
+        <v-row v-if="!myuser" dense data-test="roleForm">
           <v-col>
             <header>アクセス権限</header>
             <validation-provider
@@ -71,7 +71,7 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="formType === 'create'" dense>
+        <v-row v-if="formType === 'create'" dense data-test="passwordForm">
           <v-col>
             <validation-provider
               v-slot="{ errors }"
@@ -94,7 +94,11 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="formType === 'create'" dense>
+        <v-row
+          v-if="formType === 'create'"
+          dense
+          data-test="passwordConfirmationForm"
+        >
           <v-col>
             <validation-provider
               v-slot="{ errors }"
