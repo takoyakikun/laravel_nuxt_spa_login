@@ -540,7 +540,7 @@ describe("components/layouts/default/header", () => {
       await wrapper.vm.$store.commit("auth/setUser", {
         name: "テスト",
         email: "test@test.com",
-        role: 10
+        role: 3
       })
 
       // マイユーザー管理ボタン
@@ -574,7 +574,7 @@ describe("components/layouts/default/header", () => {
       await wrapper.vm.$store.commit("auth/setUser", {
         name: "テスト",
         email: "test@test.com",
-        role: 5
+        role: 2
       })
 
       // 権限を管理者以上にする

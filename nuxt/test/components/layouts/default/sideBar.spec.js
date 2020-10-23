@@ -127,7 +127,7 @@ describe("components/layouts/default/sideBar", () => {
       await wrapper.vm.$store.commit("auth/setUser", {
         name: "テスト",
         email: "test@test.com",
-        role: 10
+        role: 3
       })
 
       // トップページリンク項目
@@ -151,7 +151,7 @@ describe("components/layouts/default/sideBar", () => {
       await wrapper.vm.$store.commit("auth/setUser", {
         name: "テスト",
         email: "test@test.com",
-        role: 5
+        role: 2
       })
 
       // トップページリンク項目
