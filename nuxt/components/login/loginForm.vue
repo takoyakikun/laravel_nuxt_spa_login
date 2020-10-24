@@ -3,6 +3,7 @@
     <template #default="{ submit }">
       <validation-provider
         v-slot="{ errors }"
+        ref="loginValidation"
         :rules="{ required, max: 255, email }"
         mode="lazy"
         name="Login"
@@ -20,6 +21,7 @@
 
       <validation-provider
         v-slot="{ errors }"
+        ref="passwordValidation"
         :rules="{ required }"
         mode="lazy"
         name="Password"
