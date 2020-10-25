@@ -4,6 +4,7 @@
       <v-container>
         <validation-provider
           v-slot="{ errors }"
+          ref="emailValidation"
           :rules="{ required, max: 255, email }"
           mode="lazy"
           name="Email"
@@ -21,6 +22,7 @@
 
         <validation-provider
           v-slot="{ errors }"
+          ref="passwordValidation"
           :rules="{ required, min: 8 }"
           name="パスワード"
           vid="password"
@@ -41,6 +43,7 @@
 
         <validation-provider
           v-slot="{ errors }"
+          ref="passwordConfirmationValidation"
           :rules="{ required, min: 8, confirmed: 'password' }"
           name="パスワード(確認)"
           mode="lazy"
