@@ -4,6 +4,7 @@
       <v-container>
         <validation-provider
           v-slot="{ errors }"
+          ref="emailValidation"
           :rules="{ required, max: 255, email }"
           mode="lazy"
           name="Email"
