@@ -6,6 +6,7 @@
           <v-col>
             <validation-provider
               v-slot="{ errors }"
+              ref="currentPasswordValidation"
               :rules="{ required, min: 8 }"
               name="現在のパスワード"
               mode="lazy"
@@ -28,6 +29,7 @@
           <v-col>
             <validation-provider
               v-slot="{ errors }"
+              ref="passwordValidation"
               :rules="{ required, min: 8 }"
               name="変更後のパスワード"
               vid="password"
@@ -51,6 +53,7 @@
           <v-col>
             <validation-provider
               v-slot="{ errors }"
+              ref="passwordConfirmationValidation"
               :rules="{ required, min: 8, confirmed: 'password' }"
               name="変更後のパスワード(確認)"
               mode="lazy"
