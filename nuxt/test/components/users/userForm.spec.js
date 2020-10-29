@@ -143,4 +143,116 @@ describe("components/users/userForm", () => {
       ).toBeFalsy()
     })
   })
+
+  describe("フォームバリデーションテスト", () => {
+    let wrapper
+    beforeEach(() => {
+      wrapper = mount(UserForm, {
+        localVue,
+        store,
+        vuetify,
+        sync: false
+      })
+    })
+
+    test("ユーザー名", async () => {
+      const form = wrapper.find("input[name='name']")
+      const validation = wrapper.vm.$refs.nameValidation
+
+      // required
+      form.setValue("")
+      await validation.validate()
+      expect(validation.failedRules.required).toBeTruthy()
+
+      // max
+      form.setValue("a".repeat(256))
+      await validation.validate()
+      expect(validation.failedRules.max).toBeTruthy()
+
+      // valid
+      form.setValue("テスト")
+      await validation.validate()
+      expect(Object.keys(validation.failedRules).length).toBe(0)
+    })
+
+    test("メールアドレス", async () => {
+      const form = wrapper.find("input[name='email']")
+      const validation = wrapper.vm.$refs.emailValidation
+
+      // required
+      form.setValue("")
+      await validation.validate()
+      expect(validation.failedRules.required).toBeTruthy()
+
+      // max
+      form.setValue("a".repeat(256))
+      await validation.validate()
+      expect(validation.failedRules.max).toBeTruthy()
+
+      // email
+      form.setValue("aaa")
+      await validation.validate()
+      expect(validation.failedRules.email).toBeTruthy()
+
+      // valid
+      form.setValue("test@test.com")
+      await validation.validate()
+      expect(Object.keys(validation.failedRules).length).toBe(0)
+    })
+
+    test("パスワード", async () => {
+      const form = wrapper.find("input[name='password']")
+      const validation = wrapper.vm.$refs.passwordValidation
+
+      // required
+      form.setValue("")
+      await validation.validate()
+      expect(validation.failedRules.required).toBeTruthy()
+
+      // min
+      form.setValue("a".repeat(7))
+      await validation.validate()
+      expect(validation.failedRules.min).toBeTruthy()
+
+      // valid
+      form.setValue("password")
+      await validation.validate()
+      expect(Object.keys(validation.failedRules).length).toBe(0)
+    })
+
+    test("パスワード(確認)", async () => {
+      const form = wrapper.find("input[name='password_confirmation']")
+      const passwordForm = wrapper.find("input[name='password']")
+      const validation = wrapper.vm.$refs.passwordConfirmationValidation
+      const passwordValidation = wrapper.vm.$refs.passwordValidation
+
+      // required
+      form.setValue("")
+      passwordForm.setValue("password")
+      await validation.validate()
+      await passwordValidation.validate()
+      expect(validation.failedRules.required).toBeTruthy()
+
+      // min
+      form.setValue("a".repeat(7))
+      passwordForm.setValue("password")
+      await validation.validate()
+      await passwordValidation.validate()
+      expect(validation.failedRules.min).toBeTruthy()
+
+      // confirmed
+      form.setValue("password")
+      passwordForm.setValue("aaaaaaaa")
+      await validation.validate()
+      await passwordValidation.validate()
+      expect(validation.failedRules.confirmed).toBeTruthy()
+
+      // valid
+      form.setValue("password")
+      passwordForm.setValue("password")
+      await validation.validate()
+      await passwordValidation.validate()
+      expect(Object.keys(validation.failedRules).length).toBe(0)
+    })
+  })
 })

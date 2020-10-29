@@ -6,6 +6,7 @@
           <v-col>
             <validation-provider
               v-slot="{ errors }"
+              ref="nameValidation"
               :rules="{ required, max: 255 }"
               name="ユーザー名"
               mode="lazy"
@@ -27,7 +28,8 @@
           <v-col>
             <validation-provider
               v-slot="{ errors }"
-              :rules="{ required, email, max: 255 }"
+              ref="emailValidation"
+              :rules="{ required, max: 255, email }"
               name="メールアドレス"
               mode="lazy"
             >
@@ -49,6 +51,7 @@
             <header>アクセス権限</header>
             <validation-provider
               v-slot="{ errors }"
+              ref="roleValidation"
               :rules="{ required }"
               name="アクセス権限"
             >
@@ -75,6 +78,7 @@
           <v-col>
             <validation-provider
               v-slot="{ errors }"
+              ref="passwordValidation"
               :rules="{ required, min: 8 }"
               name="パスワード"
               vid="password"
@@ -102,6 +106,7 @@
           <v-col>
             <validation-provider
               v-slot="{ errors }"
+              ref="passwordConfirmationValidation"
               :rules="{ required, min: 8, confirmed: 'password' }"
               name="パスワード(確認)"
               mode="lazy"
