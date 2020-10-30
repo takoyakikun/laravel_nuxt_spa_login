@@ -140,7 +140,7 @@
             @click="passwordChangeSubmit"
           >
             <v-icon left>
-              mdi-lock
+              mdi-pencil-lock
             </v-icon>
             変更
           </v-btn>

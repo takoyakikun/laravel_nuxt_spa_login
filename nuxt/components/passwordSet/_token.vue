@@ -18,7 +18,7 @@
           @click="passwordSet"
         >
           <v-icon left>
-            mdi-account-edit
+            mdi-pencil-lock
           </v-icon>
           パスワードを登録
         </v-btn>

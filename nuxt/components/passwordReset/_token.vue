@@ -18,7 +18,7 @@
           @click="passwordReset"
         >
           <v-icon left>
-            mdi-lock
+            mdi-pencil-lock
           </v-icon>
           パスワードリセット
         </v-btn>
