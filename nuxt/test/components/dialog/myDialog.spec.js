@@ -19,7 +19,7 @@ afterEach(() => {
 })
 
 describe("components/dialog/myDialog", () => {
-  describe("shallowMount", () => {
+  describe("テスト", () => {
     let wrapper
     beforeEach(() => {
       wrapper = shallowMount(MyDialog, {

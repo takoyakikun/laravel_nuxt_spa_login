@@ -3,11 +3,12 @@
   <v-dialog v-model="dialog" v-bind="mergeOptions" @click:outside="outside">
     <v-card>
       <v-app-bar dark :color="color" class="headline">
-        <slot :close="close" name="title">
+        <slot name="titleLeft" :color="color" :close="close" :title="title">
           {{ title }}
-          <v-spacer />
         </slot>
-        <slot name="titleClose">
+        <v-spacer />
+        <slot name="titleRight" :color="color" :close="close" :title="title" />
+        <slot name="titleClose" :color="color" :close="close">
           <v-btn data-test="titleCloseButton" icon="icon" @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
@@ -19,9 +20,9 @@
       </v-card-text>
 
       <v-card-actions>
-        <slot name="actions" :color="color" :close="close">
-          <v-spacer />
-        </slot>
+        <slot name="actionsLeft" :color="color" :close="close" />
+        <v-spacer />
+        <slot name="actionsRight" :color="color" :close="close" />
         <slot name="actionsClose" :color="color" :close="close">
           <v-btn data-test="actionsCloseButton" @click="close">
             <v-icon left>

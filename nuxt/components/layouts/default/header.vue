@@ -99,7 +99,7 @@
           />
         </template>
 
-        <template #actions="{ color }">
+        <template #actionsLeft="{ color }">
           <v-btn
             data-test="editSubmitButton"
             :disabled="invalid"
@@ -132,7 +132,7 @@
           />
         </template>
 
-        <template #actions="{ color }">
+        <template #actionsLeft="{ color }">
           <v-btn
             data-test="passwordChangeSubmitButton"
             :disabled="invalid"
@@ -154,9 +154,9 @@
 <script>
 import { mapGetters, mapActions } from "vuex"
 
-import MyDialog from "~/components/dialog/myDialog"
-import UserForm from "~/components/users/userForm"
-import PasswordChangeForm from "~/components/users/passwordChangeForm"
+import MyDialog from "@/components/dialog/myDialog"
+import UserForm from "@/components/users/userForm"
+import PasswordChangeForm from "@/components/users/passwordChangeForm"
 
 export default {
   components: {

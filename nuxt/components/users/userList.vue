@@ -83,7 +83,7 @@
           />
         </template>
 
-        <template #actions="{ color }">
+        <template #actionsLeft="{ color }">
           <v-btn
             data-test="createSubmitButton"
             :disabled="invalid"
@@ -118,7 +118,7 @@
           />
         </template>
 
-        <template #actions="{ color }">
+        <template #actionsLeft="{ color }">
           <v-btn
             data-test="editSubmitButton"
             :disabled="invalid"
@@ -146,7 +146,7 @@
         ユーザーを削除しますか？
       </template>
 
-      <template #actions="{ color }">
+      <template #actionsLeft="{ color }">
         <v-btn
           data-test="deleteSubmitButton"
           :color="color"
