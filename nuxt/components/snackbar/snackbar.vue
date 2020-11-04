@@ -1,6 +1,8 @@
 <template>
   <v-snackbar v-bind="options" :value="value" @input="closeSnackbar">
-    {{ text }}
+    <slot :text="text">
+      {{ text }}
+    </slot>
   </v-snackbar>
 </template>
 

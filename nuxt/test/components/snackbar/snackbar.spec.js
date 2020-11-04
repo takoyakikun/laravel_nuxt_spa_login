@@ -19,7 +19,7 @@ afterEach(() => {
 })
 
 describe("components/snackbar/snackbar", () => {
-  describe("shallowMount", () => {
+  describe("テスト", () => {
     let wrapper
     beforeEach(() => {
       wrapper = shallowMount(Snackbar, {
