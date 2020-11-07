@@ -6,7 +6,7 @@
     v-bind="mergeButtonOptions"
     @click="topScroll"
   >
-    <slot name="buttonContent" :icon="icon">
+    <slot :icon="icon">
       <v-icon>{{ icon }}</v-icon>
     </slot>
   </v-btn>
