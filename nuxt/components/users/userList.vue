@@ -27,6 +27,34 @@
           hide-default-footer
           class="elevation-1"
         >
+          <template v-slot:top>
+            <v-row dense>
+              <v-col>
+                <v-text-field
+                  v-model="search.name"
+                  label="ユーザー名検索"
+                  class="mx-4"
+                />
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="search.email"
+                  label="メールアドレス検索"
+                  class="mx-4"
+                />
+              </v-col>
+              <v-col>
+                <v-combobox
+                  v-model="search.role"
+                  :items="config.roleOptions"
+                  label="アクセス権限検索"
+                  multiple
+                  chips
+                  class="mx-4"
+                />
+              </v-col>
+            </v-row>
+          </template>
           <template v-slot:[`item.role`]="{ value }">
             {{ getConfigData("roleOptions", value) }}
           </template>
@@ -175,24 +203,7 @@ export default {
   },
   data() {
     return {
-      headers: [
-        {
-          text: "ユーザー名",
-          value: "name"
-        },
-        {
-          text: "メールアドレス",
-          value: "email"
-        },
-        {
-          text: "アクセス権限",
-          value: "role"
-        },
-        {
-          text: "編集/削除",
-          value: "action"
-        }
-      ],
+      search: {},
       createDialog: false,
       createFormValue: {},
       editDialog: false,
@@ -211,6 +222,52 @@ export default {
       permission: "auth/permission",
       userList: "users/list"
     }),
+
+    headers() {
+      return [
+        {
+          text: "ユーザー名",
+          value: "name",
+          filter: value => {
+            if (!this.search.name) return true
+            return (
+              value != null &&
+              typeof value === "string" &&
+              value.toString().indexOf(this.search.name) !== -1
+            )
+          }
+        },
+        {
+          text: "メールアドレス",
+          value: "email",
+          filter: value => {
+            if (!this.search.email) return true
+            return (
+              value != null &&
+              typeof value === "string" &&
+              value.toString().indexOf(this.search.email) !== -1
+            )
+          }
+        },
+        {
+          text: "アクセス権限",
+          value: "role",
+          filter: value => {
+            if (
+              !this.search.role ||
+              Object.keys(this.search.role).length === 0
+            ) {
+              return true
+            }
+            return this.search.role.find(item => item.value === value)
+          }
+        },
+        {
+          text: "編集/削除",
+          value: "action"
+        }
+      ]
+    },
 
     // 自ユーザーかどうか
     myuser() {
