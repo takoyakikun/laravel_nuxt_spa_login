@@ -28,6 +28,7 @@
           class="elevation-1"
         >
           <template v-slot:top>
+            <!-- 検索フォーム -->
             <v-row dense>
               <v-col>
                 <v-text-field
@@ -55,6 +56,7 @@
               </v-col>
             </v-row>
           </template>
+
           <template v-slot:[`item.role`]="{ value }">
             {{ getConfigData("roleOptions", value) }}
           </template>
@@ -229,37 +231,21 @@ export default {
           text: "ユーザー名",
           value: "name",
           filter: value => {
-            if (!this.search.name) return true
-            return (
-              value != null &&
-              typeof value === "string" &&
-              value.toString().indexOf(this.search.name) !== -1
-            )
+            return this.searchName(value)
           }
         },
         {
           text: "メールアドレス",
           value: "email",
           filter: value => {
-            if (!this.search.email) return true
-            return (
-              value != null &&
-              typeof value === "string" &&
-              value.toString().indexOf(this.search.email) !== -1
-            )
+            return this.searchEmail(value)
           }
         },
         {
           text: "アクセス権限",
           value: "role",
           filter: value => {
-            if (
-              !this.search.role ||
-              Object.keys(this.search.role).length === 0
-            ) {
-              return true
-            }
-            return this.search.role.find(item => item.value === value)
+            return this.searchRole(value)
           }
         },
         {
@@ -277,6 +263,34 @@ export default {
   methods: {
     ...mapActions("users", ["createData", "editData", "deleteData"]),
     ...mapActions("snackbar", ["openSnackbar"]),
+
+    // ユーザー名検索
+    searchName(value) {
+      if (!this.search.name) return true
+      return (
+        value != null &&
+        typeof value === "string" &&
+        value.toString().indexOf(this.search.name) !== -1
+      )
+    },
+
+    // メールアドレス検索
+    searchEmail(value) {
+      if (!this.search.email) return true
+      return (
+        value != null &&
+        typeof value === "string" &&
+        value.toString().indexOf(this.search.email) !== -1
+      )
+    },
+
+    // アクセス権限検索
+    searchRole(value) {
+      if (!this.search.role || Object.keys(this.search.role).length === 0) {
+        return true
+      }
+      return this.search.role.some(item => item.value === value)
+    },
 
     // 新規追加ダイアログを開く
     openCreateDialog() {

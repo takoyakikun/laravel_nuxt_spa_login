@@ -5,6 +5,7 @@ import axios from "axios"
 import storeConfig from "@/test/storeConfig"
 import setConfigData from "@/test/setConfigData"
 import UserList from "@/components/users/userList"
+import { SearchSource } from "jest"
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -61,7 +62,7 @@ describe("components/users/userList", () => {
 
   describe("フォーム動作テスト", () => {
     let wrapper
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = mount(UserList, {
         localVue,
         store,
@@ -512,6 +513,163 @@ describe("components/users/userList", () => {
 
       // メソッドが実行されたか
       expect(deleteSubmit).toHaveBeenCalled()
+    })
+  })
+
+  describe("ユーザー検索動作テスト", () => {
+    let wrapper
+    beforeEach(() => {
+      wrapper = shallowMount(UserList, {
+        localVue,
+        store,
+        vuetify,
+        sync: false
+      })
+
+      // テーブルにデータを追加
+      wrapper.vm.$store.commit("users/setList", [
+        {
+          id: 1,
+          name: "テスト開発者",
+          email: "test_system@test.com",
+          role: 1
+        },
+        {
+          id: 2,
+          name: "テスト管理者",
+          email: "test_admin@test.com",
+          role: 2
+        },
+        {
+          id: 3,
+          name: "テスト一般",
+          email: "test_user@test.com",
+          role: 3
+        },
+        {
+          id: 4,
+          name: "一般",
+          email: "user@test.com",
+          role: 3
+        }
+      ])
+    })
+
+    test("ユーザー名検索", () => {
+      let expects, results
+
+      // 初期状態は全て表示
+      expects = [true, true, true, true]
+      results = []
+      for (let user of wrapper.vm.userList) {
+        results.push(wrapper.vm.searchName(user.name))
+      }
+      expect(results).toEqual(expects)
+
+      // 空文字の場合は全て表示
+      wrapper.setData({ search: { name: "" } })
+      expects = [true, true, true, true]
+      results = []
+      for (let user of wrapper.vm.userList) {
+        results.push(wrapper.vm.searchName(user.name))
+      }
+      expect(results).toEqual(expects)
+
+      // 'テスト開発者'で検索
+      wrapper.setData({ search: { name: "テスト開発者" } })
+      expects = [true, false, false, false]
+      results = []
+      for (let user of wrapper.vm.userList) {
+        results.push(wrapper.vm.searchName(user.name))
+      }
+      expect(results).toEqual(expects)
+
+      // 'テスト'で検索
+      wrapper.setData({ search: { name: "テスト" } })
+      expects = [true, true, true, false]
+      results = []
+      for (let user of wrapper.vm.userList) {
+        results.push(wrapper.vm.searchName(user.name))
+      }
+      expect(results).toEqual(expects)
+    })
+
+    test("メールアドレス検索", () => {
+      let expects, results
+
+      // 初期状態は全て表示
+      expects = [true, true, true, true]
+      results = []
+      for (let user of wrapper.vm.userList) {
+        results.push(wrapper.vm.searchEmail(user.email))
+      }
+      expect(results).toEqual(expects)
+
+      // 空文字の場合は全て表示
+      wrapper.setData({ search: { email: "" } })
+      expects = [true, true, true, true]
+      results = []
+      for (let user of wrapper.vm.userList) {
+        results.push(wrapper.vm.searchEmail(user.email))
+      }
+      expect(results).toEqual(expects)
+
+      // 'test_system@test.com'で検索
+      wrapper.setData({ search: { email: "test_system@test.com" } })
+      expects = [true, false, false, false]
+      results = []
+      for (let user of wrapper.vm.userList) {
+        results.push(wrapper.vm.searchEmail(user.email))
+      }
+      expect(results).toEqual(expects)
+
+      // 'user'で検索
+      wrapper.setData({ search: { email: "user" } })
+      expects = [false, false, true, true]
+      results = []
+      for (let user of wrapper.vm.userList) {
+        results.push(wrapper.vm.searchEmail(user.email))
+      }
+      expect(results).toEqual(expects)
+    })
+
+    test("アクセス権限検索", () => {
+      let expects, results
+
+      // 初期状態は全て表示
+      expects = [true, true, true, true]
+      results = []
+      for (let user of wrapper.vm.userList) {
+        results.push(wrapper.vm.searchRole(user.role))
+      }
+      expect(results).toEqual(expects)
+
+      // 未選択の場合は全て表示
+      wrapper.setData({ search: { role: {} } })
+      expects = [true, true, true, true]
+      results = []
+      for (let user of wrapper.vm.userList) {
+        results.push(wrapper.vm.searchRole(user.role))
+      }
+      expect(results).toEqual(expects)
+
+      // '開発者'で検索
+      wrapper.setData({ search: { role: [{ value: 1 }] } })
+      expects = [true, false, false, false]
+      results = []
+      for (let user of wrapper.vm.userList) {
+        results.push(wrapper.vm.searchRole(user.role))
+      }
+      expect(results).toEqual(expects)
+
+      // '管理者','一般'で検索
+      wrapper.setData({ search: { role: [{ value: 2 }, { value: 3 }] } })
+      expects = [false, true, true, true]
+      results = []
+      for (let user of wrapper.vm.userList) {
+        results.push(wrapper.vm.searchRole(user.role))
+      }
+      expect(results).toEqual(expects)
     })
   })
 })
