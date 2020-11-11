@@ -187,11 +187,9 @@ describe("components/passwordReset/index", () => {
       })
     })
 
-    test("ログインボタンリンク", () => {
+    test("トップボタンリンク", () => {
       // 正しいリンク先が設定されているか
-      expect(wrapper.find("[data-test='loginButtonLink']").props().to).toBe(
-        "login"
-      )
+      expect(wrapper.find("[data-test='topButtonLink']").props().to).toBe("/")
     })
   })
 })

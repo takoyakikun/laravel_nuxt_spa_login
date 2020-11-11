@@ -26,11 +26,11 @@
           パスワードリセットメール送信
         </v-btn>
         <v-spacer />
-        <v-btn data-test="loginButtonLink" to="login">
+        <v-btn data-test="topButtonLink" to="/">
           <v-icon left>
-            mdi-login-variant
+            mdi-home
           </v-icon>
-          Login
+          Top
         </v-btn>
       </v-card-actions>
     </validation-observer>
