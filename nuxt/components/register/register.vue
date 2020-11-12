@@ -2,7 +2,7 @@
   <validation-observer ref="registerForm" v-slot="{ invalid }">
     <v-card class="elevation-12">
       <v-toolbar color="primary" dark flat>
-        <v-toolbar-title>新規ユーザー作成</v-toolbar-title>
+        <v-toolbar-title>新規ユーザー登録</v-toolbar-title>
       </v-toolbar>
       <v-card-text>
         <UserForm
@@ -23,7 +23,7 @@
           <v-icon left>
             mdi-account-plus
           </v-icon>
-          新規作成
+          新規登録
         </v-btn>
         <v-spacer />
         <v-btn data-test="topButtonLink" to="/">

@@ -69,7 +69,7 @@
         <v-icon left>
           mdi-account-plus
         </v-icon>
-        新規作成
+        新規登録
       </v-btn>
 
       <!-- ログイン -->
