@@ -5,6 +5,7 @@ import storeConfig from "@/test/storeConfig"
 import setConfigData from "@/test/setConfigData"
 import PasswordChangeForm from "@/components/users/passwordChangeForm"
 import Form from "@/components/form/form"
+import { ValidationObserver } from "vee-validate"
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -45,88 +46,111 @@ describe("components/users/passwordChangeForm", () => {
 
   describe("フォームバリデーションテスト", () => {
     let wrapper
+    let formWrapper
     beforeEach(() => {
-      wrapper = mount(PasswordChangeForm, {
+      wrapper = mount(ValidationObserver, {
         localVue,
         store,
         vuetify,
-        sync: false
+        sync: false,
+        slots: {
+          default: PasswordChangeForm
+        }
+      })
+      formWrapper = wrapper.findComponent(PasswordChangeForm)
+    })
+
+    describe("現在のパスワード", () => {
+      let form
+      let validation
+      beforeEach(() => {
+        form = wrapper.find("input[name='current_password']")
+        validation = formWrapper.vm.$refs.currentPasswordValidation
+      })
+
+      test("required", async () => {
+        form.setValue("")
+        await wrapper.vm.validate()
+        expect(validation.failedRules.required).toBeTruthy()
+      })
+
+      test("min", async () => {
+        form.setValue("a".repeat(7))
+        await wrapper.vm.validate()
+        expect(validation.failedRules.min).toBeTruthy()
+      })
+
+      test("valid", async () => {
+        form.setValue("password")
+        await wrapper.vm.validate()
+        expect(Object.keys(validation.failedRules).length).toBe(0)
       })
     })
 
-    test("現在のパスワード", async () => {
-      const form = wrapper.find("input[name='current_password']")
-      const validation = wrapper.vm.$refs.currentPasswordValidation
+    describe("変更後のパスワード", () => {
+      let form
+      let validation
+      beforeEach(() => {
+        form = wrapper.find("input[name='password']")
+        validation = formWrapper.vm.$refs.passwordValidation
+      })
 
-      // required
-      form.setValue("")
-      await validation.validate()
-      expect(validation.failedRules.required).toBeTruthy()
+      test("required", async () => {
+        form.setValue("")
+        await wrapper.vm.validate()
+        expect(validation.failedRules.required).toBeTruthy()
+      })
 
-      // min
-      form.setValue("a".repeat(7))
-      await validation.validate()
-      expect(validation.failedRules.min).toBeTruthy()
+      test("min", async () => {
+        form.setValue("a".repeat(7))
+        await wrapper.vm.validate()
+        expect(validation.failedRules.min).toBeTruthy()
+      })
 
-      // valid
-      form.setValue("password")
-      await validation.validate()
-      expect(Object.keys(validation.failedRules).length).toBe(0)
+      test("valid", async () => {
+        form.setValue("password")
+        await wrapper.vm.validate()
+        expect(Object.keys(validation.failedRules).length).toBe(0)
+      })
     })
 
-    test("変更後のパスワード", async () => {
-      const form = wrapper.find("input[name='password']")
-      const validation = wrapper.vm.$refs.passwordValidation
+    describe("変更後のパスワード(確認)", () => {
+      let form
+      let passwordForm
+      let validation
+      beforeEach(() => {
+        form = wrapper.find("input[name='password_confirmation']")
+        passwordForm = wrapper.find("input[name='password']")
+        validation = formWrapper.vm.$refs.passwordConfirmationValidation
+      })
 
-      // required
-      form.setValue("")
-      await validation.validate()
-      expect(validation.failedRules.required).toBeTruthy()
+      test("required", async () => {
+        form.setValue("")
+        passwordForm.setValue("password")
+        await wrapper.vm.validate()
+        expect(validation.failedRules.required).toBeTruthy()
+      })
 
-      // min
-      form.setValue("a".repeat(7))
-      await validation.validate()
-      expect(validation.failedRules.min).toBeTruthy()
+      test("min", async () => {
+        form.setValue("a".repeat(7))
+        passwordForm.setValue("password")
+        await wrapper.vm.validate()
+        expect(validation.failedRules.min).toBeTruthy()
+      })
 
-      // valid
-      form.setValue("password")
-      await validation.validate()
-      expect(Object.keys(validation.failedRules).length).toBe(0)
-    })
+      test("confirmed", async () => {
+        form.setValue("password")
+        passwordForm.setValue("aaaaaaaa")
+        await wrapper.vm.validate()
+        expect(validation.failedRules.confirmed).toBeTruthy()
+      })
 
-    test("変更後のパスワード(確認)", async () => {
-      const form = wrapper.find("input[name='password_confirmation']")
-      const passwordForm = wrapper.find("input[name='password']")
-      const validation = wrapper.vm.$refs.passwordConfirmationValidation
-      const passwordValidation = wrapper.vm.$refs.passwordValidation
-
-      // required
-      form.setValue("")
-      passwordForm.setValue("password")
-      await validation.validate()
-      await passwordValidation.validate()
-      expect(validation.failedRules.required).toBeTruthy()
-
-      // min
-      form.setValue("a".repeat(7))
-      passwordForm.setValue("password")
-      await validation.validate()
-      await passwordValidation.validate()
-      expect(validation.failedRules.min).toBeTruthy()
-
-      // confirmed
-      form.setValue("password")
-      passwordForm.setValue("aaaaaaaa")
-      await validation.validate()
-      await passwordValidation.validate()
-      expect(validation.failedRules.confirmed).toBeTruthy()
-
-      // valid
-      form.setValue("password")
-      passwordForm.setValue("password")
-      await validation.validate()
-      await passwordValidation.validate()
-      expect(Object.keys(validation.failedRules).length).toBe(0)
+      test("valid", async () => {
+        form.setValue("password")
+        passwordForm.setValue("password")
+        await wrapper.vm.validate()
+        expect(Object.keys(validation.failedRules).length).toBe(0)
+      })
     })
   })
 })

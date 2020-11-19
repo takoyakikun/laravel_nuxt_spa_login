@@ -1,24 +1,19 @@
 <template>
   <Form @submit="$emit('submit')">
-    <template #default="{ submit }">
+    <template>
       <v-container>
-        <validation-provider
-          v-slot="{ errors }"
+        <ValidationField
           ref="emailValidation"
+          v-model="value.email"
           :rules="{ required, max: 255, email }"
           mode="lazy"
-          name="Email"
-        >
-          <v-text-field
-            v-model="value.email"
-            label="Email"
-            name="email"
-            prepend-icon="mdi-email"
-            type="text"
-            :error-messages="errors"
-            @keydown.enter="submit"
-          />
-        </validation-provider>
+          label="メールアドレス"
+          name="email"
+          type="email"
+          :form-options="{
+            prependIcon: 'mdi-email'
+          }"
+        />
       </v-container>
     </template>
   </Form>
@@ -26,9 +21,10 @@
 
 <script>
 import Form from "@/components/form/form"
+import ValidationField from "@/components/form/validationField"
 
 export default {
-  components: { Form },
+  components: { Form, ValidationField },
   props: {
     value: {
       type: Object,

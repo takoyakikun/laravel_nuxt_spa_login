@@ -1,65 +1,45 @@
 <template>
   <Form @submit="$emit('submit')">
-    <template #default="{ submit }">
+    <template>
       <v-container>
-        <validation-provider
-          v-slot="{ errors }"
+        <ValidationField
           ref="emailValidation"
+          v-model="value.email"
           :rules="{ required, max: 255, email }"
           mode="lazy"
-          name="Email"
-        >
-          <v-text-field
-            v-model="value.email"
-            label="Email"
-            name="email"
-            prepend-icon="mdi-email"
-            type="text"
-            :error-messages="errors"
-            @keydown.enter="submit"
-          />
-        </validation-provider>
+          label="メールアドレス"
+          name="email"
+          type="email"
+          :form-options="{
+            prependIcon: 'mdi-email'
+          }"
+        />
 
-        <validation-provider
-          v-slot="{ errors }"
+        <ValidationField
           ref="passwordValidation"
+          v-model="value.password"
           :rules="{ required, min: 8 }"
-          name="パスワード"
-          vid="password"
           mode="lazy"
-        >
-          <v-text-field
-            v-model="value.password"
-            type="password"
-            label="パスワード"
-            name="password"
-            prepend-icon="mdi-lock"
-            min="8"
-            required
-            :error-messages="errors"
-            @keydown.enter="submit"
-          />
-        </validation-provider>
+          label="パスワード"
+          name="password"
+          type="password"
+          :form-options="{
+            prependIcon: 'mdi-lock'
+          }"
+        />
 
-        <validation-provider
-          v-slot="{ errors }"
+        <ValidationField
           ref="passwordConfirmationValidation"
+          v-model="value.password_confirmation"
           :rules="{ required, min: 8, confirmed: 'password' }"
-          name="パスワード(確認)"
           mode="lazy"
-        >
-          <v-text-field
-            v-model="value.password_confirmation"
-            type="password"
-            label="パスワード(確認)"
-            name="password_confirmation"
-            prepend-icon="mdi-lock"
-            min="8"
-            required
-            :error-messages="errors"
-            @keydown.enter="submit"
-          />
-        </validation-provider>
+          label="パスワード(確認)"
+          name="password_confirmation"
+          type="password"
+          :form-options="{
+            prependIcon: 'mdi-lock'
+          }"
+        />
       </v-container>
     </template>
   </Form>
@@ -67,9 +47,10 @@
 
 <script>
 import Form from "@/components/form/form"
+import ValidationField from "@/components/form/validationField"
 
 export default {
-  components: { Form },
+  components: { Form, ValidationField },
   props: {
     value: {
       type: Object,

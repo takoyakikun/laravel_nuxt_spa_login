@@ -1,100 +1,76 @@
 <template>
   <Form @submit="$emit('submit')">
-    <template #default="{ submit }">
+    <template #default>
       <v-container>
         <v-row dense>
           <v-col>
-            <validation-provider
-              v-slot="{ errors }"
+            <ValidationField
               ref="nameValidation"
+              v-model="value.name"
               :rules="{ required, max: 255 }"
-              name="ユーザー名"
               mode="lazy"
-            >
-              <v-text-field
-                v-model="value.name"
-                name="name"
-                label="ユーザー名"
-                max="255"
-                required
-                :error-messages="errors"
-                @keydown.enter="submit"
-              />
-            </validation-provider>
+              name="name"
+              label="ユーザー名"
+              type="text"
+            />
           </v-col>
         </v-row>
 
         <v-row dense>
           <v-col>
-            <validation-provider
-              v-slot="{ errors }"
+            <ValidationField
               ref="emailValidation"
+              v-model="value.email"
               :rules="{ required, max: 255, email }"
-              name="メールアドレス"
               mode="lazy"
-            >
-              <v-text-field
-                v-model="value.email"
-                name="email"
-                label="メールアドレス"
-                max="255"
-                required
-                :error-messages="errors"
-                @keydown.enter="submit"
-              />
-            </validation-provider>
+              name="email"
+              label="メールアドレス"
+              type="email"
+            />
           </v-col>
         </v-row>
 
         <v-row v-if="!myuser" dense data-test="roleForm">
           <v-col>
             <header>アクセス権限</header>
-            <validation-provider
-              v-slot="{ errors }"
+            <ValidationField
               ref="roleValidation"
               :rules="{ required }"
-              name="アクセス権限"
+              mode="lazy"
+              name="role"
+              label="アクセス権限"
             >
-              <v-radio-group
-                v-model="value.role"
-                name="role"
-                row
-                :error-messages="errors"
-              >
-                <v-radio
-                  v-for="item in role"
-                  :key="item.value"
-                  :label="item.text"
-                  :value="item.value"
-                  color="primary"
-                  @keydown.enter="submit"
-                />
-              </v-radio-group>
-            </validation-provider>
+              <template v-slot="{ options, errors }">
+                <v-radio-group
+                  v-model="value.role"
+                  v-bind="options"
+                  row
+                  :error-messages="errors"
+                >
+                  <v-radio
+                    v-for="item in role"
+                    :key="item.value"
+                    :label="item.text"
+                    :value="item.value"
+                    color="primary"
+                  />
+                </v-radio-group>
+              </template>
+            </ValidationField>
           </v-col>
         </v-row>
 
         <v-row v-if="formType === 'create'" dense data-test="passwordForm">
           <v-col>
-            <validation-provider
-              v-slot="{ errors }"
+            <ValidationField
               ref="passwordValidation"
+              v-model="value.password"
               :rules="{ required, min: 8 }"
-              name="パスワード"
-              vid="password"
               mode="lazy"
-            >
-              <v-text-field
-                v-model="value.password"
-                name="password"
-                type="password"
-                label="パスワード"
-                min="8"
-                required
-                :error-messages="errors"
-                @keydown.enter="submit"
-              />
-            </validation-provider>
+              label="パスワード"
+              name="password"
+              type="password"
+            />
           </v-col>
         </v-row>
 
@@ -104,24 +80,15 @@
           data-test="passwordConfirmationForm"
         >
           <v-col>
-            <validation-provider
-              v-slot="{ errors }"
+            <ValidationField
               ref="passwordConfirmationValidation"
+              v-model="value.password_confirmation"
               :rules="{ required, min: 8, confirmed: 'password' }"
-              name="パスワード(確認)"
               mode="lazy"
-            >
-              <v-text-field
-                v-model="value.password_confirmation"
-                name="password_confirmation"
-                type="password"
-                label="パスワード(確認)"
-                min="8"
-                required
-                :error-messages="errors"
-                @keydown.enter="submit"
-              />
-            </validation-provider>
+              label="パスワード(確認)"
+              name="password_confirmation"
+              type="password"
+            />
           </v-col>
         </v-row>
       </v-container>
@@ -132,9 +99,10 @@
 <script>
 import { mapGetters } from "vuex"
 import Form from "@/components/form/form"
+import ValidationField from "@/components/form/validationField"
 
 export default {
-  components: { Form },
+  components: { Form, ValidationField },
   props: {
     value: {
       type: Object,

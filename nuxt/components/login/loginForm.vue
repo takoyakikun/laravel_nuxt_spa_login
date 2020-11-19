@@ -1,49 +1,36 @@
 <template>
   <Form @submit="$emit('submit')">
-    <template #default="{ submit }">
-      <validation-provider
-        v-slot="{ errors }"
+    <template>
+      <ValidationField
         ref="loginValidation"
+        v-model="value.email"
         :rules="{ required, max: 255, email }"
         mode="lazy"
-        name="Login"
-      >
-        <v-text-field
-          v-model="value.email"
-          label="Login"
-          name="login"
-          prepend-icon="mdi-account"
-          type="text"
-          :error-messages="errors"
-          @keydown.enter="submit"
-        />
-      </validation-provider>
+        label="Login"
+        name="login"
+        type="email"
+        :form-options="{
+          prependIcon: 'mdi-account'
+        }"
+      />
 
-      <validation-provider
-        v-slot="{ errors }"
+      <ValidationField
         ref="passwordValidation"
+        v-model="value.password"
         :rules="{ required }"
         mode="lazy"
-        name="Password"
-        vid="password"
-      >
-        <v-text-field
-          id="password"
-          v-model="value.password"
-          label="Password"
-          name="password"
-          prepend-icon="mdi-lock"
-          type="password"
-          :error-messages="errors"
-          @keydown.enter="submit"
-        />
-      </validation-provider>
+        label="Password"
+        name="password"
+        type="password"
+        :form-options="{
+          prependIcon: 'mdi-lock'
+        }"
+      />
 
       <v-checkbox
         v-model="value.remember"
         color="primary"
-        label="Remember me"
-        @keydown.enter="submit"
+        label="ログイン状態を保存する"
       />
     </template>
   </Form>
@@ -51,9 +38,10 @@
 
 <script>
 import Form from "@/components/form/form"
+import ValidationField from "@/components/form/validationField"
 
 export default {
-  components: { Form },
+  components: { Form, ValidationField },
   props: {
     value: {
       type: Object,

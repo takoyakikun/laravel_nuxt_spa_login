@@ -5,6 +5,7 @@ import storeConfig from "@/test/storeConfig"
 import setConfigData from "@/test/setConfigData"
 import UserForm from "@/components/users/userForm"
 import Form from "@/components/form/form"
+import { ValidationObserver } from "vee-validate"
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -146,113 +147,144 @@ describe("components/users/userForm", () => {
 
   describe("フォームバリデーションテスト", () => {
     let wrapper
+    let formWrapper
     beforeEach(() => {
-      wrapper = mount(UserForm, {
+      wrapper = mount(ValidationObserver, {
         localVue,
         store,
         vuetify,
-        sync: false
+        sync: false,
+        slots: {
+          default: UserForm
+        }
+      })
+      formWrapper = wrapper.findComponent(UserForm)
+    })
+
+    describe("ユーザー名", () => {
+      let form
+      let validation
+      beforeEach(() => {
+        form = wrapper.find("input[name='name']")
+        validation = formWrapper.vm.$refs.nameValidation
+      })
+
+      test("required", async () => {
+        form.setValue("")
+        await wrapper.vm.validate()
+        expect(validation.failedRules.required).toBeTruthy()
+      })
+
+      test("max", async () => {
+        form.setValue("a".repeat(256))
+        await wrapper.vm.validate()
+        expect(validation.failedRules.max).toBeTruthy()
+      })
+
+      test("valid", async () => {
+        form.setValue("テスト")
+        await wrapper.vm.validate()
+        expect(Object.keys(validation.failedRules).length).toBe(0)
       })
     })
 
-    test("ユーザー名", async () => {
-      const form = wrapper.find("input[name='name']")
-      const validation = wrapper.vm.$refs.nameValidation
+    describe("メールアドレス", () => {
+      let form
+      let validation
+      beforeEach(() => {
+        form = wrapper.find("input[name='email']")
+        validation = formWrapper.vm.$refs.emailValidation
+      })
 
-      // required
-      form.setValue("")
-      await validation.validate()
-      expect(validation.failedRules.required).toBeTruthy()
+      test("required", async () => {
+        form.setValue("")
+        await wrapper.vm.validate()
+        expect(validation.failedRules.required).toBeTruthy()
+      })
 
-      // max
-      form.setValue("a".repeat(256))
-      await validation.validate()
-      expect(validation.failedRules.max).toBeTruthy()
+      test("max", async () => {
+        form.setValue("a".repeat(256))
+        await wrapper.vm.validate()
+        expect(validation.failedRules.max).toBeTruthy()
+      })
 
-      // valid
-      form.setValue("テスト")
-      await validation.validate()
-      expect(Object.keys(validation.failedRules).length).toBe(0)
+      test("email", async () => {
+        form.setValue("aaa")
+        await wrapper.vm.validate()
+        expect(validation.failedRules.email).toBeTruthy()
+      })
+
+      test("valid", async () => {
+        form.setValue("test@test.com")
+        await wrapper.vm.validate()
+        expect(Object.keys(validation.failedRules).length).toBe(0)
+      })
     })
 
-    test("メールアドレス", async () => {
-      const form = wrapper.find("input[name='email']")
-      const validation = wrapper.vm.$refs.emailValidation
+    describe("パスワード", () => {
+      let form
+      let validation
+      beforeEach(() => {
+        form = wrapper.find("input[name='password']")
+        validation = formWrapper.vm.$refs.passwordValidation
+      })
 
-      // required
-      form.setValue("")
-      await validation.validate()
-      expect(validation.failedRules.required).toBeTruthy()
+      test("required", async () => {
+        form.setValue("")
+        await wrapper.vm.validate()
+        expect(validation.failedRules.required).toBeTruthy()
+      })
 
-      // max
-      form.setValue("a".repeat(256))
-      await validation.validate()
-      expect(validation.failedRules.max).toBeTruthy()
+      test("min", async () => {
+        form.setValue("a".repeat(7))
+        await wrapper.vm.validate()
+        expect(validation.failedRules.min).toBeTruthy()
+      })
 
-      // email
-      form.setValue("aaa")
-      await validation.validate()
-      expect(validation.failedRules.email).toBeTruthy()
-
-      // valid
-      form.setValue("test@test.com")
-      await validation.validate()
-      expect(Object.keys(validation.failedRules).length).toBe(0)
+      test("valid", async () => {
+        form.setValue("password")
+        await wrapper.vm.validate()
+        expect(Object.keys(validation.failedRules).length).toBe(0)
+      })
     })
 
-    test("パスワード", async () => {
-      const form = wrapper.find("input[name='password']")
-      const validation = wrapper.vm.$refs.passwordValidation
+    describe("パスワード(確認)", () => {
+      let form
+      let passwordForm
+      let validation
+      beforeEach(() => {
+        form = wrapper.find("input[name='password_confirmation']")
+        passwordForm = wrapper.find("input[name='password']")
+        validation = formWrapper.vm.$refs.passwordConfirmationValidation
+      })
 
-      // required
-      form.setValue("")
-      await validation.validate()
-      expect(validation.failedRules.required).toBeTruthy()
+      test("required", async () => {
+        form.setValue("")
+        passwordForm.setValue("password")
+        await wrapper.vm.validate()
+        expect(validation.failedRules.required).toBeTruthy()
+      })
 
-      // min
-      form.setValue("a".repeat(7))
-      await validation.validate()
-      expect(validation.failedRules.min).toBeTruthy()
+      test("min", async () => {
+        form.setValue("a".repeat(7))
+        passwordForm.setValue("password")
+        await wrapper.vm.validate()
+        expect(validation.failedRules.min).toBeTruthy()
+      })
 
-      // valid
-      form.setValue("password")
-      await validation.validate()
-      expect(Object.keys(validation.failedRules).length).toBe(0)
-    })
+      test("confirmed", async () => {
+        form.setValue("password")
+        passwordForm.setValue("aaaaaaaa")
+        await wrapper.vm.validate()
+        expect(validation.failedRules.confirmed).toBeTruthy()
+      })
 
-    test("パスワード(確認)", async () => {
-      const form = wrapper.find("input[name='password_confirmation']")
-      const passwordForm = wrapper.find("input[name='password']")
-      const validation = wrapper.vm.$refs.passwordConfirmationValidation
-      const passwordValidation = wrapper.vm.$refs.passwordValidation
-
-      // required
-      form.setValue("")
-      passwordForm.setValue("password")
-      await validation.validate()
-      await passwordValidation.validate()
-      expect(validation.failedRules.required).toBeTruthy()
-
-      // min
-      form.setValue("a".repeat(7))
-      passwordForm.setValue("password")
-      await validation.validate()
-      await passwordValidation.validate()
-      expect(validation.failedRules.min).toBeTruthy()
-
-      // confirmed
-      form.setValue("password")
-      passwordForm.setValue("aaaaaaaa")
-      await validation.validate()
-      await passwordValidation.validate()
-      expect(validation.failedRules.confirmed).toBeTruthy()
-
-      // valid
-      form.setValue("password")
-      passwordForm.setValue("password")
-      await validation.validate()
-      await passwordValidation.validate()
-      expect(Object.keys(validation.failedRules).length).toBe(0)
+      test("valid", async () => {
+        form.setValue("password")
+        passwordForm.setValue("password")
+        await wrapper.vm.validate()
+        expect(Object.keys(validation.failedRules).length).toBe(0)
+      })
     })
   })
 })
