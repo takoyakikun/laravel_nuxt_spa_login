@@ -1,6 +1,7 @@
 <template>
-  <v-form>
+  <v-form @submit.prevent="submit()">
     <slot :submit="submit" />
+    <button v-show="false" type="submit" />
   </v-form>
 </template>
 
@@ -13,10 +14,7 @@ export default {
     }
   },
   methods: {
-    submit(event) {
-      // 日本語入力時のEnterキーの反応を防ぐ
-      if (event.keyCode && event.keyCode !== 13) return
-
+    submit() {
       this.$emit("submit")
     }
   }
