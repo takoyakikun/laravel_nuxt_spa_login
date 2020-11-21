@@ -4,6 +4,7 @@ import Vuex from "vuex"
 import storeConfig from "@/test/storeConfig"
 import LoginForm from "@/components/login/loginForm"
 import Form from "@/components/form/form"
+import { ValidationObserver } from "vee-validate"
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -39,53 +40,72 @@ describe("components/login/loginForm", () => {
 
   describe("フォームバリデーションテスト", () => {
     let wrapper
+    let formWrapper
     beforeEach(() => {
-      wrapper = mount(LoginForm, {
+      wrapper = mount(ValidationObserver, {
         localVue,
         store,
         vuetify,
-        sync: false
+        sync: false,
+        slots: {
+          default: LoginForm
+        }
+      })
+      formWrapper = wrapper.findComponent(LoginForm)
+    })
+
+    describe("Login", () => {
+      let form
+      let validation
+      beforeEach(() => {
+        form = wrapper.find("input[name='login']")
+        validation = formWrapper.vm.$refs.loginValidation
+      })
+
+      test("required", async () => {
+        form.setValue("")
+        await wrapper.vm.validate()
+        expect(validation.getFailedRules().required).toBeTruthy()
+      })
+
+      test("max", async () => {
+        form.setValue("a".repeat(256))
+        await wrapper.vm.validate()
+        expect(validation.getFailedRules().max).toBeTruthy()
+      })
+
+      test("email", async () => {
+        form.setValue("aaa")
+        await wrapper.vm.validate()
+        expect(validation.getFailedRules().email).toBeTruthy()
+      })
+
+      test("valid", async () => {
+        form.setValue("test@test.com")
+        await wrapper.vm.validate()
+        expect(Object.keys(validation.getFailedRules()).length).toBe(0)
       })
     })
 
-    test("Login", async () => {
-      const form = wrapper.find("input[name='login']")
-      const validation = wrapper.vm.$refs.loginValidation
+    describe("Password", () => {
+      let form
+      let validation
+      beforeEach(() => {
+        form = wrapper.find("input[name='password']")
+        validation = formWrapper.vm.$refs.passwordValidation
+      })
 
-      // required
-      form.setValue("")
-      await validation.validate()
-      expect(validation.failedRules.required).toBeTruthy()
+      test("required", async () => {
+        form.setValue("")
+        await wrapper.vm.validate()
+        expect(validation.getFailedRules().required).toBeTruthy()
+      })
 
-      // max
-      form.setValue("a".repeat(256))
-      await validation.validate()
-      expect(validation.failedRules.max).toBeTruthy()
-
-      // email
-      form.setValue("aaa")
-      await validation.validate()
-      expect(validation.failedRules.email).toBeTruthy()
-
-      // valid
-      form.setValue("test@test.com")
-      await validation.validate()
-      expect(Object.keys(validation.failedRules).length).toBe(0)
-    })
-
-    test("Password", async () => {
-      const form = wrapper.find("input[name='password']")
-      const validation = wrapper.vm.$refs.passwordValidation
-
-      // required
-      form.setValue("")
-      await validation.validate()
-      expect(validation.failedRules.required).toBeTruthy()
-
-      // valid
-      form.setValue("password")
-      await validation.validate()
-      expect(Object.keys(validation.failedRules).length).toBe(0)
+      test("valid", async () => {
+        form.setValue("password")
+        await wrapper.vm.validate()
+        expect(Object.keys(validation.getFailedRules()).length).toBe(0)
+      })
     })
   })
 })

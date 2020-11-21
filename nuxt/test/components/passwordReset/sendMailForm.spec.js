@@ -4,6 +4,7 @@ import Vuex from "vuex"
 import storeConfig from "@/test/storeConfig"
 import SendMailForm from "@/components/passwordReset/sendMailForm"
 import Form from "@/components/form/form"
+import { ValidationObserver } from "vee-validate"
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -39,38 +40,51 @@ describe("components/passwordReset/sendMailForm", () => {
 
   describe("フォームバリデーションテスト", () => {
     let wrapper
+    let formWrapper
     beforeEach(() => {
-      wrapper = mount(SendMailForm, {
+      wrapper = mount(ValidationObserver, {
         localVue,
         store,
         vuetify,
-        sync: false
+        sync: false,
+        slots: {
+          default: SendMailForm
+        }
       })
+      formWrapper = wrapper.findComponent(SendMailForm)
     })
 
-    test("Email", async () => {
-      const form = wrapper.find("input[name='email']")
-      const validation = wrapper.vm.$refs.emailValidation
+    describe("メールアドレス", () => {
+      let form
+      let validation
+      beforeEach(() => {
+        form = wrapper.find("input[name='email']")
+        validation = formWrapper.vm.$refs.emailValidation
+      })
 
-      // required
-      form.setValue("")
-      await validation.validate()
-      expect(validation.failedRules.required).toBeTruthy()
+      test("required", async () => {
+        form.setValue("")
+        await wrapper.vm.validate()
+        expect(validation.getFailedRules().required).toBeTruthy()
+      })
 
-      // max
-      form.setValue("a".repeat(256))
-      await validation.validate()
-      expect(validation.failedRules.max).toBeTruthy()
+      test("max", async () => {
+        form.setValue("a".repeat(256))
+        await wrapper.vm.validate()
+        expect(validation.getFailedRules().max).toBeTruthy()
+      })
 
-      // email
-      form.setValue("aaa")
-      await validation.validate()
-      expect(validation.failedRules.email).toBeTruthy()
+      test("email", async () => {
+        form.setValue("aaa")
+        await wrapper.vm.validate()
+        expect(validation.getFailedRules().email).toBeTruthy()
+      })
 
-      // valid
-      form.setValue("test@test.com")
-      await validation.validate()
-      expect(Object.keys(validation.failedRules).length).toBe(0)
+      test("valid", async () => {
+        form.setValue("test@test.com")
+        await wrapper.vm.validate()
+        expect(Object.keys(validation.getFailedRules()).length).toBe(0)
+      })
     })
   })
 })

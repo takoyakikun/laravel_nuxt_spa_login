@@ -71,19 +71,13 @@ describe("components/users/passwordChangeForm", () => {
       test("required", async () => {
         form.setValue("")
         await wrapper.vm.validate()
-        expect(validation.failedRules.required).toBeTruthy()
-      })
-
-      test("min", async () => {
-        form.setValue("a".repeat(7))
-        await wrapper.vm.validate()
-        expect(validation.failedRules.min).toBeTruthy()
+        expect(validation.getFailedRules().required).toBeTruthy()
       })
 
       test("valid", async () => {
         form.setValue("password")
         await wrapper.vm.validate()
-        expect(Object.keys(validation.failedRules).length).toBe(0)
+        expect(Object.keys(validation.getFailedRules()).length).toBe(0)
       })
     })
 
@@ -98,19 +92,19 @@ describe("components/users/passwordChangeForm", () => {
       test("required", async () => {
         form.setValue("")
         await wrapper.vm.validate()
-        expect(validation.failedRules.required).toBeTruthy()
+        expect(validation.getFailedRules().required).toBeTruthy()
       })
 
       test("min", async () => {
         form.setValue("a".repeat(7))
         await wrapper.vm.validate()
-        expect(validation.failedRules.min).toBeTruthy()
+        expect(validation.getFailedRules().min).toBeTruthy()
       })
 
       test("valid", async () => {
         form.setValue("password")
         await wrapper.vm.validate()
-        expect(Object.keys(validation.failedRules).length).toBe(0)
+        expect(Object.keys(validation.getFailedRules()).length).toBe(0)
       })
     })
 
@@ -128,28 +122,28 @@ describe("components/users/passwordChangeForm", () => {
         form.setValue("")
         passwordForm.setValue("password")
         await wrapper.vm.validate()
-        expect(validation.failedRules.required).toBeTruthy()
+        expect(validation.getFailedRules().required).toBeTruthy()
       })
 
       test("min", async () => {
         form.setValue("a".repeat(7))
         passwordForm.setValue("password")
         await wrapper.vm.validate()
-        expect(validation.failedRules.min).toBeTruthy()
+        expect(validation.getFailedRules().min).toBeTruthy()
       })
 
       test("confirmed", async () => {
         form.setValue("password")
         passwordForm.setValue("aaaaaaaa")
         await wrapper.vm.validate()
-        expect(validation.failedRules.confirmed).toBeTruthy()
+        expect(validation.getFailedRules().confirmed).toBeTruthy()
       })
 
       test("valid", async () => {
         form.setValue("password")
         passwordForm.setValue("password")
         await wrapper.vm.validate()
-        expect(Object.keys(validation.failedRules).length).toBe(0)
+        expect(Object.keys(validation.getFailedRules()).length).toBe(0)
       })
     })
   })

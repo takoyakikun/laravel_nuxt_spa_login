@@ -7,7 +7,7 @@
             <ValidationField
               ref="currentPasswordValidation"
               v-model="value.current_password"
-              :rules="{ required, min: 8 }"
+              :rules="{ required }"
               mode="lazy"
               label="現在のパスワード"
               name="current_password"

@@ -176,15 +176,28 @@ describe("components/form/validationField", () => {
       })
     })
 
-    test("validate", () => {
-      // spyOn
-      const method = jest.spyOn(wrapper.vm.$refs.validation, "validate")
+    describe("validate", () => {
+      let method
+      beforeEach(() => {
+        // spyOn
+        method = jest.spyOn(wrapper.vm.$refs.validation, "validate")
+      })
 
-      // validationField のメソッドを実行
-      wrapper.vm.validate()
+      test("valueなし", () => {
+        // validationField のメソッドを実行
+        wrapper.vm.validate()
 
-      // ValidationProvider のメソッドが実行されているか
-      expect(method).toHaveBeenCalled()
+        // ValidationProvider のメソッドが実行されているか
+        expect(method).toHaveBeenCalled()
+      })
+
+      test("valueあり", () => {
+        // validationField のメソッドを実行
+        wrapper.vm.validate("test")
+
+        // ValidationProvider のメソッドが実行されているか
+        expect(method).toHaveBeenCalled()
+      })
     })
 
     test("validateSilent", () => {
@@ -251,6 +264,41 @@ describe("components/form/validationField", () => {
 
       // ValidationProvider のメソッドが実行されているか
       expect(method).toHaveBeenCalled()
+    })
+  })
+
+  describe("フォームエラー内容取得テスト", () => {
+    let mountOption
+    beforeEach(() => {
+      mountOption = {
+        localVue,
+        vuetify,
+        sync: false,
+        propsData: {
+          rules: { required: true, max: 10 }
+        }
+      }
+    })
+
+    test("required", async () => {
+      mountOption.propsData.value = ""
+      const wrapper = mount(ValidationField, mountOption)
+      await wrapper.vm.$refs.validation.validate()
+      expect(wrapper.vm.getFailedRules().required).toBeTruthy()
+    })
+
+    test("max", async () => {
+      mountOption.propsData.value = "a".repeat(11)
+      const wrapper = mount(ValidationField, mountOption)
+      await wrapper.vm.$refs.validation.validate()
+      expect(wrapper.vm.getFailedRules().max).toBeTruthy()
+    })
+
+    test("valid", async () => {
+      mountOption.propsData.value = "test"
+      const wrapper = mount(ValidationField, mountOption)
+      await wrapper.vm.$refs.validation.validate()
+      expect(Object.keys(wrapper.vm.getFailedRules()).length).toBe(0)
     })
   })
 })

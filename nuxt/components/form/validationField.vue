@@ -1,22 +1,24 @@
 <template>
   <div>
     <ValidationProvider
-      v-slot="{ errors }"
+      v-slot="props"
       ref="validation"
       v-bind="createValidationOptions"
     >
-      <slot :options="createFormOptions" :errors="errors">
-        <v-select
-          v-if="type === 'select'"
-          v-model="value"
+      <slot :options="createFormOptions" v-bind="props">
+        <v-textarea
+          v-if="type === 'textarea'"
+          :value="value"
           v-bind="createFormOptions"
-          :error-messages="errors"
+          :error-messages="props.errors"
+          @input="$emit('input', $event)"
         />
         <v-text-field
           v-else
-          v-model="value"
+          :value="value"
           v-bind="createFormOptions"
-          :error-messages="errors"
+          :error-messages="props.errors"
+          @input="$emit('input', $event)"
         />
       </slot>
     </ValidationProvider>
@@ -27,11 +29,11 @@
 export default {
   props: {
     value: {
-      type: Object,
-      default: () => ({})
+      type: [Number, String, Array, Object],
+      default: ""
     },
     rules: {
-      type: Object,
+      type: [Object, String],
       default: () => ({})
     },
     mode: {
@@ -110,7 +112,11 @@ export default {
   },
   methods: {
     validate(value) {
-      return this.$refs.validation.validate(value)
+      if (value) {
+        return this.$refs.validation.validate(value)
+      } else {
+        return this.$refs.validation.validate()
+      }
     },
     validateSilent() {
       return this.$refs.validation.validateSilent()
@@ -129,6 +135,11 @@ export default {
     },
     syncValue(value) {
       return this.$refs.validation.syncValue(value)
+    },
+
+    // エラー内容を取得
+    getFailedRules() {
+      return this.$refs.validation.failedRules
     }
   }
 }
