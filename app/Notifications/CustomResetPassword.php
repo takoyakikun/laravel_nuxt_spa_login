@@ -41,7 +41,7 @@ class CustomResetPassword extends ResetPassword
      */
     public function toMail($notifiable)
     {
-        if (url()->current() === url(route('users.store'))) {
+        if (\Config::get('temporary.passwordSet')) {
             return (new MailMessage)
                 ->subject('パスワードを設定してください')
                 ->line('下のボタンをクリックしてパスワードを設定してください。')

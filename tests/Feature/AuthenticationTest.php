@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Assert;
 
 class AuthenticationTest extends TestCase
 {
@@ -171,14 +172,19 @@ class AuthenticationTest extends TestCase
 
         // パスワードリセットメールが入力されたメールアドレスに送信されているか確認
         $token = '';
+        $actionUrl = '';
         Notification::assertSentTo(
             $user,
             CustomResetPassword::class,
-            function (CustomResetPassword $notification) use (&$token) {
+            function (CustomResetPassword $notification) use (&$token, &$actionUrl, $user) {
+                $actionUrl = $notification->toMail($user)->actionUrl;
                 $token = $notification->token;
                 return true;
             }
         );
+
+        // 送信されたメールのボタンリンクがパスワードリセットのURLになっているか
+        Assert::assertSame($actionUrl, url('passwordReset/' . $token));
 
         // 変更するパスワードデータ
         $newPasswordData = [

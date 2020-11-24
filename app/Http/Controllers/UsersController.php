@@ -50,6 +50,9 @@ class UsersController extends Controller
             $role = 3;
         }
 
+        // パスワードリセットメールをパスワード設定メールに切り替えるフラグ
+        \Config::set('temporary.passwordSet', true);
+
         \DB::beginTransaction();
         try {
             $user = resolve(User::class)->create([

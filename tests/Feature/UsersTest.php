@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Notifications\CustomResetPassword;
+use Tests\Feature\Common\UsersTestTrait;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -14,6 +15,7 @@ use Mockery;
 class UsersTest extends TestCase
 {
     use RefreshDatabase;
+    use UsersTestTrait;
 
     // テスト一般ユーザ
     protected $user;
@@ -111,59 +113,8 @@ class UsersTest extends TestCase
             'role' => $newData['role']
         ]);
 
-        // パスワード設定メールが入力されたメールアドレスに送信されているか確認
-        $user = User::orderBy('id', 'desc')->first();
-        $token = '';
-        Notification::assertSentTo(
-            $user,
-            CustomResetPassword::class,
-            function (CustomResetPassword $notification) use (&$token) {
-                $token = $notification->token;
-                return true;
-            }
-        );
-
-        // メール認証のアクセス権限のリクエストを送信
-        $response = $this->actingAs($user)->json('GET', route('permission', ['verified']), [], ['X-Requested-With' => 'XMLHttpRequest']);
-
-        // 正しいレスポンスが返ってくることを確認
-        $response->assertStatus(200);
-
-        // この時点ではメール認証されていないのでfalseを返す
-        $response->assertJson([false]);
-
-        // 設定するパスワードデータ
-        $newPasswordData = [
-            'token'  => $token,
-            'email' => $user->email,
-            'password' => 'resetpass',
-            'password_confirmation' => 'resetpass'
-        ];
-
-        // パスワードリセットのリクエストを送信
-        $response = $this->json('POST', route('password.passwordSet'), $newPasswordData, ['X-Requested-With' => 'XMLHttpRequest']);
-
-        // 正しいレスポンスが返ってくることを確認
-        $response->assertStatus(200);
-
-        // 認証されていることを確認
-        $this->assertTrue(\Auth::check());
-
-        // 設定されたパスワードが保存されていることを確認
-        $this->assertTrue(\Hash::check($newPasswordData['password'], $user->fresh()->password));
-
-        // データベースにメール認証時刻が入っているか確認
-        $verificationUser = User::find($user->id);
-        $this->assertNotNull($verificationUser->email_verified_at);
-
-        // メール認証のアクセス権限のリクエストを送信
-        $response = $this->actingAs($verificationUser)->json('GET', route('permission', ['verified']), [], ['X-Requested-With' => 'XMLHttpRequest']);
-
-        // 正しいレスポンスが返ってくることを確認
-        $response->assertStatus(200);
-
-        // メール認証済なのでtrueを返す
-        $response->assertJson([true]);
+        // ログインユーザーパスワード設定メール送信共通のテスト
+        $this->userPasswordSetMail();
 
     }
 
