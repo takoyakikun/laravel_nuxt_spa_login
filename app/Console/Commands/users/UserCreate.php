@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\users;
+namespace App\Console\Commands\Users;
 
 // ユーザーモデル
 use App\Models\User;
@@ -10,7 +10,6 @@ use App\Http\Requests\UserStoreRequest;
 
 use Illuminate\Console\Command;
 use Cerbero\CommandValidator\ValidatesInput;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 
