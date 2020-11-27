@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Commands;
 
-use App\Models\User;
-use App\Notifications\CustomResetPassword;
 use Tests\Feature\Common\UsersTestTrait;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -38,7 +36,7 @@ class UserCreateTest extends TestCase
             'name' => $newData['name'],
             'email' => $newData['email'],
             'role' => $newData['role'],
-        ])->expectsOutput($newData['name'] . ' を追加しました。');
+        ])->expectsOutput($newData['name'] . '(' . $newData['email'] . ') を追加しました。');
 
         // データベースに追加したユーザーデータが入っているか確認
         $this->assertDatabaseHas('users', [
