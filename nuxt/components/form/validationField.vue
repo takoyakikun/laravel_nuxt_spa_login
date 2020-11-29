@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import lodash from "lodash"
+
 export default {
   props: {
     value: {
@@ -64,9 +66,9 @@ export default {
   computed: {
     // バリデーションのオプションを生成
     createValidationOptions() {
-      let options = this.validationOptions
+      let options = lodash.cloneDeep(this.validationOptions)
       if (Object.keys(this.rules).length) {
-        options.rules = this.rules
+        options.rules = lodash.cloneDeep(this.rules)
       }
       if (this.mode) {
         options.mode = this.mode
@@ -82,7 +84,7 @@ export default {
 
     // フォームフィールドのオプションを生成
     createFormOptions() {
-      let options = this.formOptions
+      let options = lodash.cloneDeep(this.formOptions)
       options.type = this.type
       if (this.label) {
         options.label = this.label
@@ -90,21 +92,35 @@ export default {
       if (this.name) {
         options.name = this.name
       }
-      let rules = this.rules
+      let rules = lodash.cloneDeep(this.rules)
       if (this.validationOptions.rules) {
-        rules = this.validationOptions.rules
+        rules = lodash.cloneDeep(this.validationOptions.rules)
+      }
+      const setRule = {
+        required() {
+          options.required = true
+        },
+        min() {
+          if (!this.getTextType(options.type)) {
+            options.min = rules["min"]
+          }
+        },
+        max() {
+          if (this.getTextType(options.type)) {
+            options.maxLength = rules["max"]
+          } else {
+            options.max = rules["max"]
+          }
+        },
+        // text形式のtypeを取得
+        getTextType(type) {
+          const textType = ["text", "password", "search", "url", "tel", "email"]
+          return textType.includes(type)
+        }
       }
       for (let key in rules) {
-        switch (key) {
-          case "required":
-            options.required = true
-            break
-          case "min":
-            options.min = rules[key]
-            break
-          case "max":
-            options.max = rules[key]
-            break
+        if (Object.keys(setRule).includes(key)) {
+          setRule[key]()
         }
       }
       return options

@@ -122,7 +122,7 @@ describe("components/form/validationField", () => {
         exceptData = {
           type: "text",
           required: true,
-          max: 255
+          maxLength: 255
         }
         result = wrapper.vm.createFormOptions
         expect(result).toEqual(exceptData)
@@ -140,28 +140,55 @@ describe("components/form/validationField", () => {
         expect(result).toEqual(exceptData)
       })
 
-      test("min ルール", () => {
-        wrapper.setProps({
-          rules: { min: 8 }
-        })
-        exceptData = {
-          type: "text",
-          min: 8
-        }
-        result = wrapper.vm.createFormOptions
-        expect(result).toEqual(exceptData)
+      describe("min ルール", () => {
+        test("type:text", () => {
+          wrapper.setProps({
+            rules: { min: 8 }
+          })
+          exceptData = {
+            type: "text"
+          }
+          result = wrapper.vm.createFormOptions
+          expect(result).toEqual(exceptData)
+        }),
+          test("type:number", () => {
+            wrapper.setProps({
+              type: "number",
+              rules: { min: 8 }
+            })
+            exceptData = {
+              type: "number",
+              min: 8
+            }
+            result = wrapper.vm.createFormOptions
+            expect(result).toEqual(exceptData)
+          })
       })
 
-      test("max ルール", () => {
-        wrapper.setProps({
-          rules: { max: 255 }
+      describe("max ルール", () => {
+        test("type:text", () => {
+          wrapper.setProps({
+            rules: { max: 255 }
+          })
+          exceptData = {
+            type: "text",
+            maxLength: 255
+          }
+          result = wrapper.vm.createFormOptions
+          expect(result).toEqual(exceptData)
         })
-        exceptData = {
-          type: "text",
-          max: 255
-        }
-        result = wrapper.vm.createFormOptions
-        expect(result).toEqual(exceptData)
+        test("type:number", () => {
+          wrapper.setProps({
+            type: "number",
+            rules: { max: 255 }
+          })
+          exceptData = {
+            type: "number",
+            max: 255
+          }
+          result = wrapper.vm.createFormOptions
+          expect(result).toEqual(exceptData)
+        })
       })
     })
   })
