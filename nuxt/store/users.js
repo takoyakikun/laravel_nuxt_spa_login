@@ -1,11 +1,13 @@
 export const state = () => ({
   list: [],
-  roleOptions: []
+  roleOptions: [],
+  userUnique: 1 // true/false だとバリデートされないので 1/0 を入れる
 })
 
 export const getters = {
   list: state => state.list,
-  roleOptions: state => state.roleOptions
+  roleOptions: state => state.roleOptions,
+  userUnique: state => state.userUnique
 }
 
 export const mutations = {
@@ -14,8 +16,12 @@ export const mutations = {
     state.list = list
   },
   // 権限の選択オプションをセット
-  setRoleOptions(state, roleOptions) {
-    state.roleOptions = roleOptions
+  setRoleOptions(state, value) {
+    state.roleOptions = value
+  },
+  // ユーザーのメールアドレスがユニークかどうかの判定をセット
+  setUserUnique(state, value) {
+    state.userUnique = value
   }
 }
 
@@ -138,5 +144,19 @@ export const actions = {
         return res
       })
       .catch(err => err.response)
+  },
+  // ユーザーのメールアドレスがユニークかどうかの判定をセット
+  async setUserUnique({ commit }, email) {
+    return await this.$axios
+      .post("/api/users/unique", { email: email })
+      .then(res => {
+        commit("setUserUnique", 1) // true だとバリデートされないので 1 を入れる
+      })
+      .catch(err => {
+        // バリデーションエラーの時のみfalse
+        if (err.response.status === 422) {
+          commit("setUserUnique", 0) // false だとバリデートされないので 0 を入れる
+        }
+      })
   }
 }

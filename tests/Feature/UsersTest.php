@@ -358,4 +358,28 @@ class UsersTest extends TestCase
 
     }
 
+    /**
+     * ユーザーのメールアドレスがユニークかの判定を取得テスト
+     *
+     * @return void
+     */
+    public function testUnique()
+    {
+        // サンプルデータを追加
+        factory(User::class)->create([
+            'email' => 'sample@test.com',
+        ]);
+
+        // 入力されたメールアドレスがユニークの場合200を返す
+        $postData = [ 'email' => 'unique@test.com' ];
+        $response = $this->json('POST', route('users.unique'), $postData, ['X-Requested-With' => 'XMLHttpRequest']);
+        $response->assertStatus(200);
+
+        // 入力されたメールアドレスがユニークでない場合422を返す
+        $postData = [ 'email' => 'sample@test.com' ];
+        $response = $this->json('POST', route('users.unique'), $postData, ['X-Requested-With' => 'XMLHttpRequest']);
+        $response->assertStatus(422);
+
+    }
+
 }

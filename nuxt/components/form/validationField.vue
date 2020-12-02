@@ -12,6 +12,7 @@
           v-bind="createFormOptions"
           :error-messages="props.errors"
           @input="$emit('input', $event)"
+          @change="$emit('change', $event)"
         />
         <v-text-field
           v-else
@@ -19,6 +20,7 @@
           v-bind="createFormOptions"
           :error-messages="props.errors"
           @input="$emit('input', $event)"
+          @change="$emit('change', $event)"
         />
       </slot>
     </ValidationProvider>

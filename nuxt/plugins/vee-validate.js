@@ -13,6 +13,16 @@ for (const rule in rules) {
   extend(rule, rules[rule])
 }
 
+// ユニークかどうかの判定
+const unique = {
+  params: ["unique"],
+  message: "この{_field_}は既に使用されています",
+  validate(value, { unique }) {
+    return unique
+  }
+}
+extend("unique", unique)
+
 Vue.component("ValidationProvider", ValidationProvider)
 Vue.component("ValidationObserver", ValidationObserver)
 localize("ja", ja)

@@ -5,7 +5,6 @@ import axios from "axios"
 import storeConfig from "@/test/storeConfig"
 import setConfigData from "@/test/setConfigData"
 import UserList from "@/components/users/userList"
-import { SearchSource } from "jest"
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -256,73 +255,72 @@ describe("components/users/userList", () => {
             "error"
           )
         })
-
-        describe("成功", () => {
-          beforeEach(() => {
-            // 正常なレスポンス
-            const response = {
-              status: 200
-            }
-            // axiosのレスポンスをモックする
-            axios.patch.mockImplementation(url => {
-              return Promise.resolve(response)
-            })
-            wrapper.vm.$store.$axios = axios
+      })
+      describe("成功", () => {
+        beforeEach(() => {
+          // 正常なレスポンス
+          const response = {
+            status: 200
+          }
+          // axiosのレスポンスをモックする
+          axios.patch.mockImplementation(url => {
+            return Promise.resolve(response)
           })
+          wrapper.vm.$store.$axios = axios
+        })
 
-          test("自ユーザー", async () => {
-            // ログインデータを登録
-            wrapper.vm.$store.commit("auth/setUser", { id: 1 })
+        test("自ユーザー", async () => {
+          // ログインデータを登録
+          wrapper.vm.$store.commit("auth/setUser", { id: 1 })
 
-            // フォームを入力してユーザー編集処理
-            wrapper.find("input[name='name']").setValue("テスト")
-            wrapper.find("input[name='email']").setValue("test@test.com")
-            wrapper.find("input[name='role'][value='3']").setChecked()
-            await wrapper.vm.editSubmit()
-            jest.runAllTimers()
+          // フォームを入力してユーザー編集処理
+          wrapper.find("input[name='name']").setValue("テスト")
+          wrapper.find("input[name='email']").setValue("test@test.com")
+          wrapper.find("input[name='role'][value='3']").setChecked()
+          await wrapper.vm.editSubmit()
+          jest.runAllTimers()
 
-            // バリデーションチェックをした
-            expect(editFormValidate).toHaveBeenCalled()
+          // バリデーションチェックをした
+          expect(editFormValidate).toHaveBeenCalled()
 
-            // API送信をした
-            expect(axiosPatch).toHaveBeenCalled()
-            expect(axiosPatch).toHaveBeenCalledWith(
-              "/api/myuser/update",
-              editUser
-            )
+          // API送信をした
+          expect(axiosPatch).toHaveBeenCalled()
+          expect(axiosPatch).toHaveBeenCalledWith(
+            "/api/myuser/update",
+            editUser
+          )
 
-            // snackbarの完了表示
-            expect(wrapper.vm.$store.getters["snackbar/text"]).toBe(
-              "ユーザーデータを更新しました。"
-            )
-            expect(wrapper.vm.$store.getters["snackbar/options"].color).toBe(
-              "success"
-            )
-          })
+          // snackbarの完了表示
+          expect(wrapper.vm.$store.getters["snackbar/text"]).toBe(
+            "ユーザーデータを更新しました。"
+          )
+          expect(wrapper.vm.$store.getters["snackbar/options"].color).toBe(
+            "success"
+          )
+        })
 
-          test("それ以外", async () => {
-            // フォームを入力してユーザー編集処理
-            wrapper.find("input[name='name']").setValue("テスト")
-            wrapper.find("input[name='email']").setValue("test@test.com")
-            wrapper.find("input[name='role'][value='3']").setChecked()
-            await wrapper.vm.editSubmit()
-            jest.runAllTimers()
+        test("それ以外", async () => {
+          // フォームを入力してユーザー編集処理
+          wrapper.find("input[name='name']").setValue("テスト")
+          wrapper.find("input[name='email']").setValue("test@test.com")
+          wrapper.find("input[name='role'][value='3']").setChecked()
+          await wrapper.vm.editSubmit()
+          jest.runAllTimers()
 
-            // バリデーションチェックをした
-            expect(editFormValidate).toHaveBeenCalled()
+          // バリデーションチェックをした
+          expect(editFormValidate).toHaveBeenCalled()
 
-            // API送信をした
-            expect(axiosPatch).toHaveBeenCalled()
-            expect(axiosPatch).toHaveBeenCalledWith("/api/users/1", editUser)
+          // API送信をした
+          expect(axiosPatch).toHaveBeenCalled()
+          expect(axiosPatch).toHaveBeenCalledWith("/api/users/1", editUser)
 
-            // snackbarの完了表示
-            expect(wrapper.vm.$store.getters["snackbar/text"]).toBe(
-              "ユーザーデータを更新しました。"
-            )
-            expect(wrapper.vm.$store.getters["snackbar/options"].color).toBe(
-              "success"
-            )
-          })
+          // snackbarの完了表示
+          expect(wrapper.vm.$store.getters["snackbar/text"]).toBe(
+            "ユーザーデータを更新しました。"
+          )
+          expect(wrapper.vm.$store.getters["snackbar/options"].color).toBe(
+            "success"
+          )
         })
       })
     })

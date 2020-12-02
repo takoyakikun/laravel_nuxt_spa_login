@@ -30,6 +30,9 @@ Route::get('/user', function () {
     }
 })->name('user');
 
+// ユーザーのメールアドレスがユニークかの判定を取得
+Route::post('users/unique', 'UsersController@unique')->name('users.unique');
+
 // パスワードリセットメール送信
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 

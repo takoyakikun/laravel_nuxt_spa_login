@@ -21,11 +21,12 @@
             <ValidationField
               ref="emailValidation"
               v-model="value.email"
-              :rules="{ required, max: 255, email }"
+              :rules="{ required, max: 255, email, unique: userUnique }"
               mode="lazy"
               name="email"
               label="メールアドレス"
               type="email"
+              @change="setUserUnique(value.email)"
             />
           </v-col>
         </v-row>
@@ -97,7 +98,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
+import { mapGetters, mapActions } from "vuex"
 import Form from "@/components/form/form"
 import ValidationField from "@/components/form/validationField"
 
@@ -121,7 +122,8 @@ export default {
     ...mapGetters({
       config: "config/config",
       permission: "auth/permission",
-      roleOptions: "users/roleOptions"
+      roleOptions: "users/roleOptions",
+      userUnique: "users/userUnique"
     }),
 
     // 権限ごとに選択できる権限を変える
@@ -130,6 +132,9 @@ export default {
         this.roleOptions.includes(item.value)
       )
     }
+  },
+  methods: {
+    ...mapActions("users", ["setUserUnique"])
   }
 }
 </script>

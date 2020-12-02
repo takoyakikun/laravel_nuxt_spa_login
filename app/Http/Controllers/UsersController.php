@@ -138,7 +138,7 @@ class UsersController extends Controller
     /**
      * 権限の選択オプションを返す
      *
-     * @return void
+     * @return \Illuminate\Http\Response
      */
     public function roleOptions()
     {
@@ -151,6 +151,21 @@ class UsersController extends Controller
         }
 
         return response($roleOptions);
+
+    }
+
+    /**
+     * ユーザーのメールアドレスがユニークかの判定を取得
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function unique(Request $request)
+    {
+        $request->validate([
+            'email' => 'unique:users',
+        ]);
+
+        return response([]);
 
     }
 
