@@ -13,6 +13,13 @@
           :error-messages="props.errors"
           @input="$emit('input', $event)"
           @change="$emit('change', $event)"
+          @blur="$emit('blur', $event)"
+          @click="$emit('click', $event)"
+          @focus="$emit('focus', $event)"
+          @keydown="$emit('keydown', $event)"
+          @mousedown="$emit('mousedown', $event)"
+          @mouseup="$emit('mouseup', $event)"
+          @update="$emit('update', $event)"
         />
         <v-text-field
           v-else
@@ -21,6 +28,13 @@
           :error-messages="props.errors"
           @input="$emit('input', $event)"
           @change="$emit('change', $event)"
+          @blur="$emit('blur', $event)"
+          @click="$emit('click', $event)"
+          @focus="$emit('focus', $event)"
+          @keydown="$emit('keydown', $event)"
+          @mousedown="$emit('mousedown', $event)"
+          @mouseup="$emit('mouseup', $event)"
+          @update="$emit('update', $event)"
         />
       </slot>
     </ValidationProvider>
@@ -102,22 +116,11 @@ export default {
         required() {
           options.required = true
         },
-        min() {
-          if (!this.getTextType(options.type)) {
-            options.min = rules["min"]
-          }
+        max_value() {
+          options.max = rules["max_value"]
         },
-        max() {
-          if (this.getTextType(options.type)) {
-            options.maxLength = rules["max"]
-          } else {
-            options.max = rules["max"]
-          }
-        },
-        // text形式のtypeを取得
-        getTextType(type) {
-          const textType = ["text", "password", "search", "url", "tel", "email"]
-          return textType.includes(type)
+        min_value() {
+          options.min = rules["min_value"]
         }
       }
       for (let key in rules) {
