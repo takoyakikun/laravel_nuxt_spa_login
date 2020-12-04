@@ -42,7 +42,7 @@ class UsersController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
-        if ((int)Auth::user()->role_level['auth'] <= (int)User::roleLevel($request->input('role'), 'auth')) {
+        if ((int)Auth::user()->role_level['auth'] <= (int)resolve(User::class)->roleLevel($request->input('role'), 'auth')) {
             // 入力者より権限が同じか下の場合は入力値を設定
             $role = $request->input('role');
         } else {
@@ -93,7 +93,7 @@ class UsersController extends Controller
             'name' => $request->input('name'),
             'email' => $request->input('email'),
         ];
-        if ((int)Auth::user()->role_level['auth'] <= (int)User::roleLevel($request->input('role'), 'auth')) {
+        if ((int)Auth::user()->role_level['auth'] <= (int)resolve(User::class)->roleLevel($request->input('role'), 'auth')) {
             // 入力者より権限が同じか下の場合は入力値を設定
             $updateData['role'] = $request->input('role');
         }
@@ -145,7 +145,7 @@ class UsersController extends Controller
         $roleOptions = [];
         foreach(array_keys(\Config::get('settings.roleOptions')) as $key) {
             // ログインしているユーザーと同じか下の権限レベルのユーザー権限を返す
-            if (User::roleLevel($key, 'auth') >= (int)Auth::user()->role_level['auth']) {
+            if (resolve(User::class)->roleLevel($key, 'auth') >= (int)Auth::user()->role_level['auth']) {
                 $roleOptions[] = $key;
             }
         }

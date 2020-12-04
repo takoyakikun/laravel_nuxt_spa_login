@@ -136,7 +136,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @param string $roleType
      * @return int
      */
-    static public function roleLevel ($role, $roleType = 'auth')
+    public function roleLevel ($role, $roleType = 'auth')
     {
         $roleTypeLevel = \Config::get('settings.roleLevel.'.$roleType);
         if (\Config::get('settings.role.'.$role.'.'.$roleType)) {

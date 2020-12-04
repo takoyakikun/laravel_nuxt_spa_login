@@ -183,7 +183,7 @@ class UsersTest extends TestCase
         ];
 
         // モデルをモックする
-        $userMock = Mockery::mock(User::class);
+        $userMock = Mockery::mock(User::class)->makePartial();
         $userMock->shouldReceive('find')->andReturnUsing(function ($arg) {
             $user = Mockery::mock(User::find($arg));
             $user->shouldReceive('fill->save');
