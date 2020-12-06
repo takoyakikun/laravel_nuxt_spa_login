@@ -32,10 +32,10 @@ describe("auth", () => {
     })
     describe("管理者権限以外", () => {
       let responseAdmin
-      beforeEach(() => {
+      beforeEach("", () => {
         // spyOn
         axiosGet = jest.spyOn(axios, "get")
-
+  
         // 管理者アクセス権限レスポンス
         responseAdmin = {
           status: 200,
@@ -43,9 +43,10 @@ describe("auth", () => {
         }
 
         // axiosのレスポンスをモックする
-        axios.get.mockImplementationOnce(url => {
-          return Promise.resolve(responseAdmin)
-        })
+        axios.get
+          .mockImplementationOnce(url => {
+            return Promise.resolve(responseAdmin)
+          })
 
         // ログインユーザーデータをストアに追加
         store.state.auth.user = {
@@ -62,9 +63,10 @@ describe("auth", () => {
           data: [false]
         }
         // axiosのレスポンスをモックする
-        axios.get.mockImplementationOnce(url => {
-          return Promise.resolve(responseVerified)
-        })
+        axios.get
+          .mockImplementationOnce(url => {
+            return Promise.resolve(responseVerified)
+          })
         store.$axios = axios
 
         // ミドルウェアを実行
@@ -99,9 +101,10 @@ describe("auth", () => {
           data: [true]
         }
         // axiosのレスポンスをモックする
-        axios.get.mockImplementationOnce(url => {
-          return Promise.resolve(responseVerified)
-        })
+        axios.get
+          .mockImplementationOnce(url => {
+            return Promise.resolve(responseVerified)
+          })
         store.$axios = axios
 
         // ミドルウェアを実行
@@ -135,7 +138,7 @@ describe("auth", () => {
       beforeEach(() => {
         // spyOn
         axiosGet = jest.spyOn(axios, "get")
-
+  
         // 管理者アクセス権限レスポンス
         responseAdmin = {
           status: 200,
@@ -143,9 +146,10 @@ describe("auth", () => {
         }
 
         // axiosのレスポンスをモックする
-        axios.get.mockImplementationOnce(url => {
-          return Promise.resolve(responseAdmin)
-        })
+        axios.get
+          .mockImplementationOnce(url => {
+            return Promise.resolve(responseAdmin)
+          })
 
         // ログインユーザーデータをストアに追加
         store.state.auth.user = {
@@ -153,6 +157,7 @@ describe("auth", () => {
           email: "test@test.com",
           role: 2
         }
+
       })
 
       test("メール認証をしていない", async () => {
@@ -162,9 +167,10 @@ describe("auth", () => {
           data: [false]
         }
         // axiosのレスポンスをモックする
-        axios.get.mockImplementationOnce(url => {
-          return Promise.resolve(responseVerified)
-        })
+        axios.get
+          .mockImplementationOnce(url => {
+            return Promise.resolve(responseVerified)
+          })
         store.$axios = axios
 
         // ミドルウェアを実行
@@ -199,9 +205,10 @@ describe("auth", () => {
           data: [true]
         }
         // axiosのレスポンスをモックする
-        axios.get.mockImplementationOnce(url => {
-          return Promise.resolve(responseVerified)
-        })
+        axios.get
+          .mockImplementationOnce(url => {
+            return Promise.resolve(responseVerified)
+          })
         store.$axios = axios
 
         // ミドルウェアを実行
