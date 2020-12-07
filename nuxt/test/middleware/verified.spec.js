@@ -96,5 +96,4 @@ describe("auth", () => {
       expect(redirect).not.toHaveBeenCalled()
     })
   })
-
 })
