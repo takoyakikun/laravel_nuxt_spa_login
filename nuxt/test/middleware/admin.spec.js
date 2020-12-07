@@ -6,7 +6,7 @@ import Admin from "@/middleware/admin"
 let store
 let redirect
 
-describe("auth", () => {
+describe("middleware/admin", () => {
   beforeEach(() => {
     store = new Vuex.Store(storeConfig)
     redirect = jest.fn()
@@ -32,7 +32,7 @@ describe("auth", () => {
     })
     describe("管理者権限以外", () => {
       let responseAdmin
-      beforeEach("", () => {
+      beforeEach(() => {
         // spyOn
         axiosGet = jest.spyOn(axios, "get")
 

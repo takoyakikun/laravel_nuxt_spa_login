@@ -6,7 +6,7 @@ import Verified from "@/middleware/verified"
 let store
 let redirect
 
-describe("auth", () => {
+describe("middleware/verified", () => {
   beforeEach(() => {
     store = new Vuex.Store(storeConfig)
     redirect = jest.fn()

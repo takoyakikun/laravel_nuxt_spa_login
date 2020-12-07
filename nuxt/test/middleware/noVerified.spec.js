@@ -6,7 +6,7 @@ import NoVerified from "@/middleware/noVerified"
 let store
 let redirect
 
-describe("auth", () => {
+describe("middleware/noVerified", () => {
   beforeEach(() => {
     store = new Vuex.Store(storeConfig)
     redirect = jest.fn()
