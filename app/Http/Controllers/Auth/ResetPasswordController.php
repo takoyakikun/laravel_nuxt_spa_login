@@ -76,8 +76,11 @@ class ResetPasswordController extends Controller
             }
         );
 
-        // メール認証をする
+        // メール認証済にする
         $request->user()->markEmailAsVerified();
+
+        // パスワード設定済にする
+        $request->user()->markPasswordAsSet();
 
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can

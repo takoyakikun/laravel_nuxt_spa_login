@@ -54,8 +54,11 @@ class MyuserTest extends TestCase
             'email' => $newData['email'],
         ]);
 
-        // 追加したユーザーのメールアドレスに送信されているか確認
+        // データベースにパスワード設定時刻が入っているか確認
         $user = User::orderBy('id', 'desc')->first();
+        $this->assertNotNull($user->password_set_at);
+
+        // 追加したユーザーのメールアドレスに送信されているか確認
         $url = '';
         Notification::assertSentTo(
             $user,

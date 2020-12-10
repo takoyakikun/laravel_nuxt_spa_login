@@ -63,9 +63,10 @@ trait UsersTestTrait
         // 設定されたパスワードが保存されていることを確認
         $this->assertTrue(\Hash::check($newPasswordData['password'], $user->fresh()->password));
 
-        // データベースにメール認証時刻が入っているか確認
+        // データベースにメール認証時刻とパスワード設定時刻が入っているか確認
         $verificationUser = User::find($user->id);
         $this->assertNotNull($verificationUser->email_verified_at);
+        $this->assertNotNull($verificationUser->password_set_at);
 
         // メール認証のアクセス権限のリクエストを送信
         $response = $this->actingAs($verificationUser)->json('GET', route('permission', ['verified']), [], ['X-Requested-With' => 'XMLHttpRequest']);
