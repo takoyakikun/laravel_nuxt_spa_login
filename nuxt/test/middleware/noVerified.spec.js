@@ -1,20 +1,30 @@
 import Vuex from "vuex"
 import storeConfig from "@/test/storeConfig"
 import axios from "axios"
+import Api from "@/test/api"
 import NoVerified from "@/middleware/noVerified"
+
+jest.useFakeTimers()
+jest.mock("axios")
 
 let store
 let redirect
+let ApiClass
+beforeEach(() => {
+  store = new Vuex.Store(storeConfig)
+  redirect = jest.fn()
+  ApiClass = new Api({ axios, store })
+})
 
 describe("middleware/noVerified", () => {
-  beforeEach(() => {
-    store = new Vuex.Store(storeConfig)
-    redirect = jest.fn()
-  })
-
   test("ログインしていない", async () => {
     // ミドルウェアを実行
-    await NoVerified({ store: store, redirect: redirect })
+    await NoVerified({
+      store: store,
+      redirect: redirect,
+      app: { $api: ApiClass }
+    })
+    jest.runAllTimers()
 
     // ログインしていないのでfalse
     expect(store.getters["auth/userExists"]).toBeFalsy()
@@ -51,7 +61,12 @@ describe("middleware/noVerified", () => {
       store.$axios = axios
 
       // ミドルウェアを実行
-      await NoVerified({ store: store, redirect: redirect })
+      await NoVerified({
+        store: store,
+        redirect: redirect,
+        app: { $api: ApiClass }
+      })
+      jest.runAllTimers()
 
       // ログインしているのでtrue
       expect(store.getters["auth/userExists"]).toBeTruthy()
@@ -80,7 +95,12 @@ describe("middleware/noVerified", () => {
       store.$axios = axios
 
       // ミドルウェアを実行
-      await NoVerified({ store: store, redirect: redirect })
+      await NoVerified({
+        store: store,
+        redirect: redirect,
+        app: { $api: ApiClass }
+      })
+      jest.runAllTimers()
 
       // ログインしているのでtrue
       expect(store.getters["auth/userExists"]).toBeTruthy()

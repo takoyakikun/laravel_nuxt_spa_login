@@ -1,20 +1,30 @@
 import Vuex from "vuex"
 import storeConfig from "@/test/storeConfig"
 import axios from "axios"
+import Api from "@/test/api"
 import Admin from "@/middleware/admin"
+
+jest.useFakeTimers()
+jest.mock("axios")
 
 let store
 let redirect
+let ApiClass
+beforeEach(() => {
+  store = new Vuex.Store(storeConfig)
+  redirect = jest.fn()
+  ApiClass = new Api({ axios, store })
+})
+
+afterEach(() => {
+  jest.clearAllMocks()
+})
 
 describe("middleware/admin", () => {
-  beforeEach(() => {
-    store = new Vuex.Store(storeConfig)
-    redirect = jest.fn()
-  })
-
   test("ログインしていない", async () => {
     // ミドルウェアを実行
-    await Admin({ store: store, redirect: redirect })
+    await Admin({ store: store, redirect: redirect, app: { $api: ApiClass } })
+    jest.runAllTimers()
 
     // ログインしていないのでfalse
     expect(store.getters["auth/userExists"]).toBeFalsy()
@@ -33,9 +43,6 @@ describe("middleware/admin", () => {
     describe("管理者権限以外", () => {
       let responseAdmin
       beforeEach(() => {
-        // spyOn
-        axiosGet = jest.spyOn(axios, "get")
-
         // 管理者アクセス権限レスポンス
         responseAdmin = {
           status: 200,
@@ -65,10 +72,14 @@ describe("middleware/admin", () => {
         axios.get.mockImplementationOnce(url => {
           return Promise.resolve(responseVerified)
         })
-        store.$axios = axios
 
         // ミドルウェアを実行
-        await Admin({ store: store, redirect: redirect })
+        await Admin({
+          store: store,
+          redirect: redirect,
+          app: { $api: ApiClass }
+        })
+        jest.runAllTimers()
 
         // ログインしているのでtrue
         expect(store.getters["auth/userExists"]).toBeTruthy()
@@ -102,10 +113,14 @@ describe("middleware/admin", () => {
         axios.get.mockImplementationOnce(url => {
           return Promise.resolve(responseVerified)
         })
-        store.$axios = axios
 
         // ミドルウェアを実行
-        await Admin({ store: store, redirect: redirect })
+        await Admin({
+          store: store,
+          redirect: redirect,
+          app: { $api: ApiClass }
+        })
+        jest.runAllTimers()
 
         // ログインしているのでtrue
         expect(store.getters["auth/userExists"]).toBeTruthy()
@@ -165,10 +180,14 @@ describe("middleware/admin", () => {
         axios.get.mockImplementationOnce(url => {
           return Promise.resolve(responseVerified)
         })
-        store.$axios = axios
 
         // ミドルウェアを実行
-        await Admin({ store: store, redirect: redirect })
+        await Admin({
+          store: store,
+          redirect: redirect,
+          app: { $api: ApiClass }
+        })
+        jest.runAllTimers()
 
         // ログインしているのでtrue
         expect(store.getters["auth/userExists"]).toBeTruthy()
@@ -202,10 +221,14 @@ describe("middleware/admin", () => {
         axios.get.mockImplementationOnce(url => {
           return Promise.resolve(responseVerified)
         })
-        store.$axios = axios
 
         // ミドルウェアを実行
-        await Admin({ store: store, redirect: redirect })
+        await Admin({
+          store: store,
+          redirect: redirect,
+          app: { $api: ApiClass }
+        })
+        jest.runAllTimers()
 
         // ログインしているのでtrue
         expect(store.getters["auth/userExists"]).toBeTruthy()

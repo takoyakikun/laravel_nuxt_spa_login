@@ -1,26 +1,83 @@
 import Vuex from "vuex"
 import storeConfig from "@/test/storeConfig"
 import axios from "axios"
+import Api from "@/test/api"
 import Verified from "@/middleware/verified"
+
+jest.useFakeTimers()
+jest.mock("axios")
 
 let store
 let redirect
+let ApiClass
+beforeEach(() => {
+  store = new Vuex.Store(storeConfig)
+  redirect = jest.fn()
+  ApiClass = new Api({ axios, store })
+})
+
+afterEach(() => {
+  jest.clearAllMocks()
+})
 
 describe("middleware/verified", () => {
-  beforeEach(() => {
-    store = new Vuex.Store(storeConfig)
-    redirect = jest.fn()
-  })
+  describe("ログインしている", () => {
+    let axiosGet
+    beforeEach(() => {
+      // spyOn
+      axiosGet = jest.spyOn(axios, "get")
+    })
 
-  test("ログインしていない", async () => {
-    // ミドルウェアを実行
-    await Verified({ store: store, redirect: redirect })
+    test("メール認証をしていない", async () => {
+      // メール認証アクセス権限レスポンス
+      const response = {
+        status: 200,
+        data: [false]
+      }
+      // axiosのレスポンスをモックする
+      axios.get.mockImplementation(url => {
+        return Promise.resolve(response)
+      })
 
-    // ログインしていないのでfalse
-    expect(store.getters["auth/userExists"]).toBeFalsy()
+      // ミドルウェアを実行
+      await Verified({
+        store: store,
+        redirect: redirect,
+        app: { $api: ApiClass }
+      })
+      jest.runAllTimers()
 
-    // リダイレクトしない
-    expect(redirect).not.toHaveBeenCalled()
+      // ログインしていないのでfalse
+      expect(store.getters["auth/userExists"]).toBeFalsy()
+
+      // リダイレクトしない
+      expect(redirect).not.toHaveBeenCalled()
+    })
+    test("メール認証している", async () => {
+      // メール認証アクセス権限レスポンス
+      const response = {
+        status: 200,
+        data: [true]
+      }
+      // axiosのレスポンスをモックする
+      axios.get.mockImplementation(url => {
+        return Promise.resolve(response)
+      })
+
+      // ミドルウェアを実行
+      await Verified({
+        store: store,
+        redirect: redirect,
+        app: { $api: ApiClass }
+      })
+      jest.runAllTimers()
+
+      // ログインしていないのでfalse
+      expect(store.getters["auth/userExists"]).toBeFalsy()
+
+      // リダイレクトしない
+      expect(redirect).not.toHaveBeenCalled()
+    })
   })
 
   describe("ログインしている", () => {
@@ -47,10 +104,14 @@ describe("middleware/verified", () => {
       axios.get.mockImplementation(url => {
         return Promise.resolve(response)
       })
-      store.$axios = axios
 
       // ミドルウェアを実行
-      await Verified({ store: store, redirect: redirect })
+      await Verified({
+        store: store,
+        redirect: redirect,
+        app: { $api: ApiClass }
+      })
+      jest.runAllTimers()
 
       // ログインしているのでtrue
       expect(store.getters["auth/userExists"]).toBeTruthy()
@@ -77,10 +138,14 @@ describe("middleware/verified", () => {
       axios.get.mockImplementation(url => {
         return Promise.resolve(response)
       })
-      store.$axios = axios
 
       // ミドルウェアを実行
-      await Verified({ store: store, redirect: redirect })
+      await Verified({
+        store: store,
+        redirect: redirect,
+        app: { $api: ApiClass }
+      })
+      jest.runAllTimers()
 
       // ログインしているのでtrue
       expect(store.getters["auth/userExists"]).toBeTruthy()
