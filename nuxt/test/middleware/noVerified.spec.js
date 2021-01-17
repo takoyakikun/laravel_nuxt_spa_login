@@ -1,19 +1,19 @@
 import Vuex from "vuex"
-import storeConfig from "@/test/storeConfig"
+import storeConfig from "~/test/storeConfig"
 import axios from "axios"
-import Api from "@/test/api"
-import NoVerified from "@/middleware/noVerified"
+import api from "~/test/api"
+import NoVerified from "~/middleware/noVerified"
 
 jest.useFakeTimers()
 jest.mock("axios")
 
 let store
 let redirect
-let ApiClass
+let $api
 beforeEach(() => {
   store = new Vuex.Store(storeConfig)
   redirect = jest.fn()
-  ApiClass = new Api({ axios, store })
+  $api = api({ $axios: axios, store })
 })
 
 describe("middleware/noVerified", () => {
@@ -22,7 +22,7 @@ describe("middleware/noVerified", () => {
     await NoVerified({
       store: store,
       redirect: redirect,
-      app: { $api: ApiClass }
+      app: { $api }
     })
     jest.runAllTimers()
 
@@ -58,13 +58,12 @@ describe("middleware/noVerified", () => {
       axios.get.mockImplementation(url => {
         return Promise.resolve(response)
       })
-      store.$axios = axios
 
       // ミドルウェアを実行
       await NoVerified({
         store: store,
         redirect: redirect,
-        app: { $api: ApiClass }
+        app: { $api }
       })
       jest.runAllTimers()
 
@@ -92,13 +91,12 @@ describe("middleware/noVerified", () => {
       axios.get.mockImplementation(url => {
         return Promise.resolve(response)
       })
-      store.$axios = axios
 
       // ミドルウェアを実行
       await NoVerified({
         store: store,
         redirect: redirect,
-        app: { $api: ApiClass }
+        app: { $api }
       })
       jest.runAllTimers()
 

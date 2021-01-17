@@ -1,19 +1,19 @@
 import Vuex from "vuex"
-import storeConfig from "@/test/storeConfig"
+import storeConfig from "~/test/storeConfig"
 import axios from "axios"
-import Api from "@/test/api"
-import Verified from "@/middleware/verified"
+import api from "~/test/api"
+import Verified from "~/middleware/verified"
 
 jest.useFakeTimers()
 jest.mock("axios")
 
 let store
 let redirect
-let ApiClass
+let $api
 beforeEach(() => {
   store = new Vuex.Store(storeConfig)
   redirect = jest.fn()
-  ApiClass = new Api({ axios, store })
+  $api = api({ $axios: axios, store })
 })
 
 afterEach(() => {
@@ -43,7 +43,7 @@ describe("middleware/verified", () => {
       await Verified({
         store: store,
         redirect: redirect,
-        app: { $api: ApiClass }
+        app: { $api }
       })
       jest.runAllTimers()
 
@@ -68,7 +68,7 @@ describe("middleware/verified", () => {
       await Verified({
         store: store,
         redirect: redirect,
-        app: { $api: ApiClass }
+        app: { $api }
       })
       jest.runAllTimers()
 
@@ -109,7 +109,7 @@ describe("middleware/verified", () => {
       await Verified({
         store: store,
         redirect: redirect,
-        app: { $api: ApiClass }
+        app: { $api }
       })
       jest.runAllTimers()
 
@@ -143,7 +143,7 @@ describe("middleware/verified", () => {
       await Verified({
         store: store,
         redirect: redirect,
-        app: { $api: ApiClass }
+        app: { $api }
       })
       jest.runAllTimers()
 
