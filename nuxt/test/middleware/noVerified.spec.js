@@ -16,7 +16,7 @@ beforeEach(() => {
   $api = api({ $axios: axios, store })
 })
 
-describe("middleware/noVerified", () => {
+describe(__filename, () => {
   test("ログインしていない", async () => {
     // ミドルウェアを実行
     await NoVerified({

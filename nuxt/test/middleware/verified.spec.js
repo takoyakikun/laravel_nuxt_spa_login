@@ -20,7 +20,7 @@ afterEach(() => {
   jest.clearAllMocks()
 })
 
-describe("middleware/verified", () => {
+describe(__filename, () => {
   describe("ログインしている", () => {
     let axiosGet
     beforeEach(() => {
