@@ -39,6 +39,7 @@ export default {
   plugins: [
     "~/plugins/api/setup",
     "~/plugins/filters",
+    "~/plugins/vuetify",
     "~/plugins/snackbar",
     "~/plugins/dialog",
     "~/plugins/nuxt-client-init",
