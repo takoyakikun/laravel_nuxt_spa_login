@@ -10,10 +10,16 @@
 import Resend from "~/components/resend/resend"
 
 export default {
+  name: "ResendPage",
   middleware: "noVerified",
   layout: "login",
   components: {
     Resend
+  },
+  head() {
+    return {
+      title: "メールアドレスの認証"
+    }
   }
 }
 </script>

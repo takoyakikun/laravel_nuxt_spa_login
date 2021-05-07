@@ -8,7 +8,13 @@
 
 <script>
 export default {
+  name: "IndexPage",
   middleware: "verified",
-  layout: "default"
+  layout: "default",
+  head() {
+    return {
+      title: "Topページ"
+    }
+  }
 }
 </script>
