@@ -8,12 +8,12 @@
 
 <script>
 export default {
-  name: "IndexPage",
-  middleware: "verified",
-  layout: "default",
+  name: 'IndexPage',
+  middleware: 'verified',
+  layout: 'default',
   head() {
     return {
-      title: "Topページ"
+      title: 'Topページ'
     }
   }
 }

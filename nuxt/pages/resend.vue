@@ -7,18 +7,18 @@
 </template>
 
 <script>
-import Resend from "~/components/resend/resend"
+import Resend from '~/components/resend/resend'
 
 export default {
-  name: "ResendPage",
-  middleware: "noVerified",
-  layout: "login",
+  name: 'ResendPage',
+  middleware: 'noVerified',
+  layout: 'login',
   components: {
     Resend
   },
   head() {
     return {
-      title: "メールアドレスの認証"
+      title: 'メールアドレスの認証'
     }
   }
 }

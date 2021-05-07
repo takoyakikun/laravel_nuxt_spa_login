@@ -46,7 +46,7 @@
 
 <script>
 export default {
-  name: "ResendVerifiedMailComponent",
+  name: 'ResendVerifiedMailComponent',
   data() {
     return {
       resend: false,
@@ -63,8 +63,8 @@ export default {
             this.resend = true
           } else {
             this.$snackbar.openSnackbar({
-              text: "認証メールの再送信に失敗しました。",
-              options: { color: "error" }
+              text: '認証メールの再送信に失敗しました。',
+              options: { color: 'error' }
             })
           }
         })
@@ -76,7 +76,7 @@ export default {
     async logout() {
       await this.$api.auth.logout()
 
-      this.$router.push("/")
+      this.$router.push('/')
     }
   }
 }

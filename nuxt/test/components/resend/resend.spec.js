@@ -1,11 +1,11 @@
-import { createLocalVue, shallowMount, mount } from "@vue/test-utils"
-import Vuetify from "vuetify"
-import Vuex from "vuex"
-import axios from "axios"
-import api from "~/test/api"
-import setPlugin from "~/test/setPlugin"
-import storeConfig from "~/test/storeConfig"
-import Resend from "~/components/resend/resend"
+import { createLocalVue, shallowMount, mount } from '@vue/test-utils'
+import Vuetify from 'vuetify'
+import Vuex from 'vuex'
+import axios from 'axios'
+import api from '~/test/api'
+import setPlugin from '~/test/setPlugin'
+import storeConfig from '~/test/storeConfig'
+import Resend from '~/components/resend/resend'
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -24,7 +24,7 @@ afterEach(() => {
 })
 
 describe(__filename, () => {
-  describe("resend", () => {
+  describe('resend', () => {
     let wrapper
     beforeEach(() => {
       const router = { push: jest.fn() }
@@ -37,18 +37,18 @@ describe(__filename, () => {
       })
     })
 
-    test("is a Vue instance", () => {
+    test('is a Vue instance', () => {
       expect(wrapper.vm).toBeTruthy()
     })
 
-    describe("認証メール再送信", () => {
+    describe('認証メール再送信', () => {
       let axiosPost
       beforeEach(() => {
         // spyOn
-        axiosPost = jest.spyOn(axios, "post")
+        axiosPost = jest.spyOn(axios, 'post')
       })
 
-      test("失敗", async () => {
+      test('失敗', async () => {
         // エラーレスポンス
         const response = {
           status: 422
@@ -63,16 +63,16 @@ describe(__filename, () => {
 
         // API送信をした
         expect(axiosPost).toHaveBeenCalled()
-        expect(axiosPost).toHaveBeenCalledWith("/api/email/resend")
+        expect(axiosPost).toHaveBeenCalledWith('/api/email/resend')
 
         // snackbarのエラー表示
         expect(wrapper.vm.$snackbar.text).toBe(
-          "認証メールの再送信に失敗しました。"
+          '認証メールの再送信に失敗しました。'
         )
-        expect(wrapper.vm.$snackbar.options.color).toBe("error")
+        expect(wrapper.vm.$snackbar.options.color).toBe('error')
       })
 
-      test("成功", async () => {
+      test('成功', async () => {
         // 正常なレスポンス
         const response = {
           status: 200
@@ -87,13 +87,13 @@ describe(__filename, () => {
 
         // API送信をした
         expect(axiosPost).toHaveBeenCalled()
-        expect(axiosPost).toHaveBeenCalledWith("/api/email/resend")
+        expect(axiosPost).toHaveBeenCalledWith('/api/email/resend')
 
         // 認証メール再送信完了メッセージを表示
         expect(wrapper.vm.resend).toBeTruthy()
       })
 
-      test("loading中は処理不可", async () => {
+      test('loading中は処理不可', async () => {
         // loading中の設定
         wrapper.setData({
           loading: true
@@ -116,10 +116,10 @@ describe(__filename, () => {
       })
     })
 
-    test("ログアウト", async () => {
+    test('ログアウト', async () => {
       // spyOn
-      const axiosPost = jest.spyOn(axios, "post")
-      const routerPush = jest.spyOn(wrapper.vm.$router, "push")
+      const axiosPost = jest.spyOn(axios, 'post')
+      const routerPush = jest.spyOn(wrapper.vm.$router, 'push')
 
       // 正常なレスポンス
       const response = {
@@ -135,23 +135,23 @@ describe(__filename, () => {
 
       // API送信をした
       expect(axiosPost).toHaveBeenCalled()
-      expect(axiosPost).toHaveBeenCalledWith("/api/logout")
+      expect(axiosPost).toHaveBeenCalledWith('/api/logout')
 
       // Topへリダイレクトした
       expect(routerPush).toHaveBeenCalled()
-      expect(routerPush).toHaveBeenCalledWith("/")
+      expect(routerPush).toHaveBeenCalledWith('/')
     })
   })
 
-  describe("ボタン動作テスト", () => {
+  describe('ボタン動作テスト', () => {
     let wrapper
     let resendMail
     let logout
     beforeEach(() => {
       resendMail = jest
-        .spyOn(Resend.methods, "resendMail")
+        .spyOn(Resend.methods, 'resendMail')
         .mockReturnValue(true)
-      logout = jest.spyOn(Resend.methods, "logout").mockReturnValue(true)
+      logout = jest.spyOn(Resend.methods, 'logout').mockReturnValue(true)
       wrapper = mount(Resend, {
         localVue,
         store,
@@ -159,27 +159,27 @@ describe(__filename, () => {
       })
     })
 
-    describe("認証メール再送信ボタン", () => {
-      test("resendMailContentButton", () => {
+    describe('認証メール再送信ボタン', () => {
+      test('resendMailContentButton', () => {
         // ボタンをクリック
-        wrapper.find("[data-test='resendMailContentButton']").vm.$emit("click")
+        wrapper.find("[data-test='resendMailContentButton']").vm.$emit('click')
 
         // メソッドが実行されたか
         expect(resendMail).toHaveBeenCalled()
       })
 
-      test("resendMailFooterButton", () => {
+      test('resendMailFooterButton', () => {
         // ボタンをクリック
-        wrapper.find("[data-test='resendMailFooterButton']").vm.$emit("click")
+        wrapper.find("[data-test='resendMailFooterButton']").vm.$emit('click')
 
         // メソッドが実行されたか
         expect(resendMail).toHaveBeenCalled()
       })
     })
 
-    test("ログアウトボタン", () => {
+    test('ログアウトボタン', () => {
       // ボタンをクリック
-      wrapper.find("[data-test='logoutButton']").vm.$emit("click")
+      wrapper.find("[data-test='logoutButton']").vm.$emit('click')
 
       // メソッドが実行されたか
       expect(logout).toHaveBeenCalled()
