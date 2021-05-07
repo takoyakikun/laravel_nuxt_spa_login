@@ -3,6 +3,7 @@ import Vuetify from 'vuetify'
 import Vuex from 'vuex'
 import storeConfig from '~/test/storeConfig'
 import axios from 'axios'
+import VueMeta from 'vue-meta'
 import api from '~/test/api'
 import Index from '~/pages/index'
 import Auth from '~/pages/auth'
@@ -16,6 +17,7 @@ import PasswordSetToken from '~/pages/passwordSet/_token'
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
+localVue.use(VueMeta, { keyName: 'head' })
 
 const vuetify = new Vuetify()
 
