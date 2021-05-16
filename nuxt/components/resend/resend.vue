@@ -22,6 +22,13 @@
     </v-card-text>
 
     <v-card-actions>
+      <v-btn data-test="logoutButton" @click="logout">
+        <v-icon left>
+          mdi-logout-variant
+        </v-icon>
+        Logout
+      </v-btn>
+      <v-spacer />
       <v-btn
         data-test="resendMailFooterButton"
         color="primary"
@@ -32,13 +39,6 @@
           mdi-email-send-outline
         </v-icon>
         認証メール再送信
-      </v-btn>
-      <v-spacer />
-      <v-btn data-test="logoutButton" @click="logout">
-        <v-icon left>
-          mdi-logout-variant
-        </v-icon>
-        Logout
       </v-btn>
     </v-card-actions>
   </v-card>
