@@ -1,14 +1,16 @@
 <template>
-  <v-row align="center" justify="center">
-    <v-col>
-      <!-- ログインユーザー一覧 -->
-      <UserList />
-    </v-col>
-  </v-row>
+  <v-container class="fill-height" fluid>
+    <v-row align="center" justify="center">
+      <v-col>
+        <!-- ログインユーザー一覧 -->
+        <UserList />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import UserList from '@/components/users/userList'
+import UserList from '~/components/users/userList'
 
 export default {
   name: 'UserPage',
