@@ -50,8 +50,10 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        // role値が0以外を許可
-        Gate::authorize('user-higher');
+        // roleLevelが一般ユーザー未満の場合は失敗
+        if (!Gate::allows('user-higher')) {
+            return $this->afterFaildLogin($request);
+        }
 
         return $user;
     }
