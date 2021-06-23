@@ -1,21 +1,15 @@
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils'
-import Vuetify from 'vuetify'
-import Vuex from 'vuex'
+import { shallowMount, mount } from '@vue/test-utils'
+import { localVue, router, vuetify } from '~/test/setLocalVue'
 import axios from 'axios'
-import api from '~/test/api'
+import setStore from '~/test/setStore'
+import setApi from '~/test/setApi'
 import setPlugin from '~/test/setPlugin'
-import storeConfig from '~/test/storeConfig'
 import Resend from '~/components/resend/resend'
-
-const localVue = createLocalVue()
-localVue.use(Vuex)
-
-let vuetify = new Vuetify()
 
 let store
 beforeEach(() => {
-  store = new Vuex.Store(storeConfig)
-  localVue.prototype.$api = api({ $axios: axios, store })
+  store = setStore(localVue)
+  setApi(localVue, axios, store)
   setPlugin(localVue)
 })
 
@@ -27,13 +21,13 @@ describe(__filename, () => {
   describe('resend', () => {
     let wrapper
     beforeEach(() => {
-      const router = { push: jest.fn() }
+      router.push = jest.fn()
 
       wrapper = shallowMount(Resend, {
         localVue,
         store,
-        vuetify,
-        mocks: { $router: router }
+        router,
+        vuetify
       })
     })
 

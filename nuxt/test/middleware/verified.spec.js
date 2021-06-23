@@ -1,7 +1,5 @@
-import Vuex from 'vuex'
-import storeConfig from '~/test/storeConfig'
 import axios from 'axios'
-import api from '~/test/api'
+import makeMiddlewareOptions from '~/test/makeMiddlewareOptions'
 import Verified from '~/middleware/verified'
 
 jest.useFakeTimers()
@@ -9,11 +7,11 @@ jest.mock('axios')
 
 let store
 let redirect
-let $api
+let middlewareOptions
 beforeEach(() => {
-  store = new Vuex.Store(storeConfig)
-  redirect = jest.fn()
-  $api = api({ $axios: axios, store })
+  middlewareOptions = makeMiddlewareOptions(axios)
+  store = middlewareOptions.store
+  redirect = middlewareOptions.redirect
 })
 
 afterEach(() => {
@@ -40,11 +38,7 @@ describe(__filename, () => {
       })
 
       // ミドルウェアを実行
-      await Verified({
-        store: store,
-        redirect: redirect,
-        app: { $api }
-      })
+      await Verified(middlewareOptions)
       jest.runAllTimers()
 
       // ログインしていないのでfalse
@@ -65,11 +59,7 @@ describe(__filename, () => {
       })
 
       // ミドルウェアを実行
-      await Verified({
-        store: store,
-        redirect: redirect,
-        app: { $api }
-      })
+      await Verified(middlewareOptions)
       jest.runAllTimers()
 
       // ログインしていないのでfalse
@@ -106,11 +96,7 @@ describe(__filename, () => {
       })
 
       // ミドルウェアを実行
-      await Verified({
-        store: store,
-        redirect: redirect,
-        app: { $api }
-      })
+      await Verified(middlewareOptions)
       jest.runAllTimers()
 
       // ログインしているのでtrue
@@ -140,11 +126,7 @@ describe(__filename, () => {
       })
 
       // ミドルウェアを実行
-      await Verified({
-        store: store,
-        redirect: redirect,
-        app: { $api }
-      })
+      await Verified(middlewareOptions)
       jest.runAllTimers()
 
       // ログインしているのでtrue
