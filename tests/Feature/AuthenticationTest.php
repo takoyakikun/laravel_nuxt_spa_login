@@ -31,9 +31,9 @@ class AuthenticationTest extends TestCase
      */
     public function testLogin(): void
     {
-        // 作成したテストユーザのemailとpasswordで認証リクエスト
+        // 作成したテストユーザのlogin_idとpasswordで認証リクエスト
         $response = $this->json('POST', route('login'), [
-            'email' => $this->user->email,
+            'login_id' => $this->user->login_id,
             'password' => 'password',
         ], ['X-Requested-With' => 'XMLHttpRequest']);
 
@@ -97,8 +97,8 @@ class AuthenticationTest extends TestCase
 
         // サンプルデータを追加
         $user = factory(User::class)->create([
-            'email' => 'sample@test.com',
-            'email_verified_at' => null,
+            'login_id' => 'sample@test.com',
+            'login_id_verified_at' => null,
         ]);
 
         // 認証メール再送信のリクエストを送信
@@ -136,7 +136,7 @@ class AuthenticationTest extends TestCase
 
         // データベースにメール認証時刻が入っているか確認
         $verificationUser = User::find($user->id);
-        $this->assertNotNull($verificationUser->email_verified_at);
+        $this->assertNotNull($verificationUser->login_id_verified_at);
 
         // メール認証のアクセス権限のリクエストを送信
         $response = $this->actingAs($user)->json('GET', route('permission', ['verified']), [], ['X-Requested-With' => 'XMLHttpRequest']);
@@ -161,11 +161,11 @@ class AuthenticationTest extends TestCase
 
         // サンプルデータを追加
         $user = factory(User::class)->create([
-            'email' => 'sample@test.com',
+            'login_id' => 'sample@test.com',
         ]);
 
         // パスワードリセットメール送信のリクエストを送信
-        $response = $this->json('POST', route('password.email'), ['email' => $user->email], ['X-Requested-With' => 'XMLHttpRequest']);
+        $response = $this->json('POST', route('password.email'), ['login_id' => $user->login_id], ['X-Requested-With' => 'XMLHttpRequest']);
 
         // 正しいレスポンスが返ってくることを確認
         $response->assertStatus(200);
@@ -189,7 +189,7 @@ class AuthenticationTest extends TestCase
         // 変更するパスワードデータ
         $newPasswordData = [
             'token'  => $token,
-            'email' => $user->email,
+            'login_id' => $user->login_id,
             'password' => 'resetpass',
             'password_confirmation' => 'resetpass'
         ];

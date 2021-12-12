@@ -73,7 +73,7 @@ trait UserTestTrait
         // 設定するパスワードデータ
         $newPasswordData = [
             'token'  => $token,
-            'email' => $user->email,
+            'login_id' => $user->login_id,
             'password' => 'password',
             'password_confirmation' => 'password'
         ];
@@ -92,7 +92,7 @@ trait UserTestTrait
 
         // データベースにメール認証時刻とパスワード設定時刻が入っているか確認
         $verificationUser = User::find($user->id);
-        $this->assertNotNull($verificationUser->email_verified_at);
+        $this->assertNotNull($verificationUser->login_id_verified_at);
         $this->assertNotNull($verificationUser->password_set_at);
 
         // メール認証のアクセス権限のリクエストを送信

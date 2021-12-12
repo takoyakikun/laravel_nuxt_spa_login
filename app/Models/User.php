@@ -20,7 +20,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role'
+        'name', 'login_id', 'password', 'role'
     ];
 
     /**
@@ -38,7 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'login_id_verified_at' => 'datetime',
         'password_set_at' => 'datetime',
     ];
 
@@ -71,6 +71,41 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function getEmailForPasswordReset() {
+        return $this->login_id;
+    }
+
+    public function routeNotificationForMail() {
+        return $this->login_id;
+    }
+
+    /**
+     * Determine if the user has verified their email address.
+     *
+     * @return bool
+     */
+    public function hasVerifiedEmail()
+    {
+        return ! is_null($this->login_id_verified_at);
+    }
+
+    /**
+     * Mark the given user's email as verified.
+     *
+     * @return bool
+     */
+    public function markEmailAsVerified()
+    {
+        return $this->forceFill([
+            'login_id_verified_at' => $this->freshTimestamp(),
+        ])->save();
+    }
+
+    /**
      * 権限レベルのカラム
      *
      * @return array
@@ -85,7 +120,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $roleLevels;
     }
 
-     /**
+    /**
      * 編集可能ユーザーのカラム
      *
      * @return int
@@ -105,7 +140,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return 1;
     }
 
-   /**
+    /**
      * 削除可能ユーザーのカラム
      *
      * @return int
@@ -130,7 +165,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return 1;
     }
 
-   /**
+    /**
      * パスワード設定済ユーザーのカラム
      *
      * @return int
