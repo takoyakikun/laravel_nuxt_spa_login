@@ -31,7 +31,6 @@
                 v-model="value.login_id"
                 v-bind="formOptions.login_id"
                 :error-messages="props.errors"
-                @change="$api.users.getUserUnique(value.login_id)"
               />
             </ValidationProvider>
           </v-col>
@@ -139,14 +138,17 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { store } = useContext()
+    const { app, store } = useContext()
 
     const roleOptions = computed(() => store.getters['users/roleFormOptions'])
-    const userUnique = computed(() => store.getters['users/userUnique'])
     const state = reactive({
-      roleOptions,
-      userUnique
+      roleOptions
     })
+
+    // 入力したログインIDがユニークになっているかの判定
+    const userUnique = async loginId => {
+      return await app.$api.users.getUserUnique(loginId)
+    }
 
     const formFields = {
       name: {
@@ -160,7 +162,7 @@ export default defineComponent({
           required: true,
           max: 255,
           email: true,
-          unique: state.userUnique
+          unique: userUnique
         },
         mode: 'lazy',
         label: 'メールアドレス',

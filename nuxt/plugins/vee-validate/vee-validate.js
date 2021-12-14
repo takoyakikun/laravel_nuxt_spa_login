@@ -18,7 +18,7 @@ const unique = {
   params: ['unique'],
   message: 'この{_field_}は既に使用されています',
   validate(value, { unique }) {
-    return unique
+    return unique(value)
   }
 }
 extend('unique', unique)

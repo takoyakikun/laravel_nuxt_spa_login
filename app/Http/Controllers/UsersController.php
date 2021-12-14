@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UsersController extends Controller
 {
@@ -78,13 +79,11 @@ class UsersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\User\UpdateRequest  $request
-     * @param  int  $id
+     * @param  App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(UpdateRequest $request, User $user)
     {
-        $user = resolve(User::class)->find($id);
-
         if ((int)$user->modify_flg !== 1){
             return response([], 403);
         }
@@ -140,6 +139,7 @@ class UsersController extends Controller
     
         \DB::beginTransaction();
         try {
+            //dd(resolve(User::class)->destroy($id));
             resolve(User::class)->destroy($id);
             \DB::commit();
         } catch (\Exception $e) {
@@ -152,13 +152,11 @@ class UsersController extends Controller
     /**
      * パスワード設定メールを再送信する
      *
-     * @param int $id
+     * @param  App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function passwordSetResend($id)
+    public function passwordSetResend(User $user)
     {
-        $user = resolve(User::class)->find($id);
-
         if ((int)$user->password_set_flg !== 0) {
             return response([], 403);
         }
@@ -209,7 +207,7 @@ class UsersController extends Controller
     {
         try {
             $request->validate([
-                'login_id' => 'unique:users',
+                'login_id' => [Rule::unique('users')->ignore($request->input('id'))],
             ]);
         } catch (\Exception $e) {
             // バリデーションエラーの場合は false を返す

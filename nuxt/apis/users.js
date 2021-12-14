@@ -159,12 +159,11 @@ export default (axios, store) => ({
   },
 
   // ユーザーのメールアドレスがユニークかどうかの判定をセット
-  async getUserUnique(email) {
-    return await axios.post('/api/users/unique', { email: email }).then(res => {
-      store.commit(
-        path.join(moduleName, types.USERS_SET_USER_UNIQUE),
-        Number(res.data[0]) // true/false だとバリデートされないので数値に変換
-      )
-    })
+  async getUserUnique(loginId) {
+    return await axios
+      .post('/api/users/unique', { login_id: loginId })
+      .then(res => {
+        return Number(res.data[0]) // true/false だとバリデートされないので数値に変換
+      })
   }
 })

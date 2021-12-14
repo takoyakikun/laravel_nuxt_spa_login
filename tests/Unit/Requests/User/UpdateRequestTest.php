@@ -8,7 +8,7 @@ use App\Models\User;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-
+use Illuminate\Routing\Route;
 class UpdateRequestTest extends TestCase
 {
     use RefreshDatabase;
@@ -20,8 +20,11 @@ class UpdateRequestTest extends TestCase
         parent::setUp();
 
         // テストユーザ作成
-        $this->user = factory(User::class)->create([
-            'login_id' => 'test@test.com',
+        $this->user1 = factory(User::class)->create([
+            'login_id' => 'test1@test.com',
+        ]);
+        $this->user2 = factory(User::class)->create([
+            'login_id' => 'test2@test.com',
         ]);
 
     }
@@ -39,6 +42,7 @@ class UpdateRequestTest extends TestCase
     public function testValidation($item, $data, $expect, $options = array()): void
     {
         $request  = new UpdateRequest();
+        $request->user = $this->user1;
         $rules    = $request->rules();
         $rule     = \Arr::only($rules, $item);
 
@@ -72,7 +76,8 @@ class UpdateRequestTest extends TestCase
             'login_id_email' => ['login_id', 'test', false],
             'login_id_max_false' => ['login_id', str_repeat('a', 247) . '@test.com', false],
             'login_id_max_true' => ['login_id', str_repeat('a', 246) . '@test.com', true],
-            'login_id_unique' => ['login_id', 'test@test.com', false],
+            'login_id_unique_myuser' => ['login_id', 'test1@test.com', true],
+            'login_id_unique_other' => ['login_id', 'test2@test.com', false],
 
             // 権限
             'role_true' => ['role', 1, true],
