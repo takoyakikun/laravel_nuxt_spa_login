@@ -147,8 +147,9 @@ export default defineComponent({
       roleOptions
     })
 
+    // ユニークのバリデーション結果をapiで取得して返す
     const { userUnique } = UniqueValidation()
-    console.log(UniqueValidation(), userUnique)
+
     const formFields = {
       name: {
         rules: { required: true, max: 255 },
