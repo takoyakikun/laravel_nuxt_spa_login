@@ -116,7 +116,9 @@ import {
   reactive,
   computed
 } from '@nuxtjs/composition-api'
-import { createFormOptions } from '~/composition/form/createFormOptions'
+
+import { createFormOptions } from '~/composables/form/createFormOptions'
+import UniqueValidation from '~/composables/form/uniqueValidation'
 import Form from '~/components/form/form'
 
 export default defineComponent({
@@ -145,10 +147,8 @@ export default defineComponent({
       roleOptions
     })
 
-    // 入力したログインIDがユニークになっているかの判定
-    const userUnique = async loginId => {
-      return await app.$api.users.getUserUnique(loginId)
-    }
+    // ユニークのバリデーション結果をapiで取得して返す
+    const { userUnique } = UniqueValidation()
 
     const formFields = {
       name: {
