@@ -24,7 +24,7 @@ export default {
    */
   head: {
     titleTemplate: titleChunk => {
-      const siteTitle = 'ログインテンプレート'
+      const siteTitle = ''
       return titleChunk ? `${siteTitle} - ${titleChunk}` : siteTitle
     },
     title: '',

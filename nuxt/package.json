@@ -1,7 +1,7 @@
 {
   "name": "login",
   "version": "1.0.0",
-  "description": "ログインテンプレート",
+  "description": "",
   "author": "Kouki Uchida",
   "private": true,
   "scripts": {
