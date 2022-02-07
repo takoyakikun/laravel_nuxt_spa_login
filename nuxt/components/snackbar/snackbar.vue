@@ -18,6 +18,17 @@ export default defineComponent({
   setup() {
     const { app } = useContext()
     const snackbar = reactive(app.$snackbar)
+
+    // ローカルストレージにメッセージデータがある場合は表示する
+    if (localStorage.getItem('snacbar')) {
+      try {
+        const localSnackbar = JSON.parse(localStorage.getItem('snacbar'))
+        snackbar.openSnackbar(localSnackbar)
+      } finally {
+        localStorage.setItem('snacbar', '')
+      }
+    }
+
     return {
       snackbar
     }
