@@ -58,13 +58,13 @@ export default defineComponent({
       login_id: {
         rules: { required: true, max: 255, email: true },
         mode: 'eager',
-        label: 'Login',
+        label: 'ログインID',
         type: 'email'
       },
       password: {
         rules: { required: true },
         mode: 'eager',
-        label: 'Password',
+        label: 'パスワード',
         type: 'password'
       },
       remember: {

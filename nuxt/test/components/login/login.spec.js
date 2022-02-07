@@ -4,15 +4,27 @@ import axios from 'axios'
 import setStore from '~/test/setStore'
 import setApi from '~/test/setApi'
 import setPlugin from '~/test/setPlugin'
-import Login from '~/components/login/login'
+import * as types from '~/store/mutation-types'
+import setConfigData from '~/test/setConfigData'
+import setLocation from '~/test/setLocation'
+import setLocalStorage from '~/test/setLocalStorage'
+import Component from '~/components/login/login'
 
 jest.useFakeTimers()
+jest.mock('vuex')
+jest.mock('axios')
+
+setLocation()
+setLocalStorage()
 
 let store
 beforeEach(() => {
   store = setStore(localVue)
   setApi(localVue, axios, store)
   setPlugin(localVue)
+  store.commit('config/' + types.CONFIG_SET_CONFIG, setConfigData)
+  localStorage.clear()
+  localVue.prototype.$nuxt.context.app.$axios = axios
 })
 
 afterEach(() => {
@@ -20,47 +32,34 @@ afterEach(() => {
 })
 
 describe(__filename, () => {
-  describe('テスト', () => {
-    let wrapper
-    beforeEach(() => {
-      router.push = jest.fn()
-      wrapper = shallowMount(Login, {
-        localVue,
-        store,
-        router,
-        vuetify,
-        stubs: {
-          NuxtLink: RouterLinkStub
-        }
-      })
-    })
+  let mountOptions
+  beforeEach(() => {
+    mountOptions = {
+      localVue,
+      store,
+      router,
+      vuetify,
+      stubs: {
+        NuxtLink: RouterLinkStub
+      }
+    }
+  })
 
-    test('is a Vue instance', () => {
-      expect(wrapper.vm).toBeTruthy()
-    })
+  test('is a Vue instance', () => {
+    const wrapper = shallowMount(Component, mountOptions)
+
+    expect(wrapper.vm).toBeTruthy()
   })
 
   describe('フォーム動作テスト', () => {
-    let wrapper
     beforeEach(() => {
       router.push = jest.fn()
-      wrapper = mount(Login, {
-        localVue,
-        store,
-        router,
-        vuetify,
-        stubs: {
-          NuxtLink: RouterLinkStub
-        }
-      })
     })
 
     describe('ログイン', () => {
-      let loginFormValidation
       let axiosPost
       beforeEach(() => {
         // spyOn
-        loginFormValidation = jest.spyOn(wrapper.vm.$refs.loginForm, 'validate')
         axiosPost = jest.spyOn(axios, 'post')
       })
 
@@ -77,6 +76,14 @@ describe(__filename, () => {
         })
 
         test('フロント側エラー', async () => {
+          const wrapper = mount(Component, mountOptions)
+
+          // spyOn
+          const loginFormValidation = jest.spyOn(
+            wrapper.vm.state.validate,
+            'validate'
+          )
+
           // ログイン処理
           await wrapper.vm.submit()
           jest.runAllTimers()
@@ -87,7 +94,7 @@ describe(__filename, () => {
 
           // バリデーションエラー
           expect(
-            Object.keys(wrapper.vm.$refs.loginForm.errors)
+            Object.keys(wrapper.vm.state.validate.errors)
           ).not.toHaveLength(0)
 
           // API送信をしない
@@ -95,6 +102,15 @@ describe(__filename, () => {
         })
 
         test('API側エラー', async () => {
+          const wrapper = mount(Component, mountOptions)
+
+          // spyOn
+          const loginFormValidation = jest.spyOn(
+            wrapper.vm.state.validate,
+            'validate'
+          )
+          const reload = jest.spyOn(window.location, 'reload')
+
           // フォームを入力してログイン処理
           wrapper.find("input[name='login_id']").setValue('test@test.com')
           wrapper.find("input[name='password']").setValue('password')
@@ -112,15 +128,36 @@ describe(__filename, () => {
             password: 'password'
           })
 
-          // snackbarのエラー表示
-          expect(wrapper.vm.$snackbar.text).toBe('認証に失敗しました。')
-          expect(wrapper.vm.$snackbar.options.color).toBe('error')
+          // リロードした
+          expect(reload).toHaveBeenCalled()
+
+          // ローカルストレージにsnackbarのデータがある
+          expect(localStorage.getItem('snacbar')).toBe(
+            JSON.stringify({
+              text: '認証に失敗しました。',
+              options: { color: 'error' }
+            })
+          )
+
+          // ローカルストレージにフォーム入力データがある
+          expect(localStorage.getItem('loginFormValue')).toBe(
+            JSON.stringify({
+              login_id: 'test@test.com'
+            })
+          )
         })
       })
 
       test('成功', async () => {
+        const wrapper = mount(Component, mountOptions)
+
         // spyOn
         const routerPush = jest.spyOn(wrapper.vm.$router, 'push')
+        const loginFormValidation = jest.spyOn(
+          wrapper.vm.state.validate,
+          'validate'
+        )
+        const reload = jest.spyOn(window.location, 'reload')
 
         // 正常なレスポンス
         const response = {
@@ -148,16 +185,21 @@ describe(__filename, () => {
           password: 'password'
         })
 
-        // Topへリダイレクトした
-        expect(routerPush).toHaveBeenCalled()
-        expect(routerPush).toHaveBeenCalledWith('/')
+        // リロードした
+        expect(reload).toHaveBeenCalled()
       })
 
       test('loading中はログイン処理不可', async () => {
+        const wrapper = mount(Component, mountOptions)
+
+        // spyOn
+        const loginFormValidation = jest.spyOn(
+          wrapper.vm.state.validate,
+          'validate'
+        )
+
         // loading中の設定
-        wrapper.setData({
-          loading: true
-        })
+        wrapper.vm.state.loading = true
 
         // ログイン処理
         await wrapper.vm.submit()
@@ -167,58 +209,6 @@ describe(__filename, () => {
         // バリデーションチェックをしない
         expect(loginFormValidation).not.toHaveBeenCalled()
       })
-    })
-  })
-
-  describe('ボタン動作テスト', () => {
-    let wrapper
-    let submit
-    beforeEach(() => {
-      submit = jest.spyOn(Login.methods, 'submit').mockReturnValue(true)
-      wrapper = mount(Login, {
-        localVue,
-        store,
-        router,
-        vuetify,
-        stubs: {
-          NuxtLink: RouterLinkStub
-        }
-      })
-    })
-
-    test('ログインボタン', () => {
-      // ボタンをクリック
-      wrapper.find("[data-test='loginButton']").trigger('click')
-
-      // メソッドが実行されたか
-      expect(submit).toHaveBeenCalled()
-    })
-  })
-
-  describe('リンク動作テスト', () => {
-    let wrapper
-    beforeEach(() => {
-      wrapper = mount(Login, {
-        localVue,
-        store,
-        router,
-        vuetify,
-        stubs: {
-          NuxtLink: RouterLinkStub
-        }
-      })
-    })
-
-    test('トップボタンリンク', () => {
-      // 正しいリンク先が設定されているか
-      expect(wrapper.find("[data-test='topButtonLink']").props().to).toBe('/')
-    })
-
-    test('パスワードリセットリンク', () => {
-      // 正しいリンク先が設定されているか
-      expect(wrapper.find("[data-test='passwordResetLink']").props().to).toBe(
-        'passwordReset'
-      )
     })
   })
 })

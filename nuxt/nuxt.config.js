@@ -54,6 +54,7 @@ export default {
    */
   plugins: [
     '~/plugins/api/setup',
+    '~/plugins/axios',
     '~/plugins/filters',
     '~/plugins/vuetify',
     '~/plugins/snackbar',
