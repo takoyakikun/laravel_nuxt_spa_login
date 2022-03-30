@@ -6,7 +6,7 @@ use App\Notifications\CustomVerifyEmail;
 use App\Notifications\CustomResetPassword;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use GoldSpecDigital\LaravelEloquentUUID\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 
@@ -102,6 +102,28 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->forceFill([
             'login_id_verified_at' => $this->freshTimestamp(),
+        ])->save();
+    }
+
+    /**
+     * Get the email address that should be used for verification.
+     *
+     * @return string
+     */
+    public function getEmailForVerification()
+    {
+        return $this->login_id;
+    }
+
+    /**
+     * パスワード設定済にする
+     *
+     * @return bool
+     */
+    public function markPasswordAsSet()
+    {
+        return $this->forceFill([
+            'password_set_at' => $this->freshTimestamp(),
         ])->save();
     }
 
@@ -203,18 +225,6 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return $roleLevel;
-    }
-
-    /**
-     * パスワード設定済にする
-     *
-     * @return bool
-     */
-    public function markPasswordAsSet()
-    {
-        return $this->forceFill([
-            'password_set_at' => $this->freshTimestamp(),
-        ])->save();
     }
 
 }

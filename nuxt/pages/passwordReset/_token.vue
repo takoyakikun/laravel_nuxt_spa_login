@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import PasswordReset from '~/components/PasswordReset/_token'
+import PasswordReset from '~/components/passwordReset/_token'
 
 export default {
   name: 'PasswordResetTokenPage',
