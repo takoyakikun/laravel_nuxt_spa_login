@@ -5,14 +5,11 @@ to: "components/<%= directory %>/<%= name ? name : 'index' %>.vue"
 </template>
 
 <script>
-import { defineComponent, useContext, reactive } from '@nuxtjs/composition-api'
+import { defineComponent, reactive } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   name: '<%= h.changeCase.pascal(directory) + h.changeCase.pascal(name) %>Component',
-  props: {},
-  components: {},
-  setup(props) {
-    const { app } = useContext()
+  setup() {
     const state = reactive({})
 
     return {

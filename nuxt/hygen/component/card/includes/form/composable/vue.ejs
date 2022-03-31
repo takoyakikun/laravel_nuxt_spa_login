@@ -45,9 +45,7 @@ import axios from 'axios'
 
 export default defineComponent({
   name: '<%= h.changeCase.pascal(locals.directory) + h.changeCase.pascal(locals.name) %>Component',
-  props: {},
-  components: {},
-  setup(props, context) {
+  setup(_, context) {
     const { app } = useContext()
 
     const state = reactive({
@@ -61,32 +59,35 @@ export default defineComponent({
     const submit = async () => {
       if (!state.loading) {
         state.loading = true
-        await formData.state.validate.validate().then(async result => {
-          if (result) {
-            const res = await axios
-              .<%= locals.apiMethod ? locals.apiMethod : "post" %>(`/api/<%= locals.name %>`,
-                formData.state.formValue
-              )
-              .then(res => res)
-              .catch(err => err.response)
+        try {
+          state.loading = true
+          await formData.state.validate.validate().then(async result => {
+            if (result) {
+              const res = await axios
+                .<%= locals.apiMethod ? locals.apiMethod : "post" %>(`/api/<%= locals.name %>`,
+                  formData.state.formValue
+                )
+                .then(res => res)
+                .catch(err => err.response)
 
-            if (res.status !== 200) {
+              if (res.status !== 200) {
+                app.$snackbar.openSnackbar({
+                  text: '<%= locals.title %>の<%= locals.actionText ? locals.actionText : "登録" %>に失敗しました。',
+                  options: { color: 'error' }
+                })
+                return false
+              }
+
               app.$snackbar.openSnackbar({
-                text: '<%= locals.title %>の<%= locals.actionText ? locals.actionText : "登録" %>に失敗しました。',
-                options: { color: 'error' }
+                text: '<%= locals.title %>を<%= locals.actionText ? locals.actionText : "登録" %>しました。',
+                options: { color: 'success' }
               })
-              state.loading = false
-              return false
+              formData.state.validate.reset()
             }
-
-            app.$snackbar.openSnackbar({
-              text: '<%= locals.title %>を<%= locals.actionText ? locals.actionText : "登録" %>しました。',
-              options: { color: 'success' }
-            })
-            formData.state.validate.reset()
-          }
-        })
-        state.loading = false
+          })
+        } finally {
+          state.loading = false
+        }
       }
     }
 
